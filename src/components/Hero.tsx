@@ -128,7 +128,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                   {statusText}
                 </span>
                 <img
-                  src="/AWS re_Invent_dark.png"
+                  src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent 2026"
                   className="h-8 sm:h-9 lg:h-10 w-auto object-contain opacity-95"
                 />

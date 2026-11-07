@@ -15,7 +15,7 @@ export const Footer: React.FC = () => {
             {/* Enlarged Logos Lockup */}
             <div className="flex flex-wrap items-center gap-6 sm:gap-10">
               <img
-                src="/AWS re_Invent_dark.png"
+                src="/AWS_reinvent-dark.png"
                 alt="AWS re:Invent Dhule 2026"
                 className="h-16 sm:h-22 md:h-28 lg:h-32 w-auto object-contain filter drop-shadow-xl"
               />

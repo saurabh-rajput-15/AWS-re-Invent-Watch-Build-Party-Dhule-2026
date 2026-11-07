@@ -467,7 +467,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                   </div>
 
                   <img
-                    src="/AWS re_Invent_dark.png"
+                    src="/AWS_reinvent-dark.png"
                     alt="AWS re:Invent Dhule 2026"
                     className="h-10 sm:h-12 w-auto object-contain hidden sm:block opacity-95 filter drop-shadow"
                   />

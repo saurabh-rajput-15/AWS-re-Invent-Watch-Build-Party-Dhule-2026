@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           className="flex items-center transition-opacity hover:opacity-95 shrink-0"
         >
           <img
-            src="/AWS re_Invent_dark.png"
+            src="/AWS_reinvent-dark.png"
             alt="AWS re:Invent Dhule 2026"
             className="h-15 sm:h-13 md:h-15 lg:h-22 w-auto object-contain"
           />
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           {/* Mobile Logo */}
           <div className="mb-4 flex items-center justify-center p-3 rounded-xl bg-[#090D16]/95 border border-slate-800">
             <img
-              src="/AWS re_Invent_dark.png"
+              src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
               className="h-12 sm:h-14 w-auto object-contain"
             />

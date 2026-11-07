@@ -167,7 +167,7 @@ export const About: React.FC = () => {
           </div>
           <div className="shrink-0">
             <img
-              src="/AWS re_Invent_dark.png"
+              src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
               className="h-14 sm:h-18 md:h-20 w-auto object-contain opacity-95"
             />

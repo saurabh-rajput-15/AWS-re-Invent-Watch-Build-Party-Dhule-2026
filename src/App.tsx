@@ -13,7 +13,6 @@ import { useGsapLenis } from './hooks/useGsapLenis';
 
 export default function App() {
   const [attendee, setAttendee] = useState<Attendee | null>(null);
-  const [showFab, setShowFab] = useState(false);
 
   // Initialize GSAP ScrollTrigger and Lenis smooth scrolling
   const lenisRef = useGsapLenis();
@@ -32,15 +31,6 @@ export default function App() {
     } catch (e) {
       console.warn('Could not read saved attendee from localStorage', e);
     }
-  }, []);
-
-  // Monitor scroll for Floating Action Button
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowFab(window.scrollY > 480);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleRegisterSuccess = (newAttendee: Attendee) => {
@@ -99,18 +89,6 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Floating Action Button (FAB) on scroll matching original html */}
-      {showFab && (
-        <div className="fixed bottom-6 right-6 z-30 transition-all duration-300">
-          <button
-            onClick={scrollToRegister}
-            className="inline-flex items-center gap-2 rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] px-5 py-2.5 text-xs font-bold text-[#0E131A] shadow-2xl transition-transform active:scale-95 cursor-pointer"
-          >
-            <span>Register →</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }

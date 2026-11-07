@@ -169,7 +169,7 @@ export const About: React.FC = () => {
             <img
               src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
-              className="h-14 sm:h-18 md:h-20 w-auto object-contain opacity-95"
+              className="h-26 sm:h-18 md:h-26 w-auto object-contain opacity-95"
             />
           </div>
         </div>

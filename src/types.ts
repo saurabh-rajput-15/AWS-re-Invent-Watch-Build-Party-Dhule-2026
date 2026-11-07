@@ -44,6 +44,8 @@ export interface Speaker {
   linkedin?: string;
   github?: string;
   accent: string;
+  image?: string;
+  isAnnouncingSoon?: boolean;
 }
 
 export interface FAQItem {

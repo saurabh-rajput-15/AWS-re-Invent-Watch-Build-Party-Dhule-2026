@@ -45,8 +45,8 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     categoryLabel: 'Registration & Welcome',
     speaker: 'Organizing Committee',
     speakerRole: 'AWS Student Builder Group Leads',
-    description: 'Pick up your official digital conference lanyard, collector re:Invent stickers, Wi-Fi credentials, and claim your designated workstation.',
-    location: 'Main Reception & Atrium',
+    description: 'Pick up your official digital conference lanyard, collector re:Invent stickers, and take your seat in Symphony Hall for the opening keynote.',
+    location: '2nd Floor · Symphony Hall (Reception)',
     accentColor: '#3FB1FF'
   },
   {
@@ -58,7 +58,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     speaker: 'SVKM Leadership & Faculty Mentors',
     speakerRole: 'Department of Computer Engineering, SVKM’s IOT Dhule',
     description: 'Setting the stage for the watch party: how AWS re:Invent transforms cloud computing, AI, and the developer ecosystem, and what we will build today.',
-    location: 'Riverfront Auditorium',
+    location: '2nd Floor · Symphony Hall',
     accentColor: '#AB5CFF'
   },
   {
@@ -70,7 +70,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     speaker: 'Dr. Werner Vogels & AWS Leadership',
     speakerRole: 'CTO, Amazon.com (Live Recorded Stream)',
     description: 'High-definition big-screen screening of curated re:Invent breakthrough releases—focusing on foundation models, Amazon Bedrock updates, and next-gen serverless compute.',
-    location: 'Riverfront Auditorium Screen A',
+    location: '2nd Floor · Symphony Hall',
     accentColor: '#FF57E8'
   },
   {
@@ -79,10 +79,10 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     title: 'Deconstructing the Announcements: Architecture Deep-Dive',
     category: 'workshop',
     categoryLabel: 'Technical Breakdown',
-    speaker: 'Community Solutions Architect',
-    speakerRole: 'AWS Community Builder & Senior Cloud Consultant',
+    speaker: 'Abhishek Maurya',
+    speakerRole: 'Senior Cloud Engineer, Orange Business India | AWS Community Builder | CKA',
     description: 'Practical translation of the morning announcements: How student builders can immediately leverage Bedrock, AWS Lambda functions, and Q Developer in academic and production projects.',
-    location: 'Riverfront Auditorium',
+    location: '2nd Floor · Symphony Hall',
     prerequisites: ['AWS Free Tier Account', 'Curiosity for Cloud Architecture'],
     accentColor: '#05E08A'
   },
@@ -94,8 +94,8 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     categoryLabel: 'Community & Lunch',
     speaker: 'All Attendees & Mentors',
     speakerRole: 'Peer Networking & Discussions',
-    description: 'Buffet lunch served by Hotel Anand Regency Riverfront. Connect with fellow attendees, discuss the morning keynote releases, and gear up for the afternoon Kahoot battles.',
-    location: 'Riverfront Terrace Dining',
+    description: 'Buffet lunch served at Harmony Hall (3rd Floor), Hotel Anand Regency Riverfront. Connect with fellow attendees, discuss the morning keynote releases, and gear up for the afternoon Kahoot battles.',
+    location: '3rd Floor · Harmony Hall',
     accentColor: '#FF9F1C'
   },
   {
@@ -107,7 +107,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     speaker: 'Saurabh Rajput & Quiz Hosts',
     speakerRole: 'AWS Student Builder Group',
     description: 'Grab your smartphones and join the ultimate multiplayer live Kahoot battle! Multi-round cloud trivia covering the morning keynote announcements, AWS architectural fundamentals, and tech puzzles with real-time big-screen leaderboards.',
-    location: 'Riverfront Auditorium Arena',
+    location: '2nd Floor · Symphony Hall',
     prerequisites: ['Smartphone with web browser (kahoot.it)', 'Quick reflexes & cloud enthusiasm'],
     accentColor: '#05E08A'
   },
@@ -120,7 +120,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     speaker: 'Top Kahoot Finalists & Mentors',
     speakerRole: 'Championship Stage',
     description: 'Top leaderboard champions face off on stage in the rapid-fire championship round. Plus 5-minute lightning talks on student cloud breakthroughs and community announcements.',
-    location: 'Riverfront Auditorium Stage',
+    location: '2nd Floor · Symphony Hall Stage',
     accentColor: '#3FB1FF'
   },
   {
@@ -132,7 +132,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     speaker: 'AWS Student Builder Group Team',
     speakerRole: 'SVKM’s IOT Dhule',
     description: 'Presentation of Participation Certificates, distribution of AWS winner swags, and official group photo celebration.',
-    location: 'Riverfront Auditorium',
+    location: '2nd Floor · Symphony Hall',
     accentColor: '#AB5CFF'
   }
 ];
@@ -140,54 +140,27 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
 export const SPEAKERS: Speaker[] = [
   {
     id: 'speaker-1',
-    name: 'Saurabh Rajput',
-    role: 'AWS Community Builder & Lead Organizer',
-    organization: 'AWS Student Builder Group · SVKM’s IOT Dhule',
-    bio: 'Passionate cloud evangelist and open-source contributor leading student builder initiatives across North Maharashtra.',
-    topic: 'Demystifying Cloud-Native Architecture with AWS Lambda & Q Developer',
-    avatarSeed: 'Saurabh',
-    tags: ['Serverless', 'Generative AI', 'Cloud Architecture'],
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    accent: '#3FB1FF'
+    name: 'Abhishek Maurya',
+    role: 'Senior Cloud Engineer',
+    organization: 'Orange Business India',
+    bio: 'Senior Cloud Engineer specializing in enterprise Kubernetes infrastructure, cloud-native deployments, and container orchestration. AWS Community Builder and Certified Kubernetes Administrator (CKA).',
+    topic: 'Architecting Enterprise Kubernetes & Cloud Workloads on AWS',
+    avatarSeed: 'Abhishek',
+    tags: ['AWS Community Builder', 'CKA', 'Senior Cloud Engineer', 'Kubernetes'],
+    accent: '#3FB1FF',
+    image: '/speakers/Abhishek-Maurya.jpeg'
   },
   {
     id: 'speaker-2',
-    name: 'Prof. Milind Patil',
-    role: 'Faculty Advisor & Cloud Mentor',
-    organization: 'Department of Computer Engineering, SVKM’s IOT Dhule',
-    bio: 'Guiding student researchers in distributed computing, edge deployments, and enterprise cloud migration strategies.',
-    topic: 'Bridging Academic Engineering with Real-World Cloud Ecosystems',
-    avatarSeed: 'Milind',
-    tags: ['Distributed Systems', 'Cloud Security', 'Mentorship'],
-    linkedin: 'https://linkedin.com',
-    accent: '#FF57E8'
-  },
-  {
-    id: 'speaker-3',
-    name: 'Tanvi Shinde',
-    role: 'Senior DevOps Architect',
-    organization: 'CloudScale Technologies',
-    bio: 'Specialist in Kubernetes, Terraform, and automated CI/CD pipelines on AWS. Active mentor for collegiate developer circles.',
-    topic: 'Zero-to-Production: Deploying Scalable Full-Stack Apps in 20 Minutes',
-    avatarSeed: 'Tanvi',
-    tags: ['DevOps', 'Terraform', 'Containers'],
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    accent: '#05E08A'
-  },
-  {
-    id: 'speaker-4',
-    name: 'Aniket Deshmukh',
-    role: 'AI/ML Solutions Lead',
-    organization: 'Enterprise Solutions Group',
-    bio: 'Working with LLM fine-tuning, RAG pipelines, and Bedrock agent workflows to solve industrial data challenges.',
-    topic: 'Building Multimodal GenAI Applications with Amazon Bedrock',
-    avatarSeed: 'Aniket',
-    tags: ['Amazon Bedrock', 'RAG', 'Prompt Engineering'],
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    accent: '#FF9F1C'
+    name: 'To Be Announced',
+    role: 'Industry Leader & Cloud Expert',
+    organization: 'Announcing Soon',
+    bio: 'We are locking in another industry leader to guide and inspire student builders during our watch and build sessions. Stay tuned for the official reveal!',
+    topic: 'Keynote Cloud Session & Technical Deep Dive',
+    avatarSeed: 'TBA',
+    tags: ['Keynote Speaker', 'Industry Mentor', 'Announcing Soon'],
+    accent: '#FF57E8',
+    isAnnouncingSoon: true
   }
 ];
 
@@ -205,7 +178,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-3',
     question: 'What do I need to bring with me on the day of the event?',
-    answer: 'Please bring your laptop, charger, student ID card, and have an active AWS account (Free Tier is sufficient). If you have registered through this portal, have your registration confirmation ready on your phone for lightning check-in.'
+    answer: 'Please bring your smartphone (for live Kahoot battles and quiz participation), student ID card, and your cloud enthusiasm! If you have registered through this portal, have your digital pass ready on your phone for lightning check-in.'
   },
   {
     id: 'faq-4',

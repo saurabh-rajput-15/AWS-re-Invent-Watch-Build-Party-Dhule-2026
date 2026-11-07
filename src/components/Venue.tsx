@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Wifi, Zap, Coffee, Car, ChevronDown, HelpCircle, PhoneCall } from 'lucide-react';
+import { MapPin, Navigation, Coffee, Car, ChevronDown, HelpCircle, PhoneCall } from 'lucide-react';
 import { EVENT_DETAILS, FAQS } from '../data/eventData';
 
 export const Venue: React.FC = () => {
@@ -23,7 +23,7 @@ export const Venue: React.FC = () => {
             Hotel Anand Regency <span className="text-[#3FB1FF]">Riverfront.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
-            Conveniently situated along the riverfront in Dhule, Maharashtra. Featuring executive auditorium screening halls, air-conditioned breakout rooms for the build sprint, and dedicated high-speed developer workstations.
+            Conveniently situated along the riverfront in Dhule, Maharashtra. Featuring 2 dedicated halls: the main event, keynote screening, tech talks, and Kahoot battles in <strong className="text-white">Symphony Hall (2nd Floor)</strong>, and buffet lunch in <strong className="text-white">Harmony Hall (3rd Floor)</strong>.
           </p>
         </div>
 
@@ -64,22 +64,51 @@ export const Venue: React.FC = () => {
                 </div>
               </div>
 
+              {/* Dedicated Event Halls */}
+              <div className="mt-5 space-y-2.5">
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#3FB1FF]/10 text-[#3FB1FF] border border-[#3FB1FF]/30 font-mono text-xs font-bold">
+                    2F
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
+                      <span>Symphony Hall · 2nd Floor</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#05E08A]/10 text-[#05E08A] rounded border border-[#05E08A]/30">
+                        Main Event
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Check-in, keynote watch sessions, tech talks, Kahoot Arena &amp; awards.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FF9F1C]/10 text-[#FF9F1C] border border-[#FF9F1C]/30 font-mono text-xs font-bold">
+                    3F
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
+                      <span>Harmony Hall · 3rd Floor</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#FF9F1C]/10 text-[#FF9F1C] rounded border border-[#FF9F1C]/30">
+                        Buffet Lunch
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Buffet networking lunch and community builder discussions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Amenities Grid */}
-              <div className="mt-6 grid grid-cols-2 gap-3 text-xs text-slate-300">
+              <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-300">
                 <div className="flex items-center gap-2 rounded-lg bg-slate-800/40 p-2.5">
-                  <Wifi className="h-4 w-4 text-[#3FB1FF]" />
-                  <span>High-speed Wi-Fi</span>
+                  <Coffee className="h-4 w-4 text-[#05E08A] shrink-0" />
+                  <span>Buffet Lunch (3rd Fl)</span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-slate-800/40 p-2.5">
-                  <Zap className="h-4 w-4 text-[#FF9F1C]" />
-                  <span>Workstation Power</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-lg bg-slate-800/40 p-2.5">
-                  <Coffee className="h-4 w-4 text-[#05E08A]" />
-                  <span>Lunch &amp; Refreshments</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-lg bg-slate-800/40 p-2.5">
-                  <Car className="h-4 w-4 text-[#AB5CFF]" />
+                  <Car className="h-4 w-4 text-[#AB5CFF] shrink-0" />
                   <span>Attendee Parking</span>
                 </div>
               </div>

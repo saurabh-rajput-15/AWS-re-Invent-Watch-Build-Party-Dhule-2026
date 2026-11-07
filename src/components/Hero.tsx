@@ -130,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                 <img
                   src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent 2026"
-                  className="h-8 sm:h-9 lg:h-10 w-auto object-contain opacity-95"
+                  className="h-8 sm:h-9 lg:h-22 w-auto object-contain opacity-95"
                 />
               </div>
 

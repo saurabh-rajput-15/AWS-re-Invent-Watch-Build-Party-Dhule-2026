@@ -22,7 +22,7 @@ export const Speakers: React.FC = () => {
         </div>
 
         {/* Speakers Grid */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8">
           {SPEAKERS.map((speaker) => {
             const initials = speaker.name
               .split(' ')
@@ -33,7 +33,11 @@ export const Speakers: React.FC = () => {
             return (
               <div
                 key={speaker.id}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-6 shadow-lg transition-all hover:border-slate-700 hover:bg-[#0E1526]"
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border ${
+                  speaker.isAnnouncingSoon
+                    ? 'border-dashed border-slate-700/80 bg-[#0E1526]/50'
+                    : 'border-slate-800 bg-[#0E1526]/80'
+                } p-6 sm:p-7 shadow-lg transition-all hover:border-slate-700 hover:bg-[#0E1526]`}
               >
                 {/* Accent top stripe */}
                 <div
@@ -42,51 +46,90 @@ export const Speakers: React.FC = () => {
                 />
 
                 <div>
-                  {/* Avatar Initials Badge */}
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex h-14 w-14 items-center justify-center rounded-2xl font-bold font-mono text-xl shadow-inner"
-                      style={{
-                        backgroundColor: `${speaker.accent}20`,
-                        color: speaker.accent,
-                        border: `1.5px solid ${speaker.accent}50`
-                      }}
-                    >
-                      {initials}
-                    </div>
+                  {/* Top Bar: Avatar & Badges */}
+                  <div className="flex items-start justify-between gap-4">
+                    {speaker.image ? (
+                      <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-800 shadow-md">
+                        <img
+                          src={speaker.image}
+                          alt={speaker.name}
+                          className="h-full w-full object-cover object-center"
+                          onError={(e) => {
+                            // If photo isn't yet present in public/speaker, hide img and show styled initials fallback
+                            e.currentTarget.style.display = 'none';
+                            const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div
+                          className="hidden h-full w-full items-center justify-center font-bold font-mono text-xl sm:text-2xl shadow-inner"
+                          style={{
+                            backgroundColor: `${speaker.accent}20`,
+                            color: speaker.accent,
+                          }}
+                        >
+                          {initials}
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl font-bold font-mono text-xl sm:text-2xl shadow-inner"
+                        style={{
+                          backgroundColor: `${speaker.accent}20`,
+                          color: speaker.accent,
+                          border: `1.5px solid ${speaker.accent}50`
+                        }}
+                      >
+                        {initials}
+                      </div>
+                    )}
 
-                    <div className="flex items-center gap-2">
-                      {speaker.linkedin && (
-                        <a
-                          href={speaker.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                          aria-label={`${speaker.name} LinkedIn`}
-                        >
-                          <Linkedin className="h-4 w-4" />
-                        </a>
+                    <div className="flex flex-col items-end gap-2">
+                      {speaker.isAnnouncingSoon ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF57E8]/10 border border-[#FF57E8]/30 px-3 py-1 text-[11px] font-mono font-bold text-[#FF57E8] tracking-wide animate-pulse">
+                          <Sparkles className="h-3 w-3" />
+                          <span>Announcing Soon</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#05E08A]/10 border border-[#05E08A]/30 px-3 py-1 text-[11px] font-mono font-bold text-[#05E08A] tracking-wide">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#05E08A]" />
+                          <span>Confirmed Speaker</span>
+                        </span>
                       )}
-                      {speaker.github && (
-                        <a
-                          href={speaker.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                          aria-label={`${speaker.name} GitHub`}
-                        >
-                          <Github className="h-4 w-4" />
-                        </a>
-                      )}
+
+                      <div className="flex items-center gap-2">
+                        {speaker.linkedin && (
+                          <a
+                            href={speaker.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            aria-label={`${speaker.name} LinkedIn`}
+                          >
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                        )}
+                        {speaker.github && (
+                          <a
+                            href={speaker.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            aria-label={`${speaker.name} GitHub`}
+                          >
+                            <Github className="h-4 w-4" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
 
                   {/* Name & Role */}
                   <div className="mt-5">
-                    <h3 className="text-lg font-bold text-white group-hover:text-[#3FB1FF] transition-colors">
+                    <h3 className="text-xl font-bold text-white group-hover:text-[#3FB1FF] transition-colors">
                       {speaker.name}
                     </h3>
-                    <div className="text-xs font-medium text-slate-300 mt-1">
+                    <div className="text-sm font-semibold text-slate-200 mt-1">
                       {speaker.role}
                     </div>
                     <div className="text-xs text-slate-400 font-mono mt-0.5">
@@ -95,27 +138,31 @@ export const Speakers: React.FC = () => {
                   </div>
 
                   {/* Bio */}
-                  <p className="mt-3 text-xs text-slate-300 leading-relaxed">
+                  <p className="mt-3.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
                     {speaker.bio}
                   </p>
 
                   {/* Talk / Session Highlight */}
-                  <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+                  <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-3.5">
                     <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
                       Featured Topic
                     </div>
-                    <div className="mt-1 text-xs font-semibold text-white">
+                    <div className="mt-1 text-xs sm:text-sm font-semibold text-white">
                       {speaker.topic}
                     </div>
                   </div>
                 </div>
 
-                {/* Tech Tags */}
-                <div className="mt-5 pt-3 border-t border-slate-800/80 flex flex-wrap gap-1.5">
+                {/* Tech & Certification Tags */}
+                <div className="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap gap-1.5">
                   {speaker.tags.map((tag, i) => (
                     <span
                       key={i}
-                      className="text-[11px] font-mono text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded"
+                      className={`text-[11px] font-mono px-2.5 py-0.5 rounded ${
+                        tag.includes('CKA') || tag.includes('Community Builder')
+                          ? 'bg-[#FF9900]/15 text-[#FF9900] border border-[#FF9900]/30 font-semibold'
+                          : 'text-slate-300 bg-slate-800/70 border border-slate-700/50'
+                      }`}
                     >
                       {tag}
                     </span>

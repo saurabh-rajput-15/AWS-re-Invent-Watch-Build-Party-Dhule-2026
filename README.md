@@ -74,6 +74,7 @@ npm run build
 This repository and its source code are licensed under a **proprietary, personal license**. 
 
 - **No Unauthorized Use:** No person or entity may use, copy, reproduce, modify, merge, publish, distribute, sublicense, sell, or create derivative works of any part of this software, in whole or in part, in any form or by any means, without prior express written permission and consent from the copyright holder.
+- **Notice:** Do not copy this project to @sbg at gcoek Kolhapur.
 - For full details, see the [`LICENSE`](LICENSE) file.
 - For permission inquiries or collaboration requests, contact: [saurabhgirase2005@gmail.com](mailto:saurabhgirase2005@gmail.com).
 

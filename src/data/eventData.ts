@@ -147,6 +147,7 @@ export const SPEAKERS: Speaker[] = [
     topic: 'Architecting Enterprise Kubernetes & Cloud Workloads on AWS',
     avatarSeed: 'Abhishek',
     tags: ['AWS Community Builder', 'CKA', 'Senior Cloud Engineer', 'Kubernetes'],
+    linkedin: 'https://www.linkedin.com/in/abhitnc/',
     accent: '#3FB1FF',
     image: '/speakers/Abhishek-Maurya.jpeg'
   },

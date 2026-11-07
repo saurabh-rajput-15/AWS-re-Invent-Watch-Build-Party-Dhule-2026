@@ -42,7 +42,7 @@ export function useGsapLenis() {
       if (element) {
         e.preventDefault();
         lenis.scrollTo(element as HTMLElement, {
-          offset: -60,
+          offset: -85,
           duration: 1.2,
         });
       }

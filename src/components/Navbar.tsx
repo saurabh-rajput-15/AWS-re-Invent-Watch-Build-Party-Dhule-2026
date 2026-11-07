@@ -39,21 +39,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
       {/* Top rainbow accent hairline */}
       <div className="h-[2px] w-full bg-gradient-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A]" />
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
-        {/* Left: AWS re:Invent Logo (Enlarged) */}
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
+        {/* Brand Lockup: AWS re:Invent Logo (h-20) + Divider + AWS Student Builder Group */}
         <a
           href="#home"
-          className="flex items-center transition-opacity hover:opacity-95 shrink-0"
+          className="flex items-center gap-2.5 sm:gap-3 transition-opacity hover:opacity-90 shrink-0"
         >
           <img
             src="/AWS_reinvent-dark.png"
             alt="AWS re:Invent Dhule 2026"
-            className="h-15 sm:h-13 md:h-15 lg:h-22 w-auto object-contain"
+            className="h-16 sm:h-20 w-auto object-contain py-1"
+          />
+          <div className="h-8 sm:h-10 w-[1px] bg-slate-800" />
+          <img
+            src="/AWS_Builder.png"
+            alt="AWS Student Builder Group"
+            className="h-9 sm:h-12 w-auto object-contain opacity-95"
           />
         </a>
 
         {/* Center-Left: Nav Links */}
-        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-xs sm:text-sm font-medium text-slate-300">
+        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 text-xs sm:text-sm font-medium text-slate-300">
           <a href="#about" className="whitespace-nowrap shrink-0 hover:text-white transition-colors">
             About
           </a>
@@ -71,22 +77,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           </a>
         </nav>
 
-        {/* Center-Right: Countdown Cards matching uploaded screenshot */}
-        <div className="hidden md:flex items-center gap-1 lg:gap-1.5">
+        {/* Center-Right: Compact Countdown Cards */}
+        <div className="hidden md:flex items-center gap-1 xl:gap-1.5 shrink-0">
           <CountdownCard value={countdown.days} label="DAYS" />
-          <span className="text-slate-500 font-mono font-bold text-xs select-none">:</span>
+          <span className="text-slate-600 font-mono font-bold text-[10px] select-none">:</span>
           <CountdownCard value={countdown.hours} label="HOURS" />
-          <span className="text-slate-500 font-mono font-bold text-xs select-none">:</span>
-          <CountdownCard value={countdown.minutes} label="MINUTES" />
-          <span className="text-slate-500 font-mono font-bold text-xs select-none">:</span>
-          <CountdownCard value={countdown.seconds} label="SECONDS" />
+          <span className="text-slate-600 font-mono font-bold text-[10px] select-none">:</span>
+          <CountdownCard value={countdown.minutes} label="MINS" />
+          <span className="text-slate-600 font-mono font-bold text-[10px] select-none">:</span>
+          <CountdownCard value={countdown.seconds} label="SECS" />
         </div>
 
         {/* Far Right: Primary Action Pill */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={onScrollToRegister}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] px-5 py-2 text-xs font-bold text-[#0E131A] shadow-md transition-all active:scale-95 whitespace-nowrap shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] px-4 py-1.5 sm:px-5 sm:py-2 text-xs font-bold text-[#0E131A] shadow-md transition-all active:scale-95 whitespace-nowrap shrink-0 cursor-pointer"
           >
             <span>Register</span>
             <span aria-hidden="true">→</span>
@@ -106,12 +112,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="border-b border-slate-800 bg-[#0E1526] px-4 pt-3 pb-6 lg:hidden">
-          {/* Mobile Logo */}
-          <div className="mb-4 flex items-center justify-center p-3 rounded-xl bg-[#090D16]/95 border border-slate-800">
+          {/* Mobile Brand Lockup */}
+          <div className="mb-4 flex items-center justify-center gap-3 p-3 rounded-xl bg-[#090D16]/95 border border-slate-800">
             <img
               src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
               className="h-12 sm:h-14 w-auto object-contain"
+            />
+            <div className="h-7 w-[1px] bg-slate-800" />
+            <img
+              src="/AWS_Builder.png"
+              alt="AWS Student Builder Group"
+              className="h-8 sm:h-9 w-auto object-contain opacity-95"
             />
           </div>
 
@@ -194,7 +206,7 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ value, label }) => {
   const ones = safeVal % 10;
 
   return (
-    <div className="flex h-[44px] w-[46px] sm:h-[48px] sm:w-[50px] flex-col items-center justify-center rounded-lg bg-[#111624] shadow-md select-none">
+    <div className="flex h-[36px] w-[38px] sm:h-[40px] sm:w-[42px] flex-col items-center justify-center rounded-lg bg-[#111624] border border-slate-800/80 shadow-inner select-none">
       {/* Rolling Digits Pair */}
       <div className="flex items-center gap-[1px]">
         <RollingNum digit={tens} />
@@ -202,7 +214,7 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ value, label }) => {
       </div>
 
       {/* Micro Label */}
-      <span className="text-[7px] sm:text-[8px] font-mono font-medium text-slate-400 tracking-wider uppercase mt-0.5">
+      <span className="text-[6.5px] sm:text-[7px] font-mono font-bold text-slate-400 tracking-wider uppercase">
         {label}
       </span>
     </div>
@@ -215,7 +227,7 @@ interface RollingNumProps {
 
 const RollingNum: React.FC<RollingNumProps> = ({ digit }) => {
   return (
-    <div className="relative h-[22px] w-[13px] sm:h-[24px] sm:w-[14px] overflow-hidden">
+    <div className="relative h-[18px] w-[11px] sm:h-[20px] sm:w-[12px] overflow-hidden">
       {/* Subtle top/bottom fade gradient mask */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-b from-[#111624] to-transparent z-10" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-[#111624] to-transparent z-10" />
@@ -230,7 +242,7 @@ const RollingNum: React.FC<RollingNumProps> = ({ digit }) => {
         {DIGITS.map((num) => (
           <div
             key={num}
-            className="flex h-[22px] w-[13px] sm:h-[24px] sm:w-[14px] items-center justify-center font-mono text-xs sm:text-sm font-black text-white tabular-nums select-none"
+            className="flex h-[18px] w-[11px] sm:h-[20px] sm:w-[12px] items-center justify-center font-mono text-[11px] sm:text-xs font-black text-white tabular-nums select-none"
           >
             {num}
           </div>

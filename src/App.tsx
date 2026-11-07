@@ -56,7 +56,7 @@ export default function App() {
     const el = document.getElementById('register');
     if (el) {
       if (lenisRef.current) {
-        lenisRef.current.scrollTo(el, { offset: -60, duration: 1.2 });
+        lenisRef.current.scrollTo(el, { offset: -85, duration: 1.2 });
       } else {
         el.scrollIntoView({ behavior: 'smooth' });
       }

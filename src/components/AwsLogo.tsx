@@ -63,7 +63,7 @@ export const AwsBuilderLogo: React.FC<{ className?: string }> = ({
   return (
     <img
       src="/AWS_Builder.png"
-      alt="AWS Student Builder Group at SVKM's IOT Dhule"
+      alt="AWS Student Builder Group Dhule"
       className={`${className} w-auto object-contain`}
     />
   );

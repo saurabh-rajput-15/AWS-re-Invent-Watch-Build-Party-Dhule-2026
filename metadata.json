@@ -1,6 +1,6 @@
 {
   "name": "AWS re:Invent Watch & Build Party Dhule",
-  "description": "Official event hub and digital pass portal for AWS re:Invent Watch & Build Party hosted by AWS Student Builder Group at SVKM's IOT Dhule.",
+  "description": "Official event hub and digital pass portal for AWS re:Invent Watch & Build Party hosted by AWS Student Builder Group Dhule.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

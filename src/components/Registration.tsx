@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   CheckCircle2,
   Calendar,
@@ -17,11 +17,14 @@ import {
   Check,
   RefreshCw,
   Sparkles,
-  AlertTriangle
+  AlertTriangle,
+  Scale,
+  ShieldAlert
 } from 'lucide-react';
 import { Attendee, RegistrationStatus } from '../types';
 import { EVENT_DETAILS } from '../data/eventData';
 import { verifyAwsBuilderAlias, BuilderVerificationResult } from '../services/builderVerifier';
+import { TermsModal } from './TermsModal';
 
 interface RegistrationProps {
   attendee: Attendee | null;
@@ -51,10 +54,10 @@ const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
   {
     id: 'DHU-1082',
     fullName: 'Rushikesh More',
-    email: 'rushikesh.more@svkm.ac.in',
+    email: 'rushikesh.more@gmail.com',
     phone: '9822145678',
     builderId: 'andrewbrown',
-    college: 'SVKM’s Institute of Technology, Dhule',
+    college: 'Government College of Engineering, Jalgaon',
     year: '3rd Year',
     status: 'pending',
     registeredAt: Date.now() - 3600000 * 5
@@ -65,7 +68,7 @@ const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
     email: 'snehal.jadhav@gmail.com',
     phone: '9765432190',
     builderId: 'davebuildscloud',
-    college: 'SVKM’s Institute of Technology, Dhule',
+    college: 'RCPIT Shirpur',
     year: '4th Year',
     status: 'approved',
     registeredAt: Date.now() - 3600000 * 12,
@@ -75,10 +78,10 @@ const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
   {
     id: 'DHU-1120',
     fullName: 'Prathamesh Patil',
-    email: 'prathamesh.patil@svkm.ac.in',
+    email: 'prathamesh.patil@gmail.com',
     phone: '9423187654',
     builderId: 'fakealias999xyz',
-    college: 'SVKM’s Institute of Technology, Dhule',
+    college: 'SSVPS B.S. Deore College of Engineering, Dhule',
     year: '2nd Year',
     status: 'pending',
     registeredAt: Date.now() - 3600000 * 2
@@ -94,7 +97,7 @@ export const Registration: React.FC<RegistrationProps> = ({
     email: attendee?.email || '',
     phone: attendee?.phone || '',
     builderId: attendee?.builderId || '',
-    college: attendee?.college || 'SVKM’s Institute of Technology, Dhule',
+    college: attendee?.college || '',
     year: attendee?.year || '3rd Year'
   });
 
@@ -105,6 +108,8 @@ export const Registration: React.FC<RegistrationProps> = ({
   // Form Builder Verification State
   const [verificationResult, setVerificationResult] = useState<BuilderVerificationResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(true);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   // Admin Modal States
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -174,21 +179,78 @@ export const Registration: React.FC<RegistrationProps> = ({
     if (!formData.college.trim()) {
       errs.college = 'Please enter your college name';
     }
+    if (!agreedToTerms) {
+      errs.terms = 'You must accept the Terms & Conditions and Code of Conduct';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
-  // Test alias live against AWS Builder Center endpoint
-  const handleVerifyFormAlias = async () => {
-    const alias = cleanBuilderAlias(formData.builderId);
+  // Auto-verification timer and cache refs (checks after 3s typing stop or immediately on field blur)
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastCheckedAliasRef = useRef<string>('');
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Test alias live against AWS Builder Center endpoint automatically
+  const triggerAutoVerify = async (rawInput: string) => {
+    const alias = cleanBuilderAlias(rawInput);
     if (!alias) {
-      setErrors((prev) => ({ ...prev, builderId: 'Please enter a username or alias first' }));
+      setVerificationResult(null);
+      lastCheckedAliasRef.current = '';
+      return;
+    }
+    // Skip duplicate network check if already verified for this exact alias
+    if (alias === lastCheckedAliasRef.current && verificationResult) {
       return;
     }
     setIsVerifying(true);
+    lastCheckedAliasRef.current = alias;
     const result = await verifyAwsBuilderAlias(alias);
     setVerificationResult(result);
     setIsVerifying(false);
+  };
+
+  const handleAliasChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, builderId: val }));
+    if (errors.builderId) {
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy.builderId;
+        return copy;
+      });
+    }
+    // Cancel prior pending check on typing
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+    }
+    const clean = cleanBuilderAlias(val);
+    if (!clean) {
+      setVerificationResult(null);
+      lastCheckedAliasRef.current = '';
+      return;
+    }
+    // If user stops typing for 3 seconds, verify automatically
+    typingTimerRef.current = setTimeout(() => {
+      triggerAutoVerify(val);
+    }, 3000);
+  };
+
+  const handleAliasBlur = () => {
+    // If user moves to another field, verify immediately
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+    }
+    if (formData.builderId.trim()) {
+      triggerAutoVerify(formData.builderId);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -383,21 +445,28 @@ export const Registration: React.FC<RegistrationProps> = ({
               </div>
             </div>
 
-            {/* Organizer Admin Portal Quick Launch Button */}
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => setShowAdminModal(true)}
+            {/* Organizer Admin Portal & Terms Quick Launch Button */}
+            <div className="pt-2 flex flex-wrap items-center gap-2.5">
+              <a
+                href="/admin"
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
               >
                 <ShieldCheck className="h-4 w-4 text-[#AB5CFF]" />
-                <span>Organizer Review Portal</span>
+                <span>Organizer Review Portal (/admin)</span>
                 {pendingCount > 0 && (
                   <span className="rounded-full bg-[#FF9F1C] px-2 py-0.5 text-[10px] font-bold text-slate-950 font-mono">
                     {pendingCount} pending
                   </span>
                 )}
-              </button>
+              </a>
+
+              <a
+                href="/codeofconduct"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+              >
+                <Scale className="h-4 w-4 text-[#3FB1FF]" />
+                <span>Code of Conduct &amp; Policy</span>
+              </a>
             </div>
           </div>
 
@@ -512,16 +581,18 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <span className="text-slate-400">Mobile Number:</span>
                     <span className="font-mono text-white">{attendee.phone}</span>
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 py-1.5 border-b border-slate-800/60">
-                    <span className="text-slate-400">AWS Builder Center:</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 py-1.5 border-b border-slate-800/60 min-w-0">
+                    <span className="text-slate-400 shrink-0">AWS Builder Center:</span>
                     <a
                       href={`https://builder.aws.com/community/@${cleanBuilderAlias(attendee.builderId)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-mono font-bold text-[#3FB1FF] hover:underline inline-flex items-center gap-1 text-xs"
+                      className="font-mono font-bold text-[#3FB1FF] hover:underline inline-flex items-center gap-1 text-xs min-w-0 truncate"
                     >
-                      <span>https://builder.aws.com/community/@{cleanBuilderAlias(attendee.builderId)}</span>
-                      <ExternalLink className="h-3 w-3" />
+                      <span className="truncate max-w-[260px] sm:max-w-xs md:max-w-none">
+                        @{cleanBuilderAlias(attendee.builderId)}
+                      </span>
+                      <ExternalLink className="h-3 w-3 shrink-0" />
                     </a>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-slate-800/60">
@@ -600,7 +671,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="name@svkm.ac.in"
+                        placeholder="name@example.com"
                         className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
                         required
                         maxLength={120}
@@ -646,38 +717,35 @@ export const Registration: React.FC<RegistrationProps> = ({
                       </a>
                     </div>
 
-                    {/* Input with inline Verify button */}
-                    <div className="flex gap-2">
+                    {/* Input with automatic inline verification (no button needed) */}
+                    <div className="relative">
                       <input
                         type="text"
                         value={formData.builderId}
-                        onChange={(e) => {
-                          setFormData({ ...formData, builderId: e.target.value });
-                          setVerificationResult(null);
-                        }}
+                        onChange={(e) => handleAliasChange(e.target.value)}
+                        onBlur={handleAliasBlur}
                         placeholder="e.g. saurabhrajput1 or @saurabhrajput1"
-                        className="flex-1 rounded-xl border border-slate-700 bg-[#0E1526] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF] font-mono"
+                        className="w-full rounded-xl border border-slate-700 bg-[#0E1526] pl-4 pr-36 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF] font-mono"
                         required
                         maxLength={120}
                       />
-                      <button
-                        type="button"
-                        onClick={handleVerifyFormAlias}
-                        disabled={isVerifying || !formData.builderId.trim()}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-[#3FB1FF] hover:bg-[#5ec0ff] px-4 py-2.5 text-xs font-bold text-slate-950 transition-colors disabled:opacity-40 cursor-pointer shrink-0"
-                      >
+                      {/* Inline live status indicator */}
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                         {isVerifying ? (
-                          <>
+                          <span className="flex items-center gap-1.5 text-xs text-[#3FB1FF] font-mono">
                             <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                            <span>Checking...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="h-3.5 w-3.5" />
-                            <span>Check Alias</span>
-                          </>
-                        )}
-                      </button>
+                            <span className="text-[11px]">Checking...</span>
+                          </span>
+                        ) : verificationResult?.status === 'valid' ? (
+                          <span className="flex items-center gap-1 text-[11px] text-[#05E08A] font-mono font-bold bg-[#05E08A]/10 px-2 py-0.5 rounded border border-[#05E08A]/30">
+                            <span>✓ Verified</span>
+                          </span>
+                        ) : verificationResult?.status === 'invalid' ? (
+                          <span className="flex items-center gap-1 text-[11px] text-rose-400 font-mono bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
+                            <span>✕ 404 Not Found</span>
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
 
                     {errors.builderId && (
@@ -686,8 +754,8 @@ export const Registration: React.FC<RegistrationProps> = ({
 
                     {/* Live URL Preview */}
                     {cleanBuilderAlias(formData.builderId) && (
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-black/60 border border-slate-800 text-xs">
-                        <div className="truncate font-mono">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-black/60 border border-slate-800 text-xs min-w-0">
+                        <div className="truncate font-mono min-w-0">
                           <span className="text-slate-500">Live URL: </span>
                           <span className="text-[#3FB1FF]">
                             https://builder.aws.com/community/@{cleanBuilderAlias(formData.builderId)}
@@ -697,7 +765,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           href={`https://builder.aws.com/community/@${cleanBuilderAlias(formData.builderId)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#3FB1FF] hover:underline whitespace-nowrap self-start sm:self-auto"
+                          className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#3FB1FF] hover:underline whitespace-nowrap shrink-0 self-start sm:self-auto"
                         >
                           <span>Open in Tab ↗</span>
                         </a>
@@ -769,7 +837,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       type="text"
                       value={formData.college}
                       onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-                      placeholder="e.g. SVKM’s Institute of Technology, Dhule"
+                      placeholder="e.g. Government College of Engineering"
                       className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
                       required
                       maxLength={120}
@@ -796,6 +864,31 @@ export const Registration: React.FC<RegistrationProps> = ({
                       <option value="Postgraduate / Alumni">Postgraduate / Alumni</option>
                     </select>
                   </div>
+                </div>
+
+                {/* Terms & Conditions / Code of Conduct Checkbox */}
+                <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => setAgreedToTerms(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-[#AB5CFF] focus:ring-[#AB5CFF] cursor-pointer"
+                    />
+                    <span className="text-xs text-slate-300 leading-relaxed">
+                      I agree to the{' '}
+                      <a
+                        href="/codeofconduct"
+                        className="text-[#3FB1FF] font-semibold underline hover:text-[#72c7ff] inline-flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>Terms &amp; Conditions and Code of Conduct</span>
+                      </a>
+                      . I understand that registration does not guarantee entry, damage to the venue will be billed to the person responsible, swags are shipped from the USA and organizers are not liable for transit delays, and zero-tolerance policies apply to any harassment.
+                    </span>
+                  </label>
+                  {errors.terms && (
+                    <p className="text-xs text-rose-400 pl-7">{errors.terms}</p>
+                  )}
                 </div>
 
                 {/* Submit Action */}
@@ -1126,6 +1219,13 @@ export const Registration: React.FC<RegistrationProps> = ({
           </div>
         </div>
       )}
+
+      {/* Terms & Conditions / Code of Conduct Modal */}
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        onAccept={() => setAgreedToTerms(true)}
+      />
     </section>
   );
 };

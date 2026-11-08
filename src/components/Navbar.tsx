@@ -34,27 +34,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
     return () => clearInterval(timer);
   }, []);
 
-  return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#090D16]/95 backdrop-blur-md">
-      {/* Top rainbow accent hairline */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A]" />
+  // Prevent background scrolling while mobile drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
-        {/* Brand Lockup: AWS re:Invent Logo (h-20) + Divider + AWS Student Builder Group */}
+  return (
+    <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-gradient-to-r from-[#090D16]/85 via-[#0C1222]/80 to-[#090D16]/85 backdrop-blur-xl shadow-lg shadow-black/20">
+      {/* Top rainbow accent hairline (translucent) */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-[#3FB1FF]/70 via-[#FF57E8]/70 to-[#05E08A]/70" />
+
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
+        {/* Left: AWS re:Invent Logo */}
         <a
           href="#home"
-          className="flex items-center gap-2.5 sm:gap-3 transition-opacity hover:opacity-90 shrink-0"
+          className="flex items-center transition-opacity hover:opacity-90 shrink-0"
         >
           <img
             src="/AWS_reinvent-dark.png"
             alt="AWS re:Invent Dhule 2026"
-            className="h-16 sm:h-20 w-auto object-contain py-1"
-          />
-          <div className="h-8 sm:h-10 w-[1px] bg-slate-800" />
-          <img
-            src="/AWS_Builder.png"
-            alt="AWS Student Builder Group"
-            className="h-9 sm:h-12 w-auto object-contain opacity-95"
+            className="h-8 sm:h-9 md:h-10 lg:h-10 w-auto object-contain"
           />
         </a>
 
@@ -109,84 +115,87 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer (Absolute overlay: does NOT shift or push hero down) */}
       {mobileMenuOpen && (
-        <div className="border-b border-slate-800 bg-[#0E1526] px-4 pt-3 pb-6 lg:hidden">
-          {/* Mobile Brand Lockup */}
-          <div className="mb-4 flex items-center justify-center gap-3 p-3 rounded-xl bg-[#090D16]/95 border border-slate-800">
-            <img
-              src="/AWS_reinvent-dark.png"
-              alt="AWS re:Invent Dhule 2026"
-              className="h-12 sm:h-14 w-auto object-contain"
-            />
-            <div className="h-7 w-[1px] bg-slate-800" />
-            <img
-              src="/AWS_Builder.png"
-              alt="AWS Student Builder Group"
-              className="h-8 sm:h-9 w-auto object-contain opacity-95"
-            />
-          </div>
+        <>
+          {/* Backdrop Scrim */}
+          <div
+            className="fixed inset-0 top-16 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
 
-          {/* Mobile Counter */}
-          <div className="mb-4 flex items-center justify-center gap-1.5 p-3 rounded-xl bg-[#090D16]/90">
-            <CountdownCard value={countdown.days} label="DAYS" />
-            <span className="text-slate-500 font-mono font-bold text-xs">:</span>
-            <CountdownCard value={countdown.hours} label="HOURS" />
-            <span className="text-slate-500 font-mono font-bold text-xs">:</span>
-            <CountdownCard value={countdown.minutes} label="MINS" />
-            <span className="text-slate-500 font-mono font-bold text-xs">:</span>
-            <CountdownCard value={countdown.seconds} label="SECS" />
-          </div>
-
-          <nav className="flex flex-col space-y-3 text-sm font-medium text-slate-200">
-            <a
-              href="#about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 hover:bg-slate-800 transition-colors"
-            >
-              About
-            </a>
-            <a
-              href="#agenda"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 hover:bg-slate-800 transition-colors"
-            >
-              Schedule &amp; Tracks
-            </a>
-            <a
-              href="#speakers"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 hover:bg-slate-800 transition-colors"
-            >
-              Mentors &amp; Speakers
-            </a>
-            <a
-              href="#venue"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 hover:bg-slate-800 transition-colors"
-            >
-              Venue &amp; Location
-            </a>
-            <a
-              href="#faq"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 hover:bg-slate-800 transition-colors"
-            >
-              FAQ
-            </a>
-            <div className="pt-2">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onScrollToRegister();
-                }}
-                className="w-full rounded-full bg-[#AB5CFF] py-2.5 text-center text-xs font-bold text-[#0E131A]"
-              >
-                Register Now →
-              </button>
+          {/* Floating Mobile Drawer */}
+          <div className="absolute top-full left-0 right-0 z-50 max-h-[calc(100vh-64px)] overflow-y-auto border-b border-slate-800 bg-[#090D16]/98 backdrop-blur-2xl shadow-2xl px-5 pt-4 pb-7 lg:hidden">
+            {/* Mobile Counter */}
+            <div className="mb-4 flex items-center justify-center gap-1.5 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+              <CountdownCard value={countdown.days} label="DAYS" />
+              <span className="text-slate-600 font-mono font-bold text-xs">:</span>
+              <CountdownCard value={countdown.hours} label="HOURS" />
+              <span className="text-slate-600 font-mono font-bold text-xs">:</span>
+              <CountdownCard value={countdown.minutes} label="MINS" />
+              <span className="text-slate-600 font-mono font-bold text-xs">:</span>
+              <CountdownCard value={countdown.seconds} label="SECS" />
             </div>
-          </nav>
-        </div>
+
+            <nav className="flex flex-col space-y-1.5 text-sm font-medium text-slate-200">
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+              >
+                About
+              </a>
+              <a
+                href="#agenda"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+              >
+                Schedule &amp; Tracks
+              </a>
+              <a
+                href="#speakers"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+              >
+                Mentors &amp; Speakers
+              </a>
+              <a
+                href="#venue"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+              >
+                Venue &amp; Location
+              </a>
+              <a
+                href="#faq"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+              >
+                FAQ
+              </a>
+              <a
+                href="/codeofconduct"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-xl px-4 py-2.5 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-colors flex items-center justify-between"
+              >
+                <span>Terms &amp; Code of Conduct</span>
+                <span className="font-mono text-[11px] text-[#3FB1FF]">/codeofconduct</span>
+              </a>
+              <div className="pt-3">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onScrollToRegister();
+                  }}
+                  className="w-full rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] py-3 text-center text-xs font-bold text-[#0E131A] shadow-lg shadow-[#AB5CFF]/20 active:scale-95 transition-all cursor-pointer"
+                >
+                  Register Now →
+                </button>
+              </div>
+            </nav>
+          </div>
+        </>
       )}
     </header>
   );

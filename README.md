@@ -1,6 +1,6 @@
 # AWS re:Invent Watch & Build Party Dhule
 
-Official event hub and digital pass portal for the **AWS re:Invent Watch & Build Party**, hosted by the AWS Student Builder Group at SVKM’s Institute of Technology, Dhule.
+Official event hub and digital pass portal for the **AWS re:Invent Watch & Build Party**, hosted by the AWS Student Builder Group Dhule.
 
 ---
 
@@ -11,7 +11,7 @@ The **AWS re:Invent Watch & Build Party Dhule** web portal provides attendees wi
 - **Date:** Friday, 04 December 2026
 - **Time:** 09:00 AM – 04:00 PM IST
 - **Venue:** Hotel Anand Regency Riverfront, Dhule, Maharashtra, India
-- **Organizer:** AWS Student Builder Group · SVKM’s Institute of Technology, Dhule
+- **Organizer:** AWS Student Builder Group Dhule
 
 ---
 

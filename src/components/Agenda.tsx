@@ -23,7 +23,7 @@ export const Agenda: React.FC = () => {
     <section id="agenda" className="relative py-16 md:py-24 border-b border-slate-800/80 bg-[#0A0F1D]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header & Filter Row */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-slate-800">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-10 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#05E08A]">
               <span>02 · Event Flow</span>
@@ -38,8 +38,8 @@ export const Agenda: React.FC = () => {
             </p>
           </div>
 
-          {/* Interactive Track Filter Buttons (Compliant with Frontend Design: functional buttons, not static pills) */}
-          <div className="flex flex-wrap items-center gap-2 bg-[#0E1526] p-1.5 rounded-xl border border-slate-800 shrink-0">
+          {/* Interactive Track Filter Buttons */}
+          <div className="flex flex-wrap items-center gap-2 bg-[#0E1526] p-1.5 rounded-xl border border-slate-800 max-w-full overflow-x-auto shrink-0">
             {categories.map((cat) => (
               <button
                 key={cat.key}

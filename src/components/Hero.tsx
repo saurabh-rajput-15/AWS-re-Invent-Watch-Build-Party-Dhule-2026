@@ -80,11 +80,11 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
           <div className="lg:col-span-7 space-y-4 sm:space-y-5 lg:space-y-4 xl:space-y-5">
             {/* Eyebrow */}
             <p className="text-xs sm:text-sm font-mono font-semibold uppercase tracking-[0.14em] text-[#3FB1FF]">
-              AWS STUDENT BUILDER GROUP · SVKM’S IOT DHULE
+              AWS STUDENT BUILDER GROUP · DHULE
             </p>
 
-            {/* Headline - Responsive typography scales perfectly on laptop viewports */}
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[50px] xl:text-[66px] 2xl:text-[76px] font-black tracking-tight text-white leading-[0.98]">
+            {/* Headline - Responsive typography scales cleanly across all devices */}
+            <h1 className="text-3xl sm:text-5xl md:text-[46px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] font-black tracking-tight text-white leading-[0.98]">
               AWS re:Invent<br />
               <span className="text-[#3FB1FF]">Watch</span><br />
               <span>&amp; </span>

@@ -3,7 +3,7 @@ import { AgendaSession, Speaker, FAQItem } from '../types';
 export const EVENT_DETAILS = {
   name: 'AWS re:Invent Watch & Build Party Dhule',
   tagline: 'Watch the biggest cloud announcements together, then build something groundbreaking with them.',
-  organizer: 'AWS Student Builder Group · SVKM’s Institute of Technology, Dhule',
+  organizer: 'AWS Student Builder Group Dhule',
   organizers: [
     {
       name: 'Soham Chaudhari',
@@ -55,8 +55,8 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     title: 'Opening Inauguration & Cloud Keynote Welcome',
     category: 'keynote',
     categoryLabel: 'Opening Ceremony',
-    speaker: 'SVKM Leadership & Faculty Mentors',
-    speakerRole: 'Department of Computer Engineering, SVKM’s IOT Dhule',
+    speaker: 'Community Leadership & Faculty Mentors',
+    speakerRole: 'AWS Student Builder Group & Department Mentors',
     description: 'Setting the stage for the watch party: how AWS re:Invent transforms cloud computing, AI, and the developer ecosystem, and what we will build today.',
     location: '2nd Floor · Symphony Hall',
     accentColor: '#AB5CFF'
@@ -130,7 +130,7 @@ export const AGENDA_SESSIONS: AgendaSession[] = [
     category: 'workshop',
     categoryLabel: 'Wrap-Up',
     speaker: 'AWS Student Builder Group Team',
-    speakerRole: 'SVKM’s IOT Dhule',
+    speakerRole: 'AWS Student Builder Group Dhule',
     description: 'Presentation of Participation Certificates, distribution of AWS winner swags, and official group photo celebration.',
     location: '2nd Floor · Symphony Hall',
     accentColor: '#AB5CFF'
@@ -169,12 +169,12 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-1',
     question: 'Who can attend the AWS re:Invent Watch & Build Party?',
-    answer: 'Any student enrolled in engineering, computer science, BCA/MCA, or related technical disciplines from SVKM’s IOT Dhule or neighboring colleges in Maharashtra is eligible. Working professionals and cloud enthusiasts are also welcome!'
+    answer: 'Any student enrolled in engineering, computer science, BCA/MCA, or related technical disciplines from colleges across Dhule and Maharashtra is eligible. Working professionals and cloud enthusiasts are also welcome!'
   },
   {
     id: 'faq-2',
     question: 'What is the entry fee for the event?',
-    answer: 'The event is 100% free of cost for all registered attendees, sponsored by the AWS Student Builder Group at SVKM’s IOT Dhule. This includes access to the screening auditorium, workshop sessions, lunch, and official swag kits.'
+    answer: 'The event is 100% free of cost for all registered attendees, sponsored by the AWS Student Builder Group Dhule. This includes access to the screening auditorium, workshop sessions, lunch, and official swag kits.'
   },
   {
     id: 'faq-3',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Github, ExternalLink, Sparkles, Terminal } from 'lucide-react';
+import { Linkedin, Github, Sparkles, Terminal } from 'lucide-react';
 import { SPEAKERS } from '../data/eventData';
 
 export const Speakers: React.FC = () => {
@@ -36,33 +36,32 @@ export const Speakers: React.FC = () => {
                 className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border ${
                   speaker.isAnnouncingSoon
                     ? 'border-dashed border-slate-700/80 bg-[#0E1526]/50'
-                    : 'border-slate-800 bg-[#0E1526]/80'
-                } p-6 sm:p-7 shadow-lg transition-all hover:border-slate-700 hover:bg-[#0E1526]`}
+                    : 'border-slate-800 bg-[#0E1526]/85'
+                } p-5 sm:p-6 shadow-2xl transition-all duration-300 hover:border-slate-600 hover:bg-[#0E1526] hover:-translate-y-1`}
               >
                 {/* Accent top stripe */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-1"
+                  className="absolute top-0 left-0 right-0 h-1.5 z-10"
                   style={{ backgroundColor: speaker.accent }}
                 />
 
-                <div>
-                  {/* Top Bar: Avatar & Badges */}
-                  <div className="flex items-start justify-between gap-4">
+                <div className="space-y-5">
+                  {/* Speaker Profile Photo in 5:4 Portrait Ratio (scaled down with max-width) */}
+                  <div className="relative w-full max-w-[280px] sm:max-w-[300px] mx-auto aspect-[4/5] overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-950 shadow-inner group-hover:border-slate-500/80 transition-colors">
                     {speaker.image ? (
-                      <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-800 shadow-md">
+                      <>
                         <img
                           src={speaker.image}
                           alt={speaker.name}
-                          className="h-full w-full object-cover object-center"
+                          className="h-full w-full object-cover object-[center_18%] transition-transform duration-700 ease-out group-hover:scale-105"
                           onError={(e) => {
-                            // If photo isn't yet present in public/speaker, hide img and show styled initials fallback
                             e.currentTarget.style.display = 'none';
                             const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
                             if (fallback) fallback.style.display = 'flex';
                           }}
                         />
                         <div
-                          className="hidden h-full w-full items-center justify-center font-bold font-mono text-xl sm:text-2xl shadow-inner"
+                          className="hidden h-full w-full items-center justify-center font-bold font-mono text-5xl shadow-inner"
                           style={{
                             backgroundColor: `${speaker.accent}20`,
                             color: speaker.accent,
@@ -70,84 +69,103 @@ export const Speakers: React.FC = () => {
                         >
                           {initials}
                         </div>
-                      </div>
+                      </>
                     ) : (
                       <div
-                        className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl font-bold font-mono text-xl sm:text-2xl shadow-inner"
+                        className="flex h-full w-full flex-col items-center justify-center p-6 text-center relative overflow-hidden"
                         style={{
-                          backgroundColor: `${speaker.accent}20`,
-                          color: speaker.accent,
-                          border: `1.5px solid ${speaker.accent}50`
+                          backgroundColor: `${speaker.accent}0d`,
                         }}
                       >
-                        {initials}
+                        {/* Ambient glow in background */}
+                        <div
+                          className="absolute w-48 h-48 rounded-full blur-3xl pointer-events-none opacity-20"
+                          style={{ backgroundColor: speaker.accent }}
+                        />
+                        <div className="relative z-10 flex flex-col items-center gap-3">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black/40 border border-[#FF57E8]/30 shadow-lg">
+                            <Sparkles className="h-8 w-8 text-[#FF57E8] animate-pulse" />
+                          </div>
+                          <span className="text-sm font-mono font-bold tracking-widest uppercase text-slate-300">
+                            Second Speaker
+                          </span>
+                          <span className="text-xs text-slate-400 font-mono">
+                            Keynote Speaker · Announcing Soon
+                          </span>
+                        </div>
                       </div>
                     )}
 
-                    <div className="flex flex-col items-end gap-2">
+                    {/* Gradient bottom scrim to ease transition into text */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1526] via-[#0E1526]/15 to-transparent pointer-events-none" />
+
+                    {/* Status Badge in Top-Left */}
+                    <div className="absolute top-3.5 left-3.5 z-10">
                       {speaker.isAnnouncingSoon ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF57E8]/10 border border-[#FF57E8]/30 px-3 py-1 text-[11px] font-mono font-bold text-[#FF57E8] tracking-wide animate-pulse">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF57E8]/20 backdrop-blur-md border border-[#FF57E8]/40 px-3 py-1 text-[11px] font-mono font-bold text-[#FF57E8] tracking-wide shadow-md animate-pulse">
                           <Sparkles className="h-3 w-3" />
                           <span>Announcing Soon</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#05E08A]/10 border border-[#05E08A]/30 px-3 py-1 text-[11px] font-mono font-bold text-[#05E08A] tracking-wide">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#05E08A]" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#05E08A]/20 backdrop-blur-md border border-[#05E08A]/40 px-3 py-1 text-[11px] font-mono font-bold text-[#05E08A] tracking-wide shadow-md">
+                          <span className="h-2 w-2 rounded-full bg-[#05E08A] animate-ping" />
                           <span>Confirmed Speaker</span>
                         </span>
                       )}
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        {speaker.linkedin && (
-                          <a
-                            href={speaker.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                            aria-label={`${speaker.name} LinkedIn`}
-                          >
-                            <Linkedin className="h-4 w-4" />
-                          </a>
-                        )}
-                        {speaker.github && (
-                          <a
-                            href={speaker.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                            aria-label={`${speaker.name} GitHub`}
-                          >
-                            <Github className="h-4 w-4" />
-                          </a>
-                        )}
-                      </div>
+                    {/* Social Links in Top-Right */}
+                    <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5">
+                      {speaker.linkedin && (
+                        <a
+                          href={speaker.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-xl p-2.5 bg-black/70 backdrop-blur-md border border-white/15 text-slate-200 hover:text-white hover:bg-black/90 transition-all hover:scale-105 shadow-lg"
+                          aria-label={`${speaker.name} LinkedIn`}
+                        >
+                          <Linkedin className="h-4 w-4" />
+                        </a>
+                      )}
+                      {speaker.github && (
+                        <a
+                          href={speaker.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-xl p-2.5 bg-black/70 backdrop-blur-md border border-white/15 text-slate-200 hover:text-white hover:bg-black/90 transition-all hover:scale-105 shadow-lg"
+                          aria-label={`${speaker.name} GitHub`}
+                        >
+                          <Github className="h-4 w-4" />
+                        </a>
+                      )}
                     </div>
                   </div>
 
-                  {/* Name & Role */}
-                  <div className="mt-5">
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#3FB1FF] transition-colors">
+                  {/* Name, Role & Organization */}
+                  <div className="space-y-1">
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white group-hover:text-[#3FB1FF] transition-colors tracking-tight">
                       {speaker.name}
                     </h3>
-                    <div className="text-sm font-semibold text-slate-200 mt-1">
+                    <div className="text-sm sm:text-base font-semibold text-[#05E08A]">
                       {speaker.role}
                     </div>
-                    <div className="text-xs text-slate-400 font-mono mt-0.5">
+                    <div className="text-xs text-slate-400 font-mono">
                       {speaker.organization}
                     </div>
                   </div>
 
                   {/* Bio */}
-                  <p className="mt-3.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pt-1">
                     {speaker.bio}
                   </p>
 
-                  {/* Talk / Session Highlight */}
-                  <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-3.5">
-                    <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                      Featured Topic
+                  {/* Talk / Session Highlight Card */}
+                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 space-y-1">
+                    <div className="text-[11px] font-mono text-[#3FB1FF] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                      <Terminal className="h-3.5 w-3.5 text-[#3FB1FF]" />
+                      <span>Featured Session</span>
                     </div>
-                    <div className="mt-1 text-xs sm:text-sm font-semibold text-white">
+                    <div className="text-xs sm:text-sm font-semibold text-white leading-snug">
                       {speaker.topic}
                     </div>
                   </div>
@@ -158,7 +176,7 @@ export const Speakers: React.FC = () => {
                   {speaker.tags.map((tag, i) => (
                     <span
                       key={i}
-                      className={`text-[11px] font-mono px-2.5 py-0.5 rounded ${
+                      className={`text-[11px] font-mono px-3 py-1 rounded-lg ${
                         tag.includes('CKA') || tag.includes('Community Builder')
                           ? 'bg-[#FF9900]/15 text-[#FF9900] border border-[#FF9900]/30 font-semibold'
                           : 'text-slate-300 bg-slate-800/70 border border-slate-700/50'
@@ -171,25 +189,6 @@ export const Speakers: React.FC = () => {
               </div>
             );
           })}
-        </div>
-
-        {/* Community Mentorship Callout */}
-        <div className="mt-12 rounded-2xl border border-slate-800 bg-[#0E1526]/70 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-white">
-              Want to mentor or showcase your AWS project?
-            </h3>
-            <p className="text-sm text-slate-300 max-w-xl">
-              If you have built an exciting project on AWS or lead a student cloud initiative, connect with the SVKM’s IOT Dhule organizing crew to take the stage.
-            </p>
-          </div>
-          <a
-            href="mailto:developersaurabhrajput@gmail.com?subject=AWS%20re%3AInvent%20Dhule%20Mentor%20Inquiry"
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-3 text-xs font-bold text-white hover:bg-slate-700 transition-colors shrink-0"
-          >
-            <span>Connect with Organizers</span>
-            <ExternalLink className="h-3.5 w-3.5" />
-          </a>
         </div>
       </div>
     </section>

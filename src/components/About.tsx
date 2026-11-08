@@ -17,7 +17,7 @@ export const About: React.FC = () => {
             <span className="text-[#3FB1FF]">one transformative day.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
-            Every December, AWS re:Invent in Las Vegas reveals the future of cloud computing and AI. The AWS Student Builder Group at SVKM’s IOT Dhule brings that epicenter of innovation to Hotel Anand Regency Riverfront—combining big-screen keynote screenings with an interactive live Kahoot Cloud Arena and community networking.
+            Every December, AWS re:Invent in Las Vegas reveals the future of cloud computing and AI. The AWS Student Builder Group Dhule brings that epicenter of innovation to Hotel Anand Regency Riverfront—combining big-screen keynote screenings with an interactive live Kahoot Cloud Arena and community networking.
           </p>
         </div>
 
@@ -121,10 +121,10 @@ export const About: React.FC = () => {
 
           <div className="rounded-xl border border-slate-800/80 bg-[#0E1526]/60 p-5 text-center">
             <div className="text-3xl sm:text-4xl font-extrabold text-[#FF9F1C] font-mono tabular-nums">
-              SVKM
+              DHULE
             </div>
             <div className="mt-1 text-xs sm:text-sm font-medium text-slate-400">
-              IOT Dhule Host Institution
+              Community Host Region
             </div>
           </div>
         </div>
@@ -134,7 +134,7 @@ export const About: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             <img
               src="/AWS_Builder.png"
-              alt="AWS Student Builder Group at SVKM's IOT Dhule"
+              alt="AWS Student Builder Group Dhule"
               className="h-12 sm:h-14 md:h-16 w-auto object-contain"
             />
             <div className="hidden sm:block h-12 w-px bg-slate-800" />
@@ -143,7 +143,7 @@ export const About: React.FC = () => {
                 Official Community Host
               </div>
               <h3 className="text-base sm:text-lg font-bold text-white mt-0.5">
-                AWS Student Builder Group · SVKM’s Institute of Technology, Dhule
+                AWS Student Builder Group Dhule
               </h3>
               <p className="text-xs text-slate-400 mt-1 max-w-xl">
                 Organized to empower students and local cloud developers with direct hands-on immersion into the newest AWS architectures, AI primitives, and industry mentorship.

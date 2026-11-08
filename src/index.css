@@ -17,11 +17,18 @@
   color-scheme: dark;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: #090D16;
   color: #F3F4F6;
-  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, .font-display {

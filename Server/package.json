@@ -1,0 +1,41 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "agent:setup": "tsx src/scripts/agentSetup.ts",
+    "agent:sync": "tsx src/scripts/agentDaemon.ts",
+    "agent:headless": "tsx src/scripts/agentDaemon.ts --headless",
+    "session:store": "tsx src/scripts/storeSession.ts"
+  },
+  "dependencies": {
+    "@lglab/react-qr-code": "^1.8.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@supabase/supabase-js": "^2.119.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^10.5.0",
+    "playwright": "^1.65.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/qrcode": "^1.5.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

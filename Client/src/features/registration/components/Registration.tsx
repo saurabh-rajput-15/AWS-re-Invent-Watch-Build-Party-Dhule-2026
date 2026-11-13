@@ -21,10 +21,12 @@ import {
   Scale,
   ShieldAlert
 } from 'lucide-react';
-import { Attendee, RegistrationStatus } from '../types';
-import { EVENT_DETAILS } from '../data/eventData';
+import { Attendee, RegistrationStatus } from '../../../types';
+import { EVENT_DETAILS } from '../../event/data/eventData';
 import { verifyAwsBuilderAlias, BuilderVerificationResult } from '../services/builderVerifier';
 import { TermsModal } from './TermsModal';
+import { ReactQRCode } from '@lglab/react-qr-code';
+import { apiUrl, assetUrl } from '../../../utils/api';
 
 interface RegistrationProps {
   attendee: Attendee | null;
@@ -33,26 +35,26 @@ interface RegistrationProps {
 
 const STORAGE_KEY_ALL = 'aws_reinvent_dhule_all_registrations';
 
-/**
- * Sanitizes and extracts the pure Builder Center alias from any user input format.
- * Examples:
- * - "saurabhrajput1" -> "saurabhrajput1"
- * - "@saurabhrajput1" -> "saurabhrajput1"
- * - "https://builder.aws.com/community/@saurabhrajput1" -> "saurabhrajput1"
- */
 export const cleanBuilderAlias = (input: string): string => {
   if (!input) return '';
-  let val = input.trim();
+  let val = input.trim().toLowerCase();
   val = val.replace(/^https?:\/\/(www\.)?builder\.aws\.com\/community\/@?/i, '');
   val = val.replace(/^builder\.aws\.com\/community\/@?/i, '');
   val = val.replace(/^@/, '');
-  return val.trim();
+  return val.trim().toLowerCase();
+};
+
+export const countWords = (text: string): number => {
+  if (!text) return 0;
+  const trimmed = text.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).filter(Boolean).length;
 };
 
 // Pre-seeded registrations so organizers/users can immediately test manual review
 const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
   {
-    id: 'DHU-1082',
+    id: 'riv-26-1082',
     fullName: 'Rushikesh More',
     email: 'rushikesh.more@gmail.com',
     phone: '9822145678',
@@ -63,7 +65,7 @@ const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
     registeredAt: Date.now() - 3600000 * 5
   },
   {
-    id: 'DHU-1094',
+    id: 'riv-26-1094',
     fullName: 'Snehal Jadhav',
     email: 'snehal.jadhav@gmail.com',
     phone: '9765432190',
@@ -76,7 +78,7 @@ const DEFAULT_SAMPLE_REGISTRATIONS: Attendee[] = [
     reviewedBy: 'Soham Chaudhari (SBG Lead)'
   },
   {
-    id: 'DHU-1120',
+    id: 'riv-26-1120',
     fullName: 'Prathamesh Patil',
     email: 'prathamesh.patil@gmail.com',
     phone: '9423187654',
@@ -98,12 +100,17 @@ export const Registration: React.FC<RegistrationProps> = ({
     phone: attendee?.phone || '',
     builderId: attendee?.builderId || '',
     college: attendee?.college || '',
-    year: attendee?.year || '3rd Year'
+    year: attendee?.year || '3rd Year',
+    whyJoin: attendee?.whyJoin || ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+
+  // 2-Step Guided Wizard States
+  const [registrationStep, setRegistrationStep] = useState<1 | 2>(1);
+  const [hasOpenedBuilderCenter, setHasOpenedBuilderCenter] = useState(false);
+  const [hasConfirmedBuilderRsvp, setHasConfirmedBuilderRsvp] = useState(false);
 
   // Form Builder Verification State
   const [verificationResult, setVerificationResult] = useState<BuilderVerificationResult | null>(null);
@@ -175,9 +182,19 @@ export const Registration: React.FC<RegistrationProps> = ({
     }
     if (!formData.builderId.trim()) {
       errs.builderId = 'AWS Builder Center alias is required';
+    } else if (verificationResult?.status === 'valid' && verificationResult.hasEventRegistration === false) {
+      errs.builderId = 'Please register on AWS Builder Center first, then return here to submit';
+    } else if (verificationResult?.status === 'invalid') {
+      errs.builderId = 'Please provide a valid AWS Builder Center alias';
     }
     if (!formData.college.trim()) {
       errs.college = 'Please enter your college name';
+    }
+    const whyWords = countWords(formData.whyJoin);
+    if (!formData.whyJoin.trim()) {
+      errs.whyJoin = 'Please answer why you want to join this event';
+    } else if (whyWords > 10) {
+      errs.whyJoin = `Please keep your response to 10 words or fewer (currently ${whyWords} words)`;
     }
     if (!agreedToTerms) {
       errs.terms = 'You must accept the Terms & Conditions and Code of Conduct';
@@ -200,26 +217,28 @@ export const Registration: React.FC<RegistrationProps> = ({
   }, []);
 
   // Test alias live against AWS Builder Center endpoint automatically
-  const triggerAutoVerify = async (rawInput: string) => {
+  const triggerAutoVerify = async (rawInput: string, force = false) => {
     const alias = cleanBuilderAlias(rawInput);
     if (!alias) {
       setVerificationResult(null);
       lastCheckedAliasRef.current = '';
       return;
     }
-    // Skip duplicate network check if already verified for this exact alias
-    if (alias === lastCheckedAliasRef.current && verificationResult) {
+    // Skip duplicate network check if already verified for this exact alias unless forced
+    if (!force && alias === lastCheckedAliasRef.current && verificationResult) {
       return;
     }
     setIsVerifying(true);
     lastCheckedAliasRef.current = alias;
-    const result = await verifyAwsBuilderAlias(alias);
+    const result = await verifyAwsBuilderAlias(alias, force);
     setVerificationResult(result);
     setIsVerifying(false);
   };
 
   const handleAliasChange = (val: string) => {
-    setFormData((prev) => ({ ...prev, builderId: val }));
+    // Automatically convert to lowercase even if CapsLock is active or user enters uppercase
+    const lowerVal = val.toLowerCase();
+    setFormData((prev) => ({ ...prev, builderId: lowerVal }));
     if (errors.builderId) {
       setErrors((prev) => {
         const copy = { ...prev };
@@ -231,16 +250,16 @@ export const Registration: React.FC<RegistrationProps> = ({
     if (typingTimerRef.current) {
       clearTimeout(typingTimerRef.current);
     }
-    const clean = cleanBuilderAlias(val);
+    const clean = cleanBuilderAlias(lowerVal);
     if (!clean) {
       setVerificationResult(null);
       lastCheckedAliasRef.current = '';
       return;
     }
-    // If user stops typing for 3 seconds, verify automatically
+    // If user stops typing for 1.8 seconds, verify automatically
     typingTimerRef.current = setTimeout(() => {
-      triggerAutoVerify(val);
-    }, 3000);
+      triggerAutoVerify(lowerVal);
+    }, 1800);
   };
 
   const handleAliasBlur = () => {
@@ -261,15 +280,19 @@ export const Registration: React.FC<RegistrationProps> = ({
     setTimeout(() => {
       const cleanAlias = cleanBuilderAlias(formData.builderId);
       const newAttendee: Attendee = {
-        id: attendee?.id || `DHU-${Math.floor(1000 + Math.random() * 9000)}`,
+        id: attendee?.id || `riv-26-${Math.floor(1000 + Math.random() * 9000)}`,
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         builderId: cleanAlias,
         college: formData.college.trim(),
         year: formData.year,
+        whyJoin: formData.whyJoin.trim(),
         status: attendee?.status || 'pending', // Starts as pending manual review
-        registeredAt: attendee?.registeredAt || Date.now()
+        registeredAt: attendee?.registeredAt || Date.now(),
+        builderCenterVerified: verificationResult?.hasEventRegistration || false,
+        builderCenterStatus: verificationResult?.hasEventRegistration ? 'registered_on_builder_center' : 'not_registered',
+        builderCenterVerifiedAt: verificationResult?.hasEventRegistration ? Date.now() : undefined,
       };
 
       // Add or update in allRegistrations
@@ -279,9 +302,15 @@ export const Registration: React.FC<RegistrationProps> = ({
       ];
       saveAllRegistrations(updatedList);
 
+      // Asynchronously sync registration to Server
+      fetch(apiUrl('/api/registrations'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newAttendee),
+      }).catch((err) => console.warn('Could not sync registration to server:', err));
+
       onRegisterSuccess(newAttendee);
       setIsSubmitting(false);
-      setIsEditing(false);
     }, 350);
   };
 
@@ -375,7 +404,6 @@ export const Registration: React.FC<RegistrationProps> = ({
             <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#AB5CFF]">
               <span>04 · Registration</span>
               <span aria-hidden="true" className="text-slate-600">·</span>
-              <span>Manual Organizer Review</span>
             </div>
 
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
@@ -389,25 +417,37 @@ export const Registration: React.FC<RegistrationProps> = ({
             {/* How verification works step-by-step */}
             <div className="space-y-4 pt-2">
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#3FB1FF]/10 p-2 text-[#3FB1FF] shrink-0 mt-0.5">
-                  <User className="h-4 w-4" />
+                <div className="rounded-lg bg-[#FF9F1C]/15 p-2 text-[#FF9F1C] shrink-0 mt-0.5">
+                  <ExternalLink className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">1. Fill Your Details &amp; AWS Builder Center Alias</h4>
+                  <h4 className="text-sm font-bold text-white">1. RSVP on AWS Builder Center</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Provide your name, active mobile number, and your free Builder Center alias from AWS Builder Center.
+                    Official registration on Amazon Web Services' portal is required before local pass issuance.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#FF9F1C]/10 p-2 text-[#FF9F1C] shrink-0 mt-0.5">
-                  <Clock className="h-4 w-4" />
+                <div className="rounded-lg bg-[#3FB1FF]/10 p-2 text-[#3FB1FF] shrink-0 mt-0.5">
+                  <User className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">2. Profile 404 &amp; Authenticity Check</h4>
+                  <h4 className="text-sm font-bold text-white">2. Fill Pass Details &amp; Reason (Max 10 Words)</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Our system checks if your Builder Center profile is live. Organizers Soham Chaudhari (SBG Lead) &amp; Saurabh Rajput verify valid aliases.
+                    Enter your name, mobile, Builder alias, and why you want to attend in 10 words or fewer.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-[#AB5CFF]/10 p-2 text-[#AB5CFF] shrink-0 mt-0.5">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white">3. Check Email for Next Verification Steps</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    After submitting, you will receive an email with next steps. Complete them to significantly boost your chances of getting confirmed!
                   </p>
                 </div>
               </div>
@@ -417,7 +457,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">3. Guaranteed Entry Pass</h4>
+                  <h4 className="text-sm font-bold text-white">4. Guaranteed Entry Pass</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
                     Once accepted, your confirmed entry pass will display here with badge credentials, buffet lunch, and Kahoot arena access.
                   </p>
@@ -427,39 +467,18 @@ export const Registration: React.FC<RegistrationProps> = ({
 
             {/* Organizers Contact Note */}
             <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 space-y-1.5">
-              <div className="text-slate-400 font-medium">Questions? Reach out to the organizers:</div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span>
-                  <strong className="text-white">Soham Chaudhari</strong> <span className="text-slate-400 font-mono text-[11px]">(SBG Lead)</span>:{' '}
-                  <a href="tel:9834382337" className="text-[#05E08A] font-mono font-bold hover:underline">
-                    +91 98343 82337
-                  </a>
-                </span>
-                <span className="text-slate-600 hidden sm:inline">·</span>
-                <span>
-                  <strong className="text-white">Saurabh Rajput</strong> <span className="text-slate-400 font-mono text-[11px]">(Organizer)</span>:{' '}
-                  <a href="tel:9890991510" className="text-[#05E08A] font-mono font-bold hover:underline">
-                    +91 98909 91510
-                  </a>
-                </span>
-              </div>
+              <div className="text-slate-400 font-medium">For registration assistance, email the organizing team:</div>
+              <a
+                href={`mailto:${EVENT_DETAILS.contactEmail}`}
+                className="inline-block max-w-full break-all font-bold text-[#05E08A] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#05E08A]"
+              >
+                {EVENT_DETAILS.contactEmail}
+              </a>
             </div>
 
-            {/* Organizer Admin Portal & Terms Quick Launch Button */}
+            {/* Terms Quick Launch Button */}
             <div className="pt-2 flex flex-wrap items-center gap-2.5">
-              <a
-                href="/admin"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
-              >
-                <ShieldCheck className="h-4 w-4 text-[#AB5CFF]" />
-                <span>Organizer Review Portal (/admin)</span>
-                {pendingCount > 0 && (
-                  <span className="rounded-full bg-[#FF9F1C] px-2 py-0.5 text-[10px] font-bold text-slate-950 font-mono">
-                    {pendingCount} pending
-                  </span>
-                )}
-              </a>
-
+              
               <a
                 href="/codeofconduct"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
@@ -472,7 +491,7 @@ export const Registration: React.FC<RegistrationProps> = ({
 
           {/* Right Column: Form or Submitted Status View */}
           <div className="lg:col-span-7">
-            {attendee && !isEditing ? (
+            {attendee ? (
               /* Already Registered / Submitted View */
               <div className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
                 {/* Status indicator hairline */}
@@ -495,7 +514,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           ? 'bg-[#05E08A]/15 text-[#05E08A]'
                           : attendee.status === 'rejected'
                           ? 'bg-rose-500/15 text-rose-400'
-                          : 'bg-[#FF9F1C]/15 text-[#FF9F1C]'
+                          : 'bg-[#05E08A]/15 text-[#05E08A]'
                       }`}
                     >
                       {attendee.status === 'approved' ? (
@@ -503,7 +522,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       ) : attendee.status === 'rejected' ? (
                         <XCircle className="h-6 w-6" />
                       ) : (
-                        <Clock className="h-6 w-6 animate-pulse" />
+                        <CheckCircle2 className="h-6 w-6 text-[#05E08A]" />
                       )}
                     </div>
                     <div>
@@ -521,7 +540,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                             ? '● Approved Attendee'
                             : attendee.status === 'rejected'
                             ? 'Declined'
-                            : '⏳ Pending Admin Verification'}
+                            : '⏳ Request Submitted · Pending Approval'}
                         </span>
                         <span className="text-xs font-mono text-slate-500">ID: {attendee.id}</span>
                       </div>
@@ -530,7 +549,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           ? `You're Confirmed, ${attendee.fullName}!`
                           : attendee.status === 'rejected'
                           ? `Application Review Status`
-                          : `Application Received, ${attendee.fullName}!`}
+                          : `Request Submitted, ${attendee.fullName}!`}
                       </h3>
                     </div>
                   </div>
@@ -543,29 +562,90 @@ export const Registration: React.FC<RegistrationProps> = ({
                 </div>
 
                 {/* Status Notice Callout */}
-                <div
-                  className={`mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${
-                    attendee.status === 'approved'
-                      ? 'bg-[#05E08A]/10 border-[#05E08A]/30 text-emerald-200'
-                      : attendee.status === 'rejected'
-                      ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
-                      : 'bg-[#FF9F1C]/10 border-[#FF9F1C]/30 text-amber-200'
-                  }`}
-                >
-                  {attendee.status === 'approved' ? (
+                {attendee.status === 'approved' ? (
+                  <div className="mt-5 space-y-4">
+                    <div className="p-4 sm:p-5 rounded-xl border border-[#05E08A]/40 bg-[#05E08A]/10 text-xs sm:text-sm text-emerald-200">
+                      <p>
+                        <strong>Congratulations!</strong> Your registration has been verified and approved by the organizing team. Your seat at Hotel Anand Regency Riverfront is reserved for 04 December 2026.
+                      </p>
+                    </div>
+
+                    {/* Official Digital QR Code Pass */}
+                    <div className="rounded-2xl border-2 border-dashed border-[#3FB1FF]/40 bg-[#0A1220] p-6 text-center shadow-xl">
+                      <div className="inline-block rounded-lg border border-[#3FB1FF]/30 bg-[#1E293B] px-3.5 py-1 text-xs font-mono font-bold text-[#3FB1FF] mb-4">
+                        PASS ID: {attendee.id}
+                      </div>
+
+                      <div className="mx-auto flex justify-center p-3.5 bg-white rounded-2xl w-fit shadow-lg shadow-black/40">
+                        <ReactQRCode
+                          value={attendee.id}
+                          size={190}
+                          level="H"
+                          background="#FFFFFF"
+                          dataModulesSettings={{
+                            color: '#000000',
+                            style: 'circle',
+                          }}
+                          finderPatternOuterSettings={{
+                            color: '#000000',
+                            style: 'rounded',
+                          }}
+                          finderPatternInnerSettings={{
+                            color: '#000000',
+                            style: 'rounded',
+                          }}
+                          imageSettings={{
+                            src: assetUrl('/preview.png'),
+                            height: 42,
+                            width: 42,
+                            excavate: true,
+                          }}
+                        />
+                      </div>
+
+                      <p className="mt-3 text-[11px] font-mono text-slate-400 tracking-wider uppercase">
+                        Present this QR Code at Symphony Hall (2F) Check-In
+                      </p>
+                    </div>
+
+                    {/* Important Information Callout */}
+                    <div className="rounded-xl border border-slate-800 bg-[#0E1526]/80 p-4 text-xs text-slate-300 text-left">
+                      <h5 className="font-bold text-white mb-2.5 flex items-center gap-1.5">
+                        <span>📋</span> Important Information
+                      </h5>
+                      <ul className="space-y-1.5 text-slate-300">
+                        <li className="flex items-start gap-2"><span>✅</span> Carry a valid Government ID or College ID for verification.</li>
+                        <li className="flex items-start gap-2"><span>✅</span> Please arrive at least 30 minutes before the event starts.</li>
+                        <li className="flex items-start gap-2"><span>✅</span> Your ticket contains a unique QR code required for check-in.</li>
+                        <li className="flex items-start gap-2"><span>✅</span> Tickets are non-transferable unless approved by the organizing team.</li>
+                        <li className="flex items-start gap-2"><span>✅</span> Keep this email accessible on the event day.</li>
+                      </ul>
+                      <div className="mt-3 pt-2.5 border-t border-slate-800 text-[11px] text-slate-400">
+                        Questions? Reach us at <a href="mailto:info@reinvent.awssbgdhule.in" className="text-[#3FB1FF] font-semibold underline">info@reinvent.awssbgdhule.in</a>
+                      </div>
+                    </div>
+                  </div>
+                ) : attendee.status === 'rejected' ? (
+                  <div className="mt-5 p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-xs sm:text-sm text-rose-200">
                     <p>
-                      <strong>Congratulations!</strong> Your registration has been verified and approved by the organizing team. Your seat at Hotel Anand Regency Riverfront is reserved for 04 December 2026.
+                      Your application could not be verified with the provided AWS Builder ID.
                     </p>
-                  ) : attendee.status === 'rejected' ? (
-                    <p>
-                      Your application could not be verified with the provided AWS Builder ID. Please ensure your Builder ID is active on AWS Builder Center and submit an update.
-                    </p>
-                  ) : (
-                    <p>
-                      <strong>Application Pending Review:</strong> Organizers <strong>Soham Chaudhari (SBG Lead)</strong> and <strong>Saurabh Rajput</strong> are manually reviewing your AWS Builder ID: <span className="font-mono font-bold text-white bg-black/40 px-1.5 py-0.5 rounded">{attendee.builderId}</span>. Check back anytime to see your confirmed badge status!
-                    </p>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="mt-5 p-4 sm:p-5 rounded-xl border border-[#05E08A]/40 bg-[#05E08A]/10 text-xs sm:text-sm flex items-start gap-3.5">
+                    <div className="rounded-lg bg-[#05E08A]/20 p-2 text-[#05E08A] shrink-0 mt-0.5">
+                      <CheckCircle2 className="h-5 w-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-white text-sm">
+                        Your request is submitted successfully!
+                      </h4>
+                      <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
+                        Once the admin approves your entry, you will receive a confirmation email shortly.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Submitted Details Review List */}
                 <div className="py-5 space-y-2.5 text-sm text-slate-300">
@@ -599,46 +679,243 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <span className="text-slate-400">Institution:</span>
                     <span className="font-medium text-white">{attendee.college}</span>
                   </div>
+                  {attendee.whyJoin && (
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 py-1.5 border-b border-slate-800/60">
+                      <span className="text-slate-400 shrink-0">Why Join:</span>
+                      <span className="font-medium text-[#AB5CFF] italic text-left sm:text-right sm:max-w-md">"{attendee.whyJoin}"</span>
+                    </div>
+                  )}
                   <div className="flex justify-between py-1.5">
                     <span className="text-slate-400">Venue &amp; Time:</span>
                     <span className="font-medium text-white">Anand Regency Riverfront · 9:00 AM IST</span>
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-slate-800">
+                {/* Action Buttons: Edit info removed, clean calendar button */}
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-800">
                   <a
                     href={EVENT_DETAILS.calendarGoogleUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] py-3 px-5 text-xs font-bold text-[#0E131A] shadow-md cursor-pointer transition-all"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3FB1FF] to-[#05E08A] hover:opacity-95 py-3.5 px-5 text-xs font-bold text-slate-950 shadow-md cursor-pointer transition-all active:scale-[0.99]"
                   >
                     <Calendar className="h-4 w-4" />
                     <span>Add to Google Calendar</span>
                   </a>
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="w-full sm:w-auto rounded-full border border-slate-700 bg-slate-800/80 px-5 py-3 text-xs font-semibold text-slate-300 hover:text-white cursor-pointer"
+                </div>
+              </div>
+            ) : registrationStep === 1 ? (
+              /* ========================================================================= */
+              /* STEP 1: AWS Builder Center Official Registration                          */
+              /* ========================================================================= */
+              <div className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF9F1C] via-[#FF57E8] to-[#3FB1FF]" />
+
+                {/* Stepper Progress Bar */}
+                <div className="mb-6 pb-5 border-b border-slate-800/80">
+                  <div className="flex items-center justify-between gap-2">
+                    {/* Step 1 Pill */}
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF9F1C] text-xs font-bold text-slate-950 font-mono shadow-md shadow-[#FF9F1C]/20">
+                        1
+                      </span>
+                      <div>
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#FF9F1C]">
+                          Step 1 of 2
+                        </div>
+                        <h3 className="text-base sm:text-lg font-bold text-white">
+                          AWS Builder Center RSVP
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Step 2 Pill (Upcoming) */}
+                    <div className="hidden sm:flex items-center gap-2 opacity-50">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-400 font-mono">
+                        2
+                      </span>
+                      <div className="text-left">
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500">
+                          Step 2
+                        </div>
+                        <span className="text-xs font-semibold text-slate-400">Pass Details</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 1 Main Body */}
+                <div className="space-y-6">
+                  {/* Prerequisite Notice */}
+                  <div className="rounded-xl border border-[#FF9F1C]/30 bg-[#FF9F1C]/5 p-4 sm:p-5">
+                    <div className="flex items-start gap-3.5">
+                      <div className="rounded-lg bg-[#FF9F1C]/15 p-2 text-[#FF9F1C] shrink-0 mt-0.5">
+                        <Sparkles className="h-5 w-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-bold text-white">
+                          Official AWS Registration Required First
+                        </h4>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          To attend the AWS re:Invent Watch &amp; Build Party in Dhule, all participants must first register for the event on the official **Amazon Web Services Builder Center** platform.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step-by-Step Instructions */}
+                  <div className="space-y-3 rounded-xl border border-slate-800 bg-[#090D16]/90 p-4 sm:p-5 text-xs text-slate-300">
+                    <div className="font-mono font-semibold uppercase tracking-wider text-[11px] text-[#3FB1FF] flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-[#3FB1FF]" />
+                      <span>How to Complete Step 1:</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-2.5 pt-1">
+                      <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3FB1FF]/15 text-[#3FB1FF] font-mono font-bold text-[11px]">
+                          1
+                        </span>
+                        <div className="leading-relaxed">
+                          Click the button below to open the official event page on <strong className="text-white">builder.aws.com</strong>.
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FF9F1C]/15 text-[#FF9F1C] font-mono font-bold text-[11px]">
+                          2
+                        </span>
+                        <div className="leading-relaxed">
+                          Sign in with your <strong className="text-white">AWS Builder ID</strong> (or create one for free in 1 minute if you don't have one).
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#05E08A]/15 text-[#05E08A] font-mono font-bold text-[11px]">
+                          3
+                        </span>
+                        <div className="leading-relaxed">
+                          Click the <strong className="text-white">"Register"</strong> or <strong className="text-white">"RSVP"</strong> button on the AWS event page.
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FF57E8]/15 text-[#FF57E8] font-mono font-bold text-[11px]">
+                          4
+                        </span>
+                        <div className="leading-relaxed">
+                          Come back to this tab, confirm your RSVP, and proceed to Step 2 to enter your pass details.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Primary Link Button: Opens Builder Center Event Page */}
+                  <a
+                    href={EVENT_DETAILS.builderCenterEventUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setHasOpenedBuilderCenter(true)}
+                    className="w-full inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF9F1C] via-[#FF57E8] to-[#3FB1FF] py-3.5 px-6 text-sm font-bold text-slate-950 hover:opacity-95 shadow-lg shadow-[#FF9F1C]/20 transition-all active:scale-[0.99] cursor-pointer"
                   >
-                    Edit Information
+                    <span>1. Open AWS Builder Center Event Page</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+
+                  {hasOpenedBuilderCenter && (
+                    <div className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#05E08A]" />
+                      <span>AWS event page opened in a new tab! Once you finish registering on AWS, check the box below to proceed.</span>
+                    </div>
+                  )}
+
+                  {/* Checkbox Confirmation Gate */}
+                  <label className="flex items-start gap-3 p-4 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={hasConfirmedBuilderRsvp}
+                      onChange={(e) => setHasConfirmedBuilderRsvp(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-800 text-[#05E08A] focus:ring-[#05E08A] focus:ring-offset-0 cursor-pointer"
+                    />
+                    <div className="text-xs text-slate-300 select-none">
+                      <span className="font-semibold text-white">
+                        I have registered / RSVP'd for this event on AWS Builder Center
+                      </span>
+                      <p className="text-slate-400 mt-0.5 text-[11px] leading-relaxed">
+                        I will provide my valid AWS Builder alias in Step 2 for organizer verification.
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Continue Button to Step 2 */}
+                  <button
+                    type="button"
+                    disabled={!hasConfirmedBuilderRsvp}
+                    onClick={() => {
+                      if (hasConfirmedBuilderRsvp) {
+                        setRegistrationStep(2);
+                      }
+                    }}
+                    className={`w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-6 text-sm font-bold transition-all ${
+                      hasConfirmedBuilderRsvp
+                        ? 'bg-gradient-to-r from-[#3FB1FF] to-[#05E08A] text-slate-950 hover:opacity-95 shadow-lg shadow-[#3FB1FF]/25 cursor-pointer active:scale-[0.99]'
+                        : 'bg-slate-800/60 text-slate-500 border border-slate-800 cursor-not-allowed'
+                    }`}
+                  >
+                    <span>Continue to Step 2: Fill Details &amp; Create Pass</span>
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               </div>
             ) : (
-              /* Registration Form */
+              /* ========================================================================= */
+              /* STEP 2: Attendee Details & Local Pass Registration Form                   */
+              /* ========================================================================= */
               <form
                 onSubmit={handleSubmit}
                 className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#3FB1FF] via-[#FF57E8] to-[#AB5CFF]" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#3FB1FF] via-[#05E08A] to-[#AB5CFF]" />
 
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-white">
-                    {attendee ? 'Update Your Attendance Request' : 'Attendee RSVP Registration'}
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Fill in your details and AWS Builder Center alias. Organizers will manually review and accept your registration.
-                  </p>
+                {/* Stepper Progress Bar */}
+                <div className="mb-6 pb-4 border-b border-slate-800/80 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#05E08A] text-xs font-bold text-slate-950 font-mono shadow-md shadow-[#05E08A]/20">
+                      2
+                    </span>
+                    <div>
+                      <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#05E08A]">
+                        Step 2 of 2
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold text-white">
+                        {attendee ? 'Update Your Attendance Request' : 'Attendee Details & Pass Request'}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setRegistrationStep(1)}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <span>← Back to Step 1</span>
+                  </button>
+                </div>
+
+                {/* Step 1 Completion Banner */}
+                <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#05E08A] shrink-0" />
+                    <span>Step 1 Confirmed: Registered on AWS Builder Center</span>
+                  </div>
+                  <a
+                    href={EVENT_DETAILS.builderCenterEventUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] underline font-semibold text-emerald-200 hover:text-white flex items-center gap-1 shrink-0"
+                  >
+                    <span>View AWS Event Page</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </div>
 
                 <div className="space-y-4">
@@ -725,7 +1002,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         onChange={(e) => handleAliasChange(e.target.value)}
                         onBlur={handleAliasBlur}
                         placeholder="e.g. saurabhrajput1 or @saurabhrajput1"
-                        className="w-full rounded-xl border border-slate-700 bg-[#0E1526] pl-4 pr-36 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF] font-mono"
+                        className="w-full rounded-xl border border-slate-700 bg-[#0E1526] pl-4 pr-36 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF] font-mono lowercase"
                         required
                         maxLength={120}
                       />
@@ -737,9 +1014,15 @@ export const Registration: React.FC<RegistrationProps> = ({
                             <span className="text-[11px]">Checking...</span>
                           </span>
                         ) : verificationResult?.status === 'valid' ? (
-                          <span className="flex items-center gap-1 text-[11px] text-[#05E08A] font-mono font-bold bg-[#05E08A]/10 px-2 py-0.5 rounded border border-[#05E08A]/30">
-                            <span>✓ Verified</span>
-                          </span>
+                          verificationResult.hasEventRegistration ? (
+                            <span className="flex items-center gap-1 text-[11px] text-[#05E08A] font-mono font-bold bg-[#05E08A]/10 px-2 py-0.5 rounded border border-[#05E08A]/30">
+                              <span>✓ Registered on AWS</span>
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-[11px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                              <span>⚠️ Missing Event RSVP</span>
+                            </span>
+                          )
                         ) : verificationResult?.status === 'invalid' ? (
                           <span className="flex items-center gap-1 text-[11px] text-rose-400 font-mono bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
                             <span>✕ 404 Not Found</span>
@@ -752,53 +1035,76 @@ export const Registration: React.FC<RegistrationProps> = ({
                       <p className="text-xs text-rose-400">{errors.builderId}</p>
                     )}
 
-                    {/* Live URL Preview */}
-                    {cleanBuilderAlias(formData.builderId) && (
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-black/60 border border-slate-800 text-xs min-w-0">
-                        <div className="truncate font-mono min-w-0">
-                          <span className="text-slate-500">Live URL: </span>
-                          <span className="text-[#3FB1FF]">
-                            https://builder.aws.com/community/@{cleanBuilderAlias(formData.builderId)}
-                          </span>
-                        </div>
-                        <a
-                          href={`https://builder.aws.com/community/@${cleanBuilderAlias(formData.builderId)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#3FB1FF] hover:underline whitespace-nowrap shrink-0 self-start sm:self-auto"
-                        >
-                          <span>Open in Tab ↗</span>
-                        </a>
-                      </div>
-                    )}
-
                     {/* Real-time Verification Feedback Card */}
                     {verificationResult && (
                       <div>
                         {verificationResult.status === 'valid' ? (
-                          <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-200">
-                            {verificationResult.avatar ? (
-                              <img
-                                src={verificationResult.avatar}
-                                alt="Avatar"
-                                className="h-8 w-8 rounded-full border border-emerald-500/40 object-cover"
-                              />
-                            ) : (
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
-                                ✓
+                          verificationResult.hasEventRegistration ? (
+                            /* STATE 1: Found in Event Attendee / Request list */
+                            <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-xs text-emerald-200 space-y-2">
+                              <div className="flex items-center gap-3">
+                                {verificationResult.avatar ? (
+                                  <img
+                                    src={verificationResult.avatar}
+                                    alt="Avatar"
+                                    className="h-8 w-8 rounded-full border border-emerald-500/40 object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300 font-bold shrink-0">
+                                    ✓
+                                  </div>
+                                )}
+                                <div className="flex-1">
+                                  <div className="font-bold text-white flex items-center gap-1.5">
+                                    <span className="text-[#05E08A]">✓ We found that you have registered on Builder Center!</span>
+                                  </div>
+                                  <div className="text-[11px] text-emerald-300 font-mono mt-0.5">
+                                    @{verificationResult.alias} {verificationResult.displayName ? `(${verificationResult.displayName})` : ''}
+                                  </div>
+                                </div>
                               </div>
-                            )}
-                            <div className="flex-1">
-                              <div className="font-bold text-white flex items-center gap-1.5">
-                                <span className="text-[#05E08A]">✓ Active Builder Profile:</span>
-                                <span>{verificationResult.displayName}</span>
+                              <p className="text-[11px] text-emerald-300/90 leading-relaxed pl-1 border-t border-emerald-500/20 pt-1.5">
+                                Your event registration request was found for <strong>AWS re:Invent Watch &amp; Build Party Dhule</strong>. You can now fill out the form below to complete your pass application!
+                              </p>
+                            </div>
+                          ) : (
+                            /* STATE 2: Profile Valid, but NOT in Event Attendee / Request list */
+                            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-200 space-y-3">
+                              <div className="flex items-start gap-2.5">
+                                <AlertTriangle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                                <div className="flex-1">
+                                  <div className="font-bold text-amber-300 text-sm">
+                                    We couldn't find your registration on AWS Builder Center for this event
+                                  </div>
+                                  <p className="text-[11px] text-amber-200/90 mt-1 leading-relaxed">
+                                    We found your AWS profile (<span className="font-mono text-white">@{verificationResult.alias}</span>), but you haven't clicked <strong>"Register"</strong> on the official event page yet. Please register on the Builder Center first, then come back here to submit.
+                                  </p>
+                                </div>
                               </div>
-                              <div className="text-[11px] text-emerald-300 font-mono mt-0.5">
-                                @{verificationResult.alias} is valid on AWS Builder Center!
+
+                              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-500/20">
+                                <a
+                                  href={EVENT_DETAILS.builderCenterEventUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md transition-all cursor-pointer"
+                                >
+                                  <span>1. Open Builder Center &amp; Register</span>
+                                  <ExternalLink className="h-3.5 w-3.5" />
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => triggerAutoVerify(formData.builderId, true)}
+                                  className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 px-3 py-1.5 text-xs font-semibold text-amber-200 hover:text-white transition-colors cursor-pointer"
+                                >
+                                  <RefreshCw className={`h-3 w-3 ${isVerifying ? 'animate-spin' : ''}`} />
+                                  <span>2. Re-check Status</span>
+                                </button>
                               </div>
                             </div>
-                          </div>
+                          )
                         ) : (
+                          /* STATE 3: 404 No profile found */
                           <div className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-200">
                             <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
                             <div className="flex-1">
@@ -866,6 +1172,51 @@ export const Registration: React.FC<RegistrationProps> = ({
                   </div>
                 </div>
 
+                {/* Why do you want to join this event? (max 10 words) */}
+                <div className="mt-5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400">
+                      Why do you want to join this event? <span className="text-[#AB5CFF]">*</span>
+                    </label>
+                    <span
+                      className={`text-[11px] font-mono px-2 py-0.5 rounded ${
+                        countWords(formData.whyJoin) > 10
+                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 font-bold'
+                          : 'text-slate-400 bg-slate-900 border border-slate-800'
+                      }`}
+                    >
+                      {countWords(formData.whyJoin)} / 10 words max
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.whyJoin}
+                    onChange={(e) => {
+                      setFormData({ ...formData, whyJoin: e.target.value });
+                      if (errors.whyJoin) {
+                        setErrors((prev) => {
+                          const copy = { ...prev };
+                          delete copy.whyJoin;
+                          return copy;
+                        });
+                      }
+                    }}
+                    placeholder="e.g. Master AWS cloud architecture and network with practitioners"
+                    className={`w-full rounded-xl border bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 ${
+                      errors.whyJoin || countWords(formData.whyJoin) > 10
+                        ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
+                        : 'border-slate-700 focus:border-[#AB5CFF] focus:ring-[#AB5CFF]'
+                    }`}
+                    required
+                  />
+                  <p className="text-[11px] text-slate-500">
+                    Max 10 words describing your interest or learning goals for this watch &amp; build party.
+                  </p>
+                  {errors.whyJoin && (
+                    <p className="text-xs text-rose-400">{errors.whyJoin}</p>
+                  )}
+                </div>
+
                 {/* Terms & Conditions / Code of Conduct Checkbox */}
                 <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
                   <label className="flex items-start gap-3 cursor-pointer select-none">
@@ -893,23 +1244,40 @@ export const Registration: React.FC<RegistrationProps> = ({
 
                 {/* Submit Action */}
                 <div className="mt-7 flex items-center gap-3">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] py-3.5 px-6 text-sm font-bold text-[#0E131A] transition-all disabled:opacity-50 cursor-pointer shadow-lg shadow-[#AB5CFF]/20"
-                  >
-                    <span>{isSubmitting ? 'Submitting Request...' : 'Submit Attendance Request'}</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                  {isEditing && (
-                    <button
-                      type="button"
-                      onClick={() => setIsEditing(false)}
-                      className="rounded-full border border-slate-700 bg-slate-800 px-5 py-3 text-xs font-semibold text-slate-300 hover:text-white cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                  )}
+                  {(() => {
+                    const isRsvpMissing = verificationResult?.status === 'valid' && verificationResult.hasEventRegistration === false;
+                    return (
+                      <button
+                        type="submit"
+                        disabled={isSubmitting || isRsvpMissing}
+                        className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full py-3.5 px-6 text-sm font-bold transition-all shadow-lg ${
+                          isRsvpMissing
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-90'
+                            : 'bg-[#AB5CFF] hover:bg-[#b873ff] text-[#0E131A] cursor-pointer shadow-[#AB5CFF]/20 disabled:opacity-50'
+                        }`}
+                      >
+                        {isRsvpMissing ? (
+                          <span className="flex items-center gap-1.5">
+                            <AlertTriangle className="h-4 w-4 text-amber-400" />
+                            <span>Register on Builder Center First to Submit</span>
+                          </span>
+                        ) : (
+                          <>
+                            <span>{isSubmitting ? 'Submitting Request...' : 'Submit Attendance Request'}</span>
+                            <ArrowRight className="h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    );
+                  })()}
+                </div>
+
+                {/* Post-Submit Email Instruction Note */}
+                <div className="mt-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
+                  <Mail className="h-4 w-4 text-[#3FB1FF] shrink-0 mt-0.5" />
+                  <p className="leading-relaxed">
+                    <strong className="text-white">What happens next:</strong> After submitting your request, you will receive an email with quick next steps to complete to <strong className="text-[#3FB1FF]">significantly increase your chances of ticket confirmation</strong>.
+                  </p>
                 </div>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">

@@ -44,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
   return (
     <section
       id="home"
-      className="relative min-h-[100vh] min-h-[100svh] lg:min-h-0 lg:h-[calc(100vh-62px)] w-full flex flex-col justify-center overflow-hidden bg-[#090D16]"
+      className="relative min-h-[100vh] min-h-[100svh] w-full flex flex-col justify-center overflow-hidden bg-[#090D16]"
     >
       {/* Fullscreen Background Video with Vivid Visibility */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
@@ -73,7 +73,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
       </div>
 
       {/* Main Content Area - Automatically fits in 100vh on Laptop & Responsive on Mobile */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-2 w-full my-auto">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-10 sm:pt-28 sm:pb-14 lg:py-0 w-full my-auto">
         <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-10 xl:gap-14 items-center">
           
           {/* Left Column: Heading, Subtext & Action Buttons */}
@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
 
           {/* Right Column: Event Info Card Panel */}
           <div className="lg:col-span-5 w-full">
-            <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] border border-slate-800/80 bg-[#0E1424]/85 p-6 sm:p-8 lg:p-7 xl:p-9 shadow-2xl backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] border border-white/20 bg-[#0E1424]/30 bg-linear-to-br from-white/10 via-white/[0.03] to-transparent p-6 sm:p-8 lg:p-7 xl:p-9 shadow-[0_16px_48px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md backdrop-saturate-150">
               {/* Top Status Capsule & Logo Header */}
               <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5 lg:mb-4">
                 <span className="inline-block rounded-full bg-[#05E08A] px-3.5 sm:px-4 py-1 text-xs font-mono font-bold text-[#0A0F1D] tracking-wide">
@@ -130,12 +130,12 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                 <img
                   src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent 2026"
-                  className="h-8 sm:h-9 lg:h-22 w-auto object-contain opacity-95"
+                  className="h-8 sm:h-9 lg:h-18 w-auto object-contain opacity-95"
                 />
               </div>
 
               {/* Event Details Definition List */}
-              <div className="space-y-4 sm:space-y-5 lg:space-y-4 my-3 sm:my-4">
+              <div className="space-y-4 sm:space-y-5 lg:space-y-4 my-3 sm:my-4 ">
                 <div>
                   <div className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.12em] text-slate-400">
                     DATE
@@ -182,6 +182,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                   <span>4:00</span>
                 </div>
               </div>
+              
             </div>
           </div>
 

@@ -1,9 +1,10 @@
-import { AgendaSession, Speaker, FAQItem } from '../types';
+import { AgendaSession, Speaker, FAQItem } from '../../../types';
 
 export const EVENT_DETAILS = {
   name: 'AWS re:Invent Watch & Build Party Dhule',
   tagline: 'Watch the biggest cloud announcements together, then build something groundbreaking with them.',
   organizer: 'AWS Student Builder Group Dhule',
+  contactEmail: 'info@reinvent.awssbgdhule.in',
   organizers: [
     {
       name: 'Soham Chaudhari',
@@ -15,8 +16,7 @@ export const EVENT_DETAILS = {
       name: 'Saurabh Rajput',
       role: 'Organizer',
       phone: '9890991510',
-      phoneFormatted: '+91 98909 91510',
-      email: 'developersaurabhrajput@gmail.com'
+      phoneFormatted: '+91 98909 91510'
     }
   ],
   dateString: 'Friday, 04 December 2026',
@@ -32,7 +32,8 @@ export const EVENT_DETAILS = {
   seatsTotal: 300,
   bannerPath: '/assets/aistudio/AWS_reInvent_Watch_and_Build_Party_Dhule_Banner_546ae98e.png',
   videoBgUrl: 'https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/events/approved/reinvent26/video/RIV%20Website%20Loop_Foyer_v2.c6bbccb6cb4e0256ab5c1b7d63c862ddf2dd6636.mp4',
-  googleMapsUrl: 'https://www.google.com/maps/dir/?api=1&destination=20.906515,74.775224',
+  googleMapsUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hotel+Anand+Regency+Riverfront,+Dhule',
+  builderCenterEventUrl: 'https://builder.aws.com/connect/event/c8a38d77-8262-34c4-b744-ea8dfb7b35a6',
   calendarGoogleUrl: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=AWS+re%3AInvent+Watch+%26+Build+Party+Dhule&dates=20261204T033000Z%2F20261204T103000Z&details=Watch+the+biggest+AWS+re%3AInvent+announcements+together+and+build+hands-on+projects+with+mentors.&location=Hotel+Anand+Regency+Riverfront%2C+Dhule'
 };
 

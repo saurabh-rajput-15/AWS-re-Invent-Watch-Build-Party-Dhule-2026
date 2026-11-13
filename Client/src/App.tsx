@@ -135,7 +135,7 @@ export default function App() {
   useEffect(() => {
     switch (routeState.route) {
       case 'home':
-        document.title = 'AWS re:Invent Watch & Build Party Dhule 2026 | AWS Student Builder Group';
+        document.title = 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group';
         break;
       case 'register':
         document.title = 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026';

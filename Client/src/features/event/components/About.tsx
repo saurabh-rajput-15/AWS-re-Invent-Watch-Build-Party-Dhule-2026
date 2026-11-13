@@ -128,51 +128,6 @@ export const About: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Community Host Banner with Official Logos */}
-        <div className="mt-12 rounded-2xl border border-slate-800 bg-[#0E1526]/90 p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xl">
-          <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-            <img
-              src="/AWS_Builder.png"
-              alt="AWS Student Builder Group Dhule"
-              className="h-12 sm:h-14 md:h-16 w-auto object-contain"
-            />
-            <div className="hidden sm:block h-12 w-px bg-slate-800" />
-            <div>
-              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-[#3FB1FF]">
-                Official Community Host
-              </div>
-              <h3 className="text-base sm:text-lg font-bold text-white mt-0.5">
-                AWS Student Builder Group Dhule
-              </h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                Organized to empower students and local cloud developers with direct hands-on immersion into the newest AWS architectures, AI primitives, and industry mentorship.
-              </p>
-              <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-xs">
-                <span>
-                  <strong className="text-white">Soham Chaudhari</strong> <span className="text-slate-400 font-mono text-[11px]">(SBG Lead)</span>:{' '}
-                  <a href="tel:9834382337" className="font-mono font-bold text-[#05E08A] hover:underline">
-                    📞 +91 98343 82337
-                  </a>
-                </span>
-                <span className="text-slate-600 hidden sm:inline">·</span>
-                <span>
-                  <strong className="text-white">Saurabh Rajput</strong> <span className="text-slate-400 font-mono text-[11px]">(Organizer)</span>:{' '}
-                  <a href="tel:9890991510" className="font-mono font-bold text-[#05E08A] hover:underline">
-                    📞 +91 98909 91510
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="shrink-0">
-            <img
-              src="/AWS_reinvent-dark.png"
-              alt="AWS re:Invent Dhule 2026"
-              className="h-26 sm:h-18 md:h-26 w-auto object-contain opacity-95"
-            />
-          </div>
-        </div>
       </div>
     </section>
   );

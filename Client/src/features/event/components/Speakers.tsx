@@ -26,7 +26,7 @@ export const Speakers: React.FC = () => {
           {SPEAKERS.map((speaker) => {
             const initials = speaker.name
               .split(' ')
-              .map((w) => w[0])
+              .map((w: string) => w[0])
               .join('')
               .slice(0, 2);
 
@@ -173,7 +173,7 @@ export const Speakers: React.FC = () => {
 
                 {/* Tech & Certification Tags */}
                 <div className="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap gap-1.5">
-                  {speaker.tags.map((tag, i) => (
+                  {speaker.tags.map((tag: string, i: number) => (
                     <span
                       key={i}
                       className={`text-[11px] font-mono px-3 py-1 rounded-lg ${

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Clock, MapPin, Calendar, Plus, Filter, Sparkles, CheckCircle2 } from 'lucide-react';
 import { AGENDA_SESSIONS, EVENT_DETAILS } from '../data/eventData';
-import { TrackCategory, AgendaSession } from '../types';
-import { getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
+import { TrackCategory, AgendaSession } from '../../../types';
+import { getGoogleCalendarUrl, downloadIcsFile } from '../../../utils/calendar';
 
 export const Agenda: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<TrackCategory>('all');
@@ -112,7 +112,7 @@ export const Agenda: React.FC = () => {
                     {session.prerequisites && session.prerequisites.length > 0 && (
                       <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
                         <span className="font-mono text-slate-500">Prerequisites:</span>
-                        {session.prerequisites.map((req, i) => (
+                        {session.prerequisites.map((req: string, i: number) => (
                           <span
                             key={i}
                             className="inline-flex items-center gap-1 rounded bg-slate-800/80 px-2 py-0.5 text-[11px] font-mono text-slate-300"

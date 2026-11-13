@@ -486,21 +486,38 @@ class BuilderCenterAgentService {
     });
 
     try {
-      // 1. Fetch Approved Members (Attendees, Hosts, Co-hosts)
-      let resMembers = await this.fetchWithRetry(
-        `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
-        { headers: getHeaders() }
-      );
+      // 1 & 2. Concurrently fetch Approved Members and Pending Membership Requests
+      let [resMembers, resRequests] = await Promise.all([
+        this.fetchWithRetry(
+          `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
+          { headers: getHeaders() }
+        ),
+        this.fetchWithRetry(
+          `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
+          { headers: getHeaders() }
+        ),
+      ]);
 
-      // Self-heal on session expiration:
-      if (resMembers.status === 401 || resMembers.status === 403) {
-        console.log(`⚠️ [Direct API] Got HTTP ${resMembers.status}. Auto-refreshing session...`);
+      // Self-heal on session expiration if either returns 401/403:
+      if (
+        resMembers.status === 401 ||
+        resMembers.status === 403 ||
+        resRequests.status === 401 ||
+        resRequests.status === 403
+      ) {
+        console.log(`⚠️ [Direct API] Session expired or unauthorized. Auto-refreshing session...`);
         const refreshed = await this.refreshAwsSession(true);
         if (refreshed) {
-          resMembers = await this.fetchWithRetry(
-            `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
-            { headers: getHeaders() }
-          );
+          [resMembers, resRequests] = await Promise.all([
+            this.fetchWithRetry(
+              `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
+              { headers: getHeaders() }
+            ),
+            this.fetchWithRetry(
+              `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
+              { headers: getHeaders() }
+            ),
+          ]);
         }
       }
 
@@ -520,24 +537,6 @@ class BuilderCenterAgentService {
         console.log(`📥 [Direct API] Retrieved ${membersList.length} approved members.`);
       } else {
         console.warn(`⚠️ [Direct API] Members endpoint HTTP ${resMembers.status}`);
-      }
-
-      // 2. Fetch Pending Membership Requests (Invites & Requests)
-      let resRequests = await this.fetchWithRetry(
-        `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-        { headers: getHeaders() }
-      );
-
-      // Self-heal on session expiration:
-      if (resRequests.status === 401 || resRequests.status === 403) {
-        console.log(`⚠️ [Direct API] Got HTTP ${resRequests.status}. Auto-refreshing session...`);
-        const refreshed = await this.refreshAwsSession(true);
-        if (refreshed) {
-          resRequests = await this.fetchWithRetry(
-            `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-            { headers: getHeaders() }
-          );
-        }
       }
 
       if (resRequests.ok) {
@@ -560,16 +559,62 @@ class BuilderCenterAgentService {
         console.warn(`⚠️ [Direct API] Requests endpoint HTTP ${resRequests.status}`);
       }
 
-      // 3. Save all discovered builders into Supabase & fast cache
-      let count = 0;
+      // 3. Batch Save: Update in-memory fast cache and execute single-batch Supabase upsert
+      const nowIso = new Date().toISOString();
+      const rowsToUpsert: any[] = [];
+      const aliasesToVerify: string[] = [];
+
       for (const item of discovered.values()) {
-        await this.saveAttendee({
+        const cleanRecord = {
           eventId: this.eventId,
           builderId: item.builderId,
-          displayName: item.displayName,
+          displayName: item.displayName || item.builderId,
           rosterType: item.rosterType,
+          registeredAt: Date.now(),
+          syncedAt: Date.now(),
+        };
+
+        this.inMemoryAttendees.set(item.builderId, cleanRecord);
+
+        rowsToUpsert.push({
+          event_id: this.eventId,
+          builder_id: item.builderId,
+          display_name: item.displayName || item.builderId,
+          email: null,
+          avatar_url: null,
+          roster_type: item.rosterType,
+          registered_at: nowIso,
+          synced_at: nowIso,
+          raw_metadata: {},
         });
-        count++;
+
+        aliasesToVerify.push(item.builderId);
+      }
+
+      const count = rowsToUpsert.length;
+
+      // Execute high-performance batch write in parallel to Supabase
+      if (supabase && count > 0) {
+        try {
+          await Promise.all([
+            // Batch upsert all attendee records in 1 network call (instead of N separate sequential calls)
+            supabase
+              .from('builder_center_attendees')
+              .upsert(rowsToUpsert, { onConflict: 'event_id,builder_id' }),
+
+            // Batch update matching registrations in 1 network call
+            supabase
+              .from('registrations')
+              .update({
+                builder_center_verified: true,
+                builder_center_status: 'registered_on_builder_center',
+                builder_center_verified_at: nowIso,
+              })
+              .in('builder_id', aliasesToVerify),
+          ]);
+        } catch (err: any) {
+          console.warn('⚠️ [Agent Service] Supabase batch upsert error:', err.message);
+        }
       }
 
       this.lastSyncTimestamp = Date.now();

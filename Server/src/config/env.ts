@@ -4,6 +4,7 @@ dotenv.config();
 export const config = {
   port: parseInt(process.env.PORT || '5000', 10),
   adminKey: process.env.ADMIN_KEY || '',
+  scannerKey: process.env.SCANNER_KEY || '',
   jwtSecret: process.env.JWT_SECRET || 'aws_reinvent_dhule_default_jwt_secret_key_2026',
   supabaseUrl: process.env.SUPABASE_URL || '',
   supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '',

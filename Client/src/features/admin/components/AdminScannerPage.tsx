@@ -18,6 +18,8 @@ import {
   Zap,
   ZapOff,
   ExternalLink,
+  X,
+  HelpCircle,
 } from 'lucide-react';
 import jsQR from 'jsqr';
 import { Attendee } from '../../../types';
@@ -85,9 +87,12 @@ export const extractCleanTicketId = (raw: string): string => {
 };
 
 export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHome, onNavigateAdminPortal }) => {
-  // Authentication State
+  // Authentication State (Supports SCANNER_KEY or ADMIN_KEY from Server .env)
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem('aws_reinvent_admin_token') || null;
+  });
+  const [userRole, setUserRole] = useState<'admin' | 'scanner'>(() => {
+    return (localStorage.getItem('aws_reinvent_scanner_role') as 'admin' | 'scanner') || 'scanner';
   });
   const [passcode, setPasscode] = useState('');
   const [authError, setAuthError] = useState('');
@@ -102,8 +107,15 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
   const [torchOn, setTorchOn] = useState(false);
   const [manualTicketInput, setManualTicketInput] = useState('');
 
-  // Scan Result State
+  // Scan & Confirmation State
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isConfirmingCheckIn, setIsConfirmingCheckIn] = useState(false);
+  const [pendingConfirmation, setPendingConfirmation] = useState<{
+    ticketId: string;
+    attendee: Attendee;
+  } | null>(null);
+
+  // Scan Result State
   const [lastScannedResult, setLastScannedResult] = useState<{
     success: boolean;
     alreadyCheckedIn?: boolean;
@@ -121,22 +133,37 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
   const lastScannedTime = useRef<number>(0);
   const lastScannedCode = useRef<string>('');
 
-  // Web Audio Synth & Haptic Feedback for Check-In
-  const playBeep = (type: 'success' | 'warning' | 'error') => {
-    // 1. Haptic vibration (mobile devices)
+  // Increased Haptic Feedback for physical phones & handheld scanners
+  const triggerHaptic = (pattern: 'scan' | 'confirm_success' | 'warning' | 'error' | 'cancel') => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       try {
-        if (type === 'success') {
-          navigator.vibrate(100);
-        } else if (type === 'warning') {
-          navigator.vibrate([60, 40, 60]);
-        } else {
-          navigator.vibrate([200, 100, 200]);
+        switch (pattern) {
+          case 'scan':
+            // High-intensity double pulse when camera detects QR
+            navigator.vibrate([180, 70, 180]);
+            break;
+          case 'confirm_success':
+            // Strong rhythmic celebratory pattern on confirmed check-in
+            navigator.vibrate([250, 90, 250, 90, 350]);
+            break;
+          case 'warning':
+            // Distinct warning triple pulse
+            navigator.vibrate([150, 80, 150, 80, 150]);
+            break;
+          case 'error':
+            // Long heavy buzz for rejected/invalid
+            navigator.vibrate([400, 150, 400]);
+            break;
+          case 'cancel':
+            navigator.vibrate(80);
+            break;
         }
       } catch {}
     }
+  };
 
-    // 2. Audio chime
+  // Web Audio Synth for Check-In Sounds
+  const playBeep = (type: 'success' | 'warning' | 'error') => {
     if (!soundEnabled || typeof window === 'undefined') return;
     try {
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -151,21 +178,21 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
         osc.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.15); // E6
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.28);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.25);
+        osc.stop(audioCtx.currentTime + 0.28);
       } else if (type === 'warning') {
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(550, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.3);
       } else {
         osc.type = 'square';
         osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.35);
@@ -173,7 +200,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
     } catch {}
   };
 
-  // Handle Admin Passcode Login
+  // Handle Passcode Login (Validates SCANNER_KEY or ADMIN_KEY)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passcode.trim()) return;
@@ -190,7 +217,9 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
       const data = await res.json();
       if (res.ok && data?.token) {
         setToken(data.token);
+        setUserRole(data.role || 'scanner');
         localStorage.setItem('aws_reinvent_admin_token', data.token);
+        localStorage.setItem('aws_reinvent_scanner_role', data.role || 'scanner');
       } else {
         setAuthError(data?.message || 'Invalid passcode. Access denied.');
       }
@@ -201,9 +230,9 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
     }
   };
 
-  // Check In API Call
-  const processCheckIn = async (rawCode: string) => {
-    if (!token || isProcessing) return;
+  // QR Scan Lookup (Fetches attendee details and prompts confirmation)
+  const handleScanDetected = async (rawCode: string) => {
+    if (!token || isProcessing || pendingConfirmation) return;
 
     const ticketId = extractCleanTicketId(rawCode);
     if (!ticketId) return;
@@ -216,7 +245,69 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
     lastScannedTime.current = now;
     lastScannedCode.current = ticketId;
 
+    // Trigger immediate strong haptic feedback on scan
+    triggerHaptic('scan');
+
     setIsProcessing(true);
+
+    try {
+      // Look up ticket details
+      const res = await fetch(apiUrl(`/api/admin/ticket/${encodeURIComponent(ticketId)}`), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      const currentTimeStr = new Date().toLocaleTimeString();
+
+      if (res.ok && data?.success) {
+        if (data.canCheckIn && data.attendee) {
+          // Open Confirmation Dialog: ask volunteer Yes / No
+          setPendingConfirmation({
+            ticketId: data.attendee.id,
+            attendee: data.attendee,
+          });
+        } else if (data.alreadyCheckedIn) {
+          triggerHaptic('warning');
+          playBeep('warning');
+          setLastScannedResult({
+            success: true,
+            alreadyCheckedIn: true,
+            message: data.message,
+            attendee: data.attendee,
+            scannedAt: currentTimeStr,
+          });
+        }
+      } else {
+        triggerHaptic('error');
+        playBeep('error');
+        setLastScannedResult({
+          success: false,
+          message: data?.message || `Pass #${ticketId} is not approved or invalid.`,
+          attendee: data?.attendee,
+          scannedAt: currentTimeStr,
+        });
+      }
+    } catch (err: any) {
+      triggerHaptic('error');
+      playBeep('error');
+      setLastScannedResult({
+        success: false,
+        message: `Network error verifying pass: ${err.message}`,
+        scannedAt: new Date().toLocaleTimeString(),
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Confirm Check-In (Volunteer taps YES)
+  const handleConfirmCheckIn = async () => {
+    if (!pendingConfirmation || isConfirmingCheckIn || !token) return;
+
+    const { ticketId, attendee } = pendingConfirmation;
+    setIsConfirmingCheckIn(true);
 
     try {
       const res = await fetch(apiUrl('/api/admin/checkin'), {
@@ -232,60 +323,62 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
       const currentTimeStr = new Date().toLocaleTimeString();
 
       if (res.ok && data?.success) {
-        if (data.alreadyCheckedIn) {
-          playBeep('warning');
-          setLastScannedResult({
-            success: true,
-            alreadyCheckedIn: true,
-            message: data.message,
-            attendee: data.attendee,
-            scannedAt: currentTimeStr,
-          });
-        } else {
-          playBeep('success');
-          setLastScannedResult({
-            success: true,
-            alreadyCheckedIn: false,
-            message: data.message,
-            attendee: data.attendee,
-            scannedAt: currentTimeStr,
-          });
+        // High-intensity celebratory haptic & audio
+        triggerHaptic('confirm_success');
+        playBeep('success');
 
-          // Add to recent scans list
-          if (data.attendee) {
-            setScanHistory((prev) => [
-              {
-                id: data.attendee.id,
-                name: data.attendee.fullName,
-                time: currentTimeStr,
-                status: 'Checked In',
-              },
-              ...prev.slice(0, 9),
-            ]);
-          }
-        }
+        setLastScannedResult({
+          success: true,
+          alreadyCheckedIn: false,
+          message: data.message || `Checked in successfully! Welcome, ${attendee.fullName}!`,
+          attendee: data.attendee || attendee,
+          scannedAt: currentTimeStr,
+        });
+
+        setScanHistory((prev) => [
+          {
+            id: attendee.id,
+            name: attendee.fullName,
+            time: currentTimeStr,
+            status: 'Checked In',
+          },
+          ...prev.slice(0, 9),
+        ]);
+
+        setPendingConfirmation(null);
       } else {
+        triggerHaptic('error');
         playBeep('error');
         setLastScannedResult({
           success: false,
-          message: data?.message || `Pass #${ticketId} is not approved or invalid.`,
-          attendee: data?.attendee,
+          message: data?.message || 'Check-in failed.',
+          attendee,
           scannedAt: currentTimeStr,
         });
+        setPendingConfirmation(null);
       }
     } catch (err: any) {
+      triggerHaptic('error');
       playBeep('error');
       setLastScannedResult({
         success: false,
-        message: `Network error verifying pass: ${err.message}`,
+        message: `Network error checking in: ${err.message}`,
+        attendee,
         scannedAt: new Date().toLocaleTimeString(),
       });
+      setPendingConfirmation(null);
     } finally {
-      setIsProcessing(false);
+      setIsConfirmingCheckIn(false);
     }
   };
 
-  // Start Camera Stream with Robust Cross-Device Fallback
+  // Cancel Check-In (Volunteer taps NO)
+  const handleCancelCheckIn = () => {
+    triggerHaptic('cancel');
+    setPendingConfirmation(null);
+  };
+
+  // Start Camera Stream with Cross-Device Fallback
   const startCamera = async () => {
     setCameraError(null);
     setHasTorch(false);
@@ -307,7 +400,6 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
       let stream: MediaStream;
       try {
-        // Preferred modern constraints
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: facingMode },
@@ -318,7 +410,6 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
         });
       } catch (firstErr) {
         console.warn('Initial camera constraints failed, attempting fallback:', firstErr);
-        // Fallback for laptops/desktops or devices without rear camera
         stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
@@ -327,7 +418,6 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
       streamRef.current = stream;
 
-      // Check for Flashlight / Torch capability on mobile
       const videoTrack = stream.getVideoTracks()[0];
       if (videoTrack) {
         const capabilities: any = typeof videoTrack.getCapabilities === 'function' ? videoTrack.getCapabilities() : {};
@@ -388,9 +478,9 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
     setIsCameraActive(false);
   };
 
-  // Video Frame Scanning Loop (Optimized with dynamic downscaling)
+  // Video Frame Scanning Loop
   useEffect(() => {
-    if (!token || !isCameraActive) return;
+    if (!token || !isCameraActive || pendingConfirmation) return;
 
     let isScanning = true;
 
@@ -403,7 +493,6 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
       if (video && canvas && video.readyState >= video.HAVE_CURRENT_DATA && video.videoWidth > 0) {
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (ctx) {
-          // Limit canvas resolution to max 640px to ensure smooth 60fps across mobile devices without overheating
           const maxDim = 640;
           const scale = Math.min(1, maxDim / Math.max(video.videoWidth, video.videoHeight));
           const targetWidth = Math.round(video.videoWidth * scale);
@@ -417,13 +506,12 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
 
           const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-          // attemptBoth ensures detection in glare, low light, and inverted screens
           const code = jsQR(imageData.data, imageData.width, imageData.height, {
             inversionAttempts: 'attemptBoth',
           });
 
           if (code && code.data) {
-            processCheckIn(code.data);
+            handleScanDetected(code.data);
           }
         }
       }
@@ -439,7 +527,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [token, isCameraActive, isProcessing]);
+  }, [token, isCameraActive, isProcessing, pendingConfirmation]);
 
   // Lifecycle Camera Activation
   useEffect(() => {
@@ -460,7 +548,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualTicketInput.trim()) return;
-    processCheckIn(manualTicketInput.trim());
+    handleScanDetected(manualTicketInput.trim());
     setManualTicketInput('');
   };
 
@@ -483,16 +571,16 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
             <div className="w-14 h-14 rounded-2xl bg-[#3FB1FF]/10 border border-[#3FB1FF]/30 text-[#3FB1FF] flex items-center justify-center mx-auto">
               <QrCode className="w-7 h-7" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">Organizer Reception Scanner</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-white">Reception QR Scanner</h1>
             <p className="text-xs text-slate-400">
-              Enter event admin passcode to unlock the live QR check-in camera.
+              Enter your <code className="text-[#3FB1FF] font-mono">SCANNER_KEY</code> or <code className="text-slate-300 font-mono">ADMIN_KEY</code> from Server .env to unlock live check-in camera.
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Admin Passcode (from .env)
+                Scanner Passcode
               </label>
               <div className="relative">
                 <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
@@ -500,7 +588,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                   type="password"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter ADMIN_KEY..."
+                  placeholder="Enter SCANNER_KEY or ADMIN_KEY..."
                   autoFocus
                   required
                   className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-4 py-2.5 text-sm text-white focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF]"
@@ -530,7 +618,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
   // 2. Active Scanner Screen
   return (
-    <div className="min-h-screen bg-[#090D16] text-white flex flex-col selection:bg-[#3FB1FF]/30">
+    <div className="min-h-screen bg-[#090D16] text-white flex flex-col selection:bg-[#3FB1FF]/30 relative">
       {/* Top Navigation Bar */}
       <header className="border-b border-slate-800 bg-[#0A0E1A]/90 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -547,6 +635,9 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                 <span>Reception Scanner</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30">
                   LIVE
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
+                  {userRole === 'admin' ? 'ADMIN' : 'SCANNER'}
                 </span>
               </h1>
               <p className="text-[11px] text-slate-400">AWS re:Invent Dhule 2026</p>
@@ -588,7 +679,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               <FlipHorizontal className="w-4 h-4" />
             </button>
 
-            {onNavigateAdminPortal && (
+            {userRole === 'admin' && onNavigateAdminPortal && (
               <button
                 onClick={onNavigateAdminPortal}
                 className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white cursor-pointer"
@@ -614,7 +705,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           {/* Hidden Canvas for QR decoding */}
           <canvas ref={canvasRef} className="hidden" />
 
-          {/* Viewfinder Overlay with Animated Reticle */}
+          {/* Viewfinder Overlay with Reticle */}
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="w-64 h-64 border-2 border-white/20 rounded-2xl relative">
               {/* Corner brackets */}
@@ -623,7 +714,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-[#05E08A] rounded-bl-lg" />
               <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-[#05E08A] rounded-br-lg" />
 
-              {/* Pulsing scanning laser */}
+              {/* Pulsing scanning line */}
               <div className="w-full h-0.5 bg-linear-to-r from-transparent via-[#3FB1FF] to-transparent shadow-[0_0_8px_#3FB1FF] absolute top-1/2 -translate-y-1/2 animate-pulse" />
             </div>
           </div>
@@ -635,7 +726,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               <p className="text-xs sm:text-sm text-slate-300 max-w-xs">{cameraError}</p>
               <button
                 onClick={startCamera}
-                className="px-4 py-2 rounded-xl bg-[#3FB1FF] text-[#090D16] font-bold text-xs"
+                className="px-4 py-2 rounded-xl bg-[#3FB1FF] text-[#090D16] font-bold text-xs cursor-pointer"
               >
                 Retry Camera
               </button>
@@ -650,7 +741,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
         </div>
 
         {/* Scan Result Feedback Card */}
-        {lastScannedResult && (
+        {lastScannedResult && !pendingConfirmation && (
           <div
             className={`rounded-2xl border p-5 shadow-xl transition-all ${
               !lastScannedResult.success
@@ -683,7 +774,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
               <button
                 onClick={() => setLastScannedResult(null)}
-                className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-black/20"
+                className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-black/20 cursor-pointer"
               >
                 Dismiss
               </button>
@@ -783,6 +874,93 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           </div>
         )}
       </main>
+
+      {/* Check-In Confirmation Modal (YES / NO Dialog) */}
+      {pendingConfirmation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="w-full max-w-md rounded-3xl border border-[#3FB1FF]/40 bg-[#0E1526] p-6 shadow-2xl space-y-5 relative overflow-hidden">
+            <div className="h-1.5 w-full bg-linear-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A] absolute top-0 left-0" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#3FB1FF]/10 text-[#3FB1FF] border border-[#3FB1FF]/30">
+                  <QrCode className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-base">Check-In Confirmation</h3>
+                  <p className="text-xs text-slate-400">Verify attendee pass before granting entry</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCancelCheckIn}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-slate-800/80 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Attendee Details Card */}
+            <div className="rounded-2xl border border-slate-700/60 bg-[#090D16] p-4 space-y-3">
+              <div>
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Attendee Name</span>
+                <span className="text-lg font-bold text-white block">{pendingConfirmation.attendee.fullName}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs">
+                <div>
+                  <span className="text-slate-400 text-[11px] block">Pass ID</span>
+                  <span className="font-mono font-bold text-[#3FB1FF]">{pendingConfirmation.attendee.id}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[11px] block">Status</span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30">
+                    APPROVED
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[11px] block">AWS Builder ID</span>
+                  <span className="font-mono text-slate-200">@{pendingConfirmation.attendee.builderId}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[11px] block">College</span>
+                  <span className="truncate text-slate-200 block">{pendingConfirmation.attendee.college}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Confirmation Question */}
+            <div className="text-center py-1">
+              <p className="text-sm font-semibold text-slate-200">
+                Check in this attendee now?
+              </p>
+            </div>
+
+            {/* Confirmation Actions (Yes / No) */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={handleCancelCheckIn}
+                disabled={isConfirmingCheckIn}
+                className="w-full py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <X className="w-4 h-4 text-slate-400" />
+                <span>No, Cancel</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmCheckIn}
+                disabled={isConfirmingCheckIn}
+                className="w-full py-3 rounded-xl bg-linear-to-r from-[#05E08A] to-[#3FB1FF] hover:opacity-95 text-[#090D16] font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer transition-opacity shadow-lg shadow-[#05E08A]/20"
+              >
+                <CheckCircle2 className="w-4 h-4 text-[#090D16]" />
+                <span>{isConfirmingCheckIn ? 'Checking In...' : 'Yes, Check In'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

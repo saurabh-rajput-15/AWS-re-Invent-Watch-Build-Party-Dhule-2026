@@ -1,0 +1,26 @@
+# ==============================================================
+# AWS re:Invent Watch & Build Party Dhule 2026 - robots.txt
+# https://reinvent.awssbgdhule.in
+# ==============================================================
+
+User-agent: *
+Allow: /
+Allow: /register
+Allow: /codeofconduct
+Allow: /preview.png
+Allow: /AWS_Builder.png
+Allow: /AWS_reinvent-dark.png
+Allow: /AWS_reinvent-light.png
+
+# Disallow private administrative and reception portal routes from search engine indexing
+Disallow: /admin
+Disallow: /scanner
+Disallow: /api/
+
+# Disallow individual dynamic pass IDs to protect attendee privacy
+Disallow: /ticketid=*
+Disallow: /pass/*
+
+# XML Sitemap
+Sitemap: https://reinvent.awssbgdhule.in/sitemap.xml
+

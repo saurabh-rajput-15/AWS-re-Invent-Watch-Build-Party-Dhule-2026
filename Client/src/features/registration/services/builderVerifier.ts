@@ -1,3 +1,5 @@
+import { apiUrl } from '../../../utils/api';
+
 export interface BuilderVerificationResult {
   status: 'valid' | 'invalid' | 'checking' | 'idle';
   alias: string;
@@ -35,7 +37,7 @@ export async function verifyAwsBuilderAlias(rawInput: string, force = false): Pr
   }
 
   try {
-    const res = await fetch('/api/registrations/builder-check', {
+    const res = await fetch(apiUrl('/api/registrations/builder-check'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,14 +45,15 @@ export async function verifyAwsBuilderAlias(rawInput: string, force = false): Pr
       body: JSON.stringify({ alias: clean, force }),
     });
 
-    if (res.ok) {
-      const data = await res.json();
+    const data = await res.json().catch(() => null);
+
+    if (res.ok && data) {
       return data;
     } else {
       return {
         status: 'invalid',
         alias: clean,
-        error: 'No profile found on AWS Builder Center (404)',
+        error: data?.message || data?.error || 'No profile found on AWS Builder Center (404)',
       };
     }
   } catch (err: unknown) {
@@ -62,4 +65,3 @@ export async function verifyAwsBuilderAlias(rawInput: string, force = false): Pr
     };
   }
 }
-

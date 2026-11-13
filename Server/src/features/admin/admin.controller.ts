@@ -8,32 +8,41 @@ import { builderCenterAgentService } from '../../services/builderCenterAgent.ser
 
 export class AdminController {
   public static async login(req: Request, res: Response): Promise<void> {
-    const rawKey = req.body.key || req.body.passcode || req.body.adminKey;
+    const rawKey = req.body.key || req.body.passcode || req.body.adminKey || req.body.scannerKey;
 
     if (!rawKey || typeof rawKey !== 'string') {
-      res.status(400).json({ success: false, message: 'Admin passcode is required' });
+      res.status(400).json({ success: false, message: 'Passcode is required' });
       return;
     }
 
     const trimmedKey = rawKey.trim();
-    if (trimmedKey !== config.adminKey) {
-      res.status(401).json({ success: false, message: 'Invalid Admin Key. Access denied.' });
+    let role: 'admin' | 'scanner' | null = null;
+
+    if (config.adminKey && trimmedKey === config.adminKey) {
+      role = 'admin';
+    } else if (config.scannerKey && trimmedKey === config.scannerKey) {
+      role = 'scanner';
+    }
+
+    if (!role) {
+      res.status(401).json({ success: false, message: 'Invalid passcode. Access denied.' });
       return;
     }
 
     const token = jwt.sign(
-      { role: 'admin', authenticatedAt: Date.now() },
+      { role, authenticatedAt: Date.now() },
       config.jwtSecret,
       { expiresIn: '24h' }
     );
 
     res.json({
       success: true,
-      message: 'Admin access granted',
+      message: role === 'admin' ? 'Admin access granted' : 'Scanner access granted',
       token,
+      role,
       admin: {
-        role: 'admin',
-        title: 'AWS re:Invent Event Organizer',
+        role,
+        title: role === 'admin' ? 'AWS re:Invent Event Organizer' : 'Reception Scanner Volunteer',
       },
     });
   }
@@ -172,14 +181,58 @@ export class AdminController {
     });
   }
 
-  public static async checkIn(req: Request, res: Response): Promise<void> {
+  public static async getTicketForCheckin(req: Request, res: Response): Promise<void> {
+    const ticketId = (req.params.ticketId || req.query.ticketId || '') as string;
+    if (!ticketId) {
+      res.status(400).json({ success: false, message: 'Ticket ID is required' });
+      return;
+    }
+
+    const attendee = await registrationsService.getById(ticketId.trim());
+    if (!attendee) {
+      res.status(404).json({ success: false, message: `Ticket "${ticketId}" was not found in the event database.` });
+      return;
+    }
+
+    if (attendee.status !== 'approved') {
+      res.status(400).json({
+        success: false,
+        canCheckIn: false,
+        attendee,
+        message: `Ticket "${ticketId}" is ${attendee.status.toUpperCase()} (Not Approved). Entry Denied.`,
+      });
+      return;
+    }
+
+    if (attendee.checkedIn) {
+      res.json({
+        success: true,
+        canCheckIn: false,
+        alreadyCheckedIn: true,
+        attendee,
+        message: `Already checked in at ${new Date(attendee.checkedInAt || Date.now()).toLocaleTimeString()}`,
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      canCheckIn: true,
+      alreadyCheckedIn: false,
+      attendee,
+      message: `Pass verified. Ready for check-in.`,
+    });
+  }
+
+  public static async checkIn(req: any, res: Response): Promise<void> {
     const ticketId = (req.body?.ticketId || req.query?.ticketId || '') as string;
     if (!ticketId) {
       res.status(400).json({ success: false, message: 'Ticket ID is required' });
       return;
     }
 
-    const result = await registrationsService.checkIn(ticketId.trim(), 'Reception Scanner');
+    const reviewer = req.adminUser?.role === 'scanner' ? 'Reception Scanner Volunteer' : 'Admin Reception';
+    const result = await registrationsService.checkIn(ticketId.trim(), reviewer);
     res.status(result.success ? 200 : 400).json(result);
   }
 }

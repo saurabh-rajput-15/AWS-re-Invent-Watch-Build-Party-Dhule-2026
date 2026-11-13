@@ -131,6 +131,34 @@ export default function App() {
     };
   }, []);
 
+  // Synchronize dynamic Page Title for Search Engines & Social Tab Navigation
+  useEffect(() => {
+    switch (routeState.route) {
+      case 'home':
+        document.title = 'AWS re:Invent Watch & Build Party Dhule 2026 | AWS Student Builder Group';
+        break;
+      case 'register':
+        document.title = 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026';
+        break;
+      case 'codeofconduct':
+        document.title = 'Code of Conduct · AWS re:Invent Dhule 2026';
+        break;
+      case 'ticket':
+        document.title = routeState.ticketId
+          ? `Event Pass #${routeState.ticketId} · AWS re:Invent Dhule 2026`
+          : 'Digital Event Pass · AWS re:Invent Dhule 2026';
+        break;
+      case 'admin':
+        document.title = 'Organizer Admin Portal · AWS re:Invent Dhule 2026';
+        break;
+      case 'scanner':
+        document.title = 'Reception QR Scanner · AWS re:Invent Dhule 2026';
+        break;
+      default:
+        document.title = 'AWS re:Invent Watch & Build Party Dhule 2026';
+    }
+  }, [routeState]);
+
   const navigateToHome = () => {
     if (window.location.pathname !== '/' || window.location.hash || window.location.search) {
       window.history.pushState({}, '', '/');

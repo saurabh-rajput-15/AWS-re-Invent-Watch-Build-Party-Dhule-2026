@@ -42,28 +42,35 @@ The **AWS re:Invent Watch & Build Party Dhule** web portal provides attendees wi
 
 Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended).
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/saurabh-girase/aws-reinvent-watch-build-party-dhule.git
-cd "aws reinvent"
-```
+### 1. Project Architecture
 
-### 2. Install dependencies
+The project is structured into full-stack feature-based modules:
+- **`Server/`**: Express + TypeScript backend providing server-side admin authentication (`ADMIN_KEY`), session management, registration APIs, and AWS builder verification proxy.
+- **`Client/`**: React 19 + Vite frontend featuring event landing, registration, and server-protected admin portal.
+
+### 2. Server Setup
+
 ```bash
+cd Server
 npm install
-```
-
-### 3. Run the development server
-```bash
 npm run dev
 ```
 
-The app will be accessible at `http://localhost:3000`. No API keys or environment variables are required to run locally.
+The Server starts on `http://localhost:5000`.
+- The admin key is configured in `Server/.env` with `ADMIN_KEY`
+- Protected admin routes require this key for authentication and issue signed session tokens.
 
-### 5. Build for production
+For Supabase, run [supabase-unified-setup.sql](Server/supabase-unified-setup.sql) first, then [supabase-schema-restructure.sql](Server/supabase-schema-restructure.sql) in the SQL Editor. The restructuring migration moves legacy agent sessions, preserves check-in metadata, and adds alias uniqueness. It rolls back if duplicate normalized aliases need reconciliation. Set `SUPABASE_SERVICE_ROLE_KEY` on the server to access the private `agent_sessions` table.
+
+### 3. Client Setup
+
 ```bash
-npm run build
+cd Client
+npm install
+npm run dev
 ```
+
+The Client runs on `http://localhost:3000` with automatic `/api` proxying to `http://localhost:5000`. No client API keys are required.
 
 ---
 

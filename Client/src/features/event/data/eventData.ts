@@ -170,31 +170,66 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-1',
     question: 'Who can attend the AWS re:Invent Watch & Build Party?',
-    answer: 'Any student enrolled in engineering, computer science, BCA/MCA, or related technical disciplines from colleges across Dhule and Maharashtra is eligible. Working professionals and cloud enthusiasts are also welcome!'
+    answer: 'Any student enrolled in engineering, computer science, BCA/MCA, or related technical disciplines from colleges across Dhule and Maharashtra is eligible. Working professionals, faculty members, and cloud enthusiasts are also warmly welcome!'
   },
   {
     id: 'faq-2',
     question: 'What is the entry fee for the event?',
-    answer: 'The event is 100% free of cost for all registered attendees, sponsored by the AWS Student Builder Group Dhule. This includes access to the screening auditorium, workshop sessions, lunch, and official swag kits.'
+    answer: 'The event is 100% free of cost for all registered and confirmed attendees, sponsored by the AWS Student Builder Group Dhule. This includes access to the keynote screening auditorium, technical masterclasses, lunch, and official swag kits.'
   },
   {
     id: 'faq-3',
-    question: 'What do I need to bring with me on the day of the event?',
-    answer: 'Please bring your smartphone (for live Kahoot battles and quiz participation), student ID card, and your cloud enthusiasm! If you have registered through this portal, have your digital pass ready on your phone for lightning check-in.'
+    question: 'Will food, refreshments, and lunch be provided?',
+    answer: 'Yes! All confirmed attendees receive complimentary morning high-tea & snacks during registration, followed by a full buffet lunch in Harmony Hall (3rd Floor), and evening coffee before the closing ceremony.'
   },
   {
     id: 'faq-4',
-    question: 'Do I need prior experience with AWS or cloud computing?',
-    answer: 'No prior advanced experience is required! We have curated sessions tailored for both beginners and experienced cloud developers. The Kahoot Cloud Arena is fun and engaging for everyone—from first-year learners to senior cloud developers.'
+    question: 'What do I need to bring with me on the day of the event?',
+    answer: 'Please bring your smartphone (for live Kahoot battles and quiz participation), college ID card, and your cloud enthusiasm! If you have registered through this portal, have your digital pass QR code ready on your phone for lightning check-in.'
   },
   {
     id: 'faq-5',
-    question: 'How do I participate in the Kahoot Cloud Arena?',
-    answer: 'Everyone participates live on their own smartphone via kahoot.it! No coding setup or team formation needed. Multiple rounds will test your speed and knowledge on re:Invent keynote highlights, AWS service knowledge, and tech trivia. Top scorers win exclusive AWS swag kits and podium certificates.'
+    question: 'What is an AWS Builder ID, and why is it required for registration?',
+    answer: 'An AWS Builder ID is your free personal developer identity across the AWS community ecosystem. Having a Builder ID allows you to RSVP directly on AWS Builder Center, join our regional student chapter, access AWS developer tools, and receive official digital badges.'
   },
   {
     id: 'faq-6',
-    question: 'Will certificates and swag be provided?',
-    answer: 'Yes! All verified attendees who participate in the sessions and Kahoot battles will receive an official Digital Certificate of Participation and exclusive AWS re:Invent stickers, badge lanyards, and winner swags.'
+    question: 'How do I know if my registration is approved and confirmed?',
+    answer: 'Once you submit the registration form, our organizing committee reviews your application. Upon approval, you will receive an official confirmation email containing your verified Digital Ticket Pass (riv-26-XXXX) and personal QR code for express entry.'
+  },
+  {
+    id: 'faq-7',
+    question: 'Do I need prior experience with AWS or cloud computing?',
+    answer: 'No prior advanced experience is required! We have curated sessions tailored for both beginners and experienced cloud developers. The keynote discussions and Kahoot Cloud Arena are engaging for all experience levels—from first-year learners to seasoned engineers.'
+  },
+  {
+    id: 'faq-8',
+    question: 'Can I bring my laptop to the event?',
+    answer: 'While a laptop is optional (as the interactive quizzes and screening run directly on auditorium screens and mobile phones), you are very welcome to bring your laptop if you wish to follow along during the Kubernetes masterclass or take notes. High-speed event Wi-Fi and charging points will be available.'
+  },
+  {
+    id: 'faq-9',
+    question: 'How do I participate in the Kahoot Cloud Arena?',
+    answer: 'Everyone participates live on their own smartphone via kahoot.it! No complex software installation or team setup needed. Multiple rapid-fire rounds will test your speed and understanding of re:Invent keynote highlights, AWS service fundamentals, and tech puzzles. Top scorers win exclusive AWS swag kits and podium certificates.'
+  },
+  {
+    id: 'faq-10',
+    question: 'Will certificates and exclusive AWS swag be provided?',
+    answer: 'Yes! All verified attendees who check in and attend the sessions will receive an official Certificate of Participation from AWS Student Builder Group Dhule, along with official AWS stickers, conference badge lanyards, and special prizes for quiz champions.'
+  },
+  {
+    id: 'faq-11',
+    question: 'Where is the venue, and is parking available?',
+    answer: 'The event is held at Hotel Anand Regency Riverfront, located conveniently along the Panzara Riverfront in Dhule, Maharashtra (424001). Ample complimentary parking space is available on the hotel premises for both two-wheelers and four-wheelers.'
+  },
+  {
+    id: 'faq-12',
+    question: 'Can I register on-the-spot (walk-in) at the venue?',
+    answer: 'Due to auditorium seating capacity limits (maximum 300 seats) and catering arrangements, walk-in registrations cannot be guaranteed. We strongly recommend completing your registration online in advance to secure your entry pass.'
+  },
+  {
+    id: 'faq-13',
+    question: 'How can I contact the organizing team if I have questions?',
+    answer: 'You can email us anytime at info@reinvent.awssbgdhule.in, or reach out directly to the student builder leads: Soham Chaudhari (+91 98343 82337) or Saurabh Rajput (+91 98909 91510).'
   }
 ];

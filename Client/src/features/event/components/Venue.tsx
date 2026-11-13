@@ -108,7 +108,7 @@ export const Venue: React.FC = () => {
           <div className="lg:col-span-7 flex flex-col">
             <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526] shadow-xl flex-1 flex flex-col min-h-[420px] transition-all duration-300 hover:border-slate-700">
               {/* Floating Map Pin Badge */}
-              <div className="absolute top-3 left-10 z-10 rounded-lg bg-[#0E1526]/90 px-3 py-1.5 text-xs font-mono text-white backdrop-blur-md border border-slate-700/80 shadow-md flex items-center gap-1.5 pointer-events-none">
+              <div className="absolute top-3 right-3 z-10 rounded-lg bg-[#0E1526]/90 px-3 py-1.5 text-xs font-mono text-white backdrop-blur-md border border-slate-700/80 shadow-md flex items-center gap-1.5 pointer-events-none">
                 <span className="inline-block h-2 w-2 rounded-full bg-[#05E08A] animate-pulse" />
                 <span>Hotel Anand Regency Riverfront</span>
               </div>

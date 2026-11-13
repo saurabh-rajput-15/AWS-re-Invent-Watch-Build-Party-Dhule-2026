@@ -1,4 +1,4 @@
-import { EVENT_DETAILS } from '../data/eventData';
+import { EVENT_DETAILS } from '../features/event/data/eventData';
 
 export function getGoogleCalendarUrl(
   title: string = EVENT_DETAILS.name,

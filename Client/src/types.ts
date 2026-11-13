@@ -10,10 +10,16 @@ export interface Attendee {
   year?: string;
   skillLevel?: 'Beginner' | 'Intermediate' | 'Advanced';
   interestTrack?: string;
+  whyJoin?: string;
   status: RegistrationStatus;
   registeredAt: number;
   reviewedAt?: number;
   reviewedBy?: string;
+  builderCenterVerified?: boolean;
+  builderCenterStatus?: 'registered_on_builder_center' | 'not_registered' | 'pending_check';
+  builderCenterVerifiedAt?: number;
+  checkedIn?: boolean;
+  checkedInAt?: number;
 }
 
 export type TrackCategory = 'all' | 'keynote' | 'build' | 'workshop';

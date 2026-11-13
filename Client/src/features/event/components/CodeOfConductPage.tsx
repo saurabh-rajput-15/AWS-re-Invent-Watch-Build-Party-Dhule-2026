@@ -7,7 +7,7 @@ import {
   FileText,
   Gift,
   CheckCircle2,
-  PhoneCall,
+  Mail,
   Scale,
   Building,
   HeartHandshake
@@ -262,42 +262,30 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             <section className="rounded-2xl border border-[#3FB1FF]/40 bg-gradient-to-br from-[#0E1526] via-[#111A30] to-[#0E1526] p-6 sm:p-8 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-xl bg-[#3FB1FF]/20 p-2.5 text-[#3FB1FF] shrink-0">
-                  <PhoneCall className="h-6 w-6" />
+                  <Mail className="h-6 w-6" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-white">
                     6. Incident Reporting &amp; Organizer Contacts
                   </h2>
-                  <p className="text-xs text-slate-400 font-mono">Confidential Safety Hotline</p>
+                  <p className="text-xs text-slate-400 font-mono">Confidential Incident Reporting</p>
                 </div>
               </div>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                If you experience or witness any form of harassment, vandalism, safety hazard, or inappropriate conduct, report it immediately to the organizers on-site or reach out directly to the numbers below. All reports will be handled with strict confidentiality and prompt intervention.
+                If you experience or witness any form of harassment, vandalism, safety hazard, or inappropriate conduct, report it immediately to the organizers on-site or email the organizing team below. All reports will be handled with strict confidentiality and prompt intervention.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="pt-2">
                 <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <div className="text-xs font-mono text-slate-400">Lead Organizer</div>
-                  <div className="font-bold text-white text-sm mt-0.5">Soham Chaudhari (SBG Lead)</div>
+                  <div className="text-xs font-mono text-slate-400">Official Email</div>
+                  <div className="font-bold text-white text-sm mt-0.5">AWS Student Builder Group Dhule</div>
                   <a
-                    href="tel:9834382337"
+                    href={`mailto:${EVENT_DETAILS.contactEmail}`}
                     className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[#05E08A] hover:underline mt-2"
                   >
-                    <PhoneCall className="h-3 w-3" />
-                    <span>+91 98343 82337</span>
-                  </a>
-                </div>
-
-                <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <div className="text-xs font-mono text-slate-400">Lead Organizer</div>
-                  <div className="font-bold text-white text-sm mt-0.5">Saurabh Rajput (Organizer)</div>
-                  <a
-                    href="tel:9890991510"
-                    className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[#05E08A] hover:underline mt-2"
-                  >
-                    <PhoneCall className="h-3 w-3" />
-                    <span>+91 98909 91510</span>
+                    <Mail className="h-3 w-3 shrink-0" />
+                    <span className="break-all">{EVENT_DETAILS.contactEmail}</span>
                   </a>
                 </div>
               </div>
@@ -316,12 +304,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             </button>
 
             <button
-              onClick={() => {
-                onNavigateHome();
-                setTimeout(() => {
-                  onScrollToRegister();
-                }, 100);
-              }}
+              onClick={onScrollToRegister}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#AB5CFF] to-[#3FB1FF] hover:opacity-95 px-8 py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-[#AB5CFF]/20 transition-all cursor-pointer"
             >
               <span>Proceed to Registration →</span>

@@ -1,4 +1,4 @@
-import { AgendaSession, Speaker, FAQItem } from '../../../types';
+import { AgendaSession, Speaker, FAQItem, EventBenefit } from '../../../types';
 
 export const EVENT_DETAILS = {
   name: 'AWS re:Invent Watch & Build Party Dhule',
@@ -231,5 +231,64 @@ export const FAQS: FAQItem[] = [
     id: 'faq-13',
     question: 'How can I contact the organizing team if I have questions?',
     answer: 'You can email us anytime at info@reinvent.awssbgdhule.in, or reach out directly to the student builder leads: Soham Chaudhari (+91 98343 82337) or Saurabh Rajput (+91 98909 91510).'
+  }
+];
+
+export const EVENT_BENEFITS: EventBenefit[] = [
+  {
+    id: 'lunch',
+    title: 'Premium Restaurant Lunch',
+    description: 'Enjoy a guaranteed premium lunch experience at Hotel Anand Regency Riverfront.',
+    category: 'Hospitality & Dining',
+    accent: '#FF9F1C',
+    tag: 'Guaranteed Buffet Lunch'
+  },
+  {
+    id: 'swags',
+    title: 'Exclusive Event Swags',
+    description: 'Take home exciting goodies and event merchandise provided by aws.',
+    category: 'Official Merchandise',
+    accent: '#FF57E8',
+    tag: 'Limited Edition Swags'
+  },
+  {
+    id: 'credits',
+    title: 'AWS Credits & Giveaways',
+    description: 'Opportunities to get AWS credits and exciting surprises.',
+    category: 'Builder Rewards',
+    accent: '#3FB1FF',
+    tag: 'Cloud Vouchers'
+  },
+  {
+    id: 'networking',
+    title: 'Meaningful Networking',
+    description: 'Connect with AWS community leaders, developers, industry professionals, and fellow builders.',
+    category: 'Community & Peer Group',
+    accent: '#05E08A',
+    tag: '300+ Tech Builders'
+  },
+  {
+    id: 'learning',
+    title: 'Hands-on Learning',
+    description: 'Explore AWS technologies through practical sessions, demonstrations, and building activities.',
+    category: 'Interactive Labs',
+    accent: '#AB5CFF',
+    tag: 'Practical Sprints'
+  },
+  {
+    id: 'announcements',
+    title: 'Latest re:Invent Announcements',
+    description: "Discover what's new and exciting in the AWS ecosystem.",
+    category: 'Keynotes & Deep-dives',
+    accent: '#3FB1FF',
+    tag: 'Direct from Las Vegas'
+  },
+  {
+    id: 'activities',
+    title: 'Fun Community Activities',
+    description: 'Enjoy interactive challenges, engaging discussions, and plenty of memorable moments.',
+    category: 'Kahoot & Quizzes',
+    accent: '#FF9F1C',
+    tag: 'Live Stage Contests'
   }
 ];

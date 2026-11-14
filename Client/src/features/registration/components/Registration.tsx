@@ -402,8 +402,7 @@ export const Registration: React.FC<RegistrationProps> = ({
           {/* Left Column: Context & Verification Process */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#AB5CFF]">
-              <span>04 · Registration</span>
-              <span aria-hidden="true" className="text-slate-600">·</span>
+              <span>Pass Application · Official Registration</span>
             </div>
 
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">

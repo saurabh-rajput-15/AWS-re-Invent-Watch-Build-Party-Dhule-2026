@@ -67,6 +67,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           <a href="#about" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
             About
           </a>
+          <a href="#benefits" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            Benefits
+          </a>
           <a href="#agenda" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
             Schedule
           </a>
@@ -78,9 +81,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           </a>
           <a href="#faq" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
             FAQ
-          </a>
-          <a href="/register" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full text-[#3FB1FF] hover:bg-[#3FB1FF]/10 hover:text-white transition-all font-semibold">
-            Register
           </a>
         </nav>
 
@@ -148,6 +148,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
                   className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
                 >
                   About
+                </a>
+                <a
+                  href="#benefits"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl px-4 py-2.5 hover:bg-slate-800/70 hover:text-white transition-colors"
+                >
+                  What You'll Get
                 </a>
                 <a
                   href="#agenda"

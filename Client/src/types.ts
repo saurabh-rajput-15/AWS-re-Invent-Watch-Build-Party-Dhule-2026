@@ -59,3 +59,12 @@ export interface FAQItem {
   question: string;
   answer: string;
 }
+
+export interface EventBenefit {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  accent: string;
+  tag: string;
+}

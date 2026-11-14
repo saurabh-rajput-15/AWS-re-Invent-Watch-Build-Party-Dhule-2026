@@ -89,6 +89,7 @@ export const Footer: React.FC = () => {
 
           <nav className="mt-8 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-5 text-xs font-medium text-slate-300 sm:gap-3 sm:text-sm lg:mt-10 [&_a]:rounded-full [&_a]:px-3 [&_a]:py-2 [&_a]:transition-colors [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-[#3FB1FF]">
             <a href="#about" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">About</a>
+            <a href="#benefits" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Benefits</a>
             <a href="#agenda" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Schedule</a>
             <a href="#speakers" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Mentors</a>
             <a href="#venue" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Venue</a>

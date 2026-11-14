@@ -26,7 +26,7 @@ export const Agenda: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-10 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#05E08A]">
-              <span>02 · Event Flow</span>
+              <span>03 · Event Flow</span>
               <span aria-hidden="true" className="text-slate-600">·</span>
               <span>Full Day Schedule</span>
             </div>

@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './features/event/components/Hero';
 import { Ticker } from './features/event/components/Ticker';
 import { About } from './features/event/components/About';
+import { Benefits } from './features/event/components/Benefits';
 import { Agenda } from './features/event/components/Agenda';
 import { Speakers } from './features/event/components/Speakers';
 import { RegistrationPage } from './features/registration/components/RegistrationPage';
@@ -366,6 +367,8 @@ export default function App() {
         <Ticker />
 
         <About />
+
+        <Benefits onScrollToRegister={navigateToRegister} />
 
         <Agenda />
 

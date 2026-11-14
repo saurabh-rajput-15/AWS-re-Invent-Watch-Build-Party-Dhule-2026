@@ -9,7 +9,7 @@ export const Speakers: React.FC = () => {
         {/* Header */}
         <div className="max-w-3xl">
           <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#FF57E8]">
-            <span>03 · Mentors &amp; Speakers</span>
+            <span>04 · Mentors &amp; Speakers</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span>Cloud Practitioners</span>
           </div>

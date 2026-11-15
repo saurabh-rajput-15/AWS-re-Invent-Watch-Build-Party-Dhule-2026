@@ -7,6 +7,14 @@ User-agent: *
 Allow: /
 Allow: /register
 Allow: /codeofconduct
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-48x48.png
+Allow: /favicon-96x96.png
+Allow: /apple-touch-icon.png
+Allow: /logo-192x192.png
+Allow: /logo-512x512.png
+Allow: /site.webmanifest
 Allow: /preview.png
 Allow: /AWS_Builder.png
 Allow: /AWS_reinvent-dark.png

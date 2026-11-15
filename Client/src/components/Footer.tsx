@@ -27,12 +27,20 @@ export const Footer: React.FC = () => {
                 <img
                   src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent Dhule 2026"
+                  width={783}
+                  height={281}
+                  loading="lazy"
+                  decoding="async"
                   className="block h-auto w-full min-w-0 object-contain drop-shadow-xl"
                 />
                 <div aria-hidden="true" className="h-8 w-px bg-slate-700/70 sm:h-14 lg:h-16" />
                 <img
                   src="/AWS_Builder.png"
                   alt="AWS Student Builder Group Dhule"
+                  width={1121}
+                  height={205}
+                  loading="lazy"
+                  decoding="async"
                   className="block h-auto w-full min-w-0 object-contain opacity-95 drop-shadow-md"
                 />
               </div>

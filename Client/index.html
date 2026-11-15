@@ -26,15 +26,22 @@
     <meta name="color-scheme" content="dark" />
     <meta name="application-name" content="AWS re:Invent Dhule" />
 
-    <!-- Favicon & Touch Icons -->
-    <link rel="icon" type="image/png" href="/preview.png" />
-    <link rel="apple-touch-icon" href="/preview.png" />
+    <!-- Google Search & Browser Favicon Directives (Strict 1:1 Aspect Ratio - 512x512 Everywhere) -->
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo-512x512.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo-192x192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/logo-512x512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Google / Schema.org / WhatsApp Primary Fallback -->
     <meta itemprop="name" content="AWS re:Invent Dhule 2026 | Watch &amp; Build Party" />
     <meta itemprop="description" content="Official event hub for AWS re:Invent Watch &amp; Build Party Dhule. Free registration, keynote screenings, enterprise cloud masterclasses, lunch, and certificates." />
-    <meta itemprop="image" content="https://reinvent.awssbgdhule.in/preview.png?v=2" />
-    <link rel="image_src" href="https://reinvent.awssbgdhule.in/preview.png?v=2" />
+    <meta itemprop="image" content="https://reinvent.awssbgdhule.in/logo-512x512.png" />
+    <link rel="image_src" href="https://reinvent.awssbgdhule.in/logo-512x512.png" />
 
     <!-- Open Graph / Facebook / WhatsApp / LinkedIn / Discord -->
     <meta property="og:type" content="website" />
@@ -70,7 +77,11 @@
           "@id": "https://reinvent.awssbgdhule.in/#website",
           "url": "https://reinvent.awssbgdhule.in/",
           "name": "AWS re:Invent Dhule 2026",
-          "alternateName": ["reinvent dhule", "aws reinvent dhule", "re:Invent Dhule", "AWSSBG Dhule"]
+          "alternateName": ["reinvent dhule", "aws reinvent dhule", "re:Invent Dhule", "AWSSBG Dhule"],
+          "publisher": {
+            "@id": "https://reinvent.awssbgdhule.in/#organization"
+          },
+          "image": "https://reinvent.awssbgdhule.in/logo-512x512.png"
         },
         {
           "@type": "Event",
@@ -107,13 +118,11 @@
             }
           },
           "image": [
+            "https://reinvent.awssbgdhule.in/logo-512x512.png",
             "https://reinvent.awssbgdhule.in/preview.png"
           ],
           "organizer": {
-            "@type": "Organization",
-            "name": "AWS Student Builder Group Dhule",
-            "url": "https://reinvent.awssbgdhule.in/",
-            "logo": "https://reinvent.awssbgdhule.in/AWS_Builder.png"
+            "@id": "https://reinvent.awssbgdhule.in/#organization"
           },
           "performer": [
             {
@@ -188,7 +197,14 @@
           "name": "AWS Student Builder Group Dhule",
           "alternateName": "AWSSBG Dhule",
           "url": "https://reinvent.awssbgdhule.in/",
-          "logo": "https://reinvent.awssbgdhule.in/AWS_Builder.png",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://reinvent.awssbgdhule.in/logo-512x512.png",
+            "width": 512,
+            "height": 512,
+            "caption": "AWS re:Invent Dhule 2026 Official Logo"
+          },
+          "image": "https://reinvent.awssbgdhule.in/logo-512x512.png",
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "info@reinvent.awssbgdhule.in",

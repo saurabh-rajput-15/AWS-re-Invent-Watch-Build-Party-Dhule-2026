@@ -7,6 +7,11 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
+      <image:loc>https://reinvent.awssbgdhule.in/logo-512x512.png</image:loc>
+      <image:title>AWS re:Invent Dhule 2026 Official Logo</image:title>
+      <image:caption>Official square logo for AWS re:Invent Watch and Build Party Dhule</image:caption>
+    </image:image>
+    <image:image>
       <image:loc>https://reinvent.awssbgdhule.in/preview.png</image:loc>
       <image:title>AWS re:Invent Watch and Build Party Dhule 2026</image:title>
       <image:caption>Official Banner for AWS re:Invent Dhule Watch and Build Party hosted by AWS Student Builder Group Dhule</image:caption>

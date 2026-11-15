@@ -58,6 +58,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           <img
             src="/AWS_reinvent-dark.png"
             alt="AWS re:Invent Dhule 2026"
+            width={783}
+            height={281}
+            fetchPriority="high"
+            decoding="async"
             className="h-8 sm:h-9 md:h-10 lg:h-13 w-auto object-contain"
           />
         </a>

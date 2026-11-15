@@ -115,6 +115,7 @@ export const Registration: React.FC<RegistrationProps> = ({
   // Form Builder Verification State
   const [verificationResult, setVerificationResult] = useState<BuilderVerificationResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(true);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
@@ -180,13 +181,20 @@ export const Registration: React.FC<RegistrationProps> = ({
     if (!cleanPhone || cleanPhone.length < 10) {
       errs.phone = 'Please provide a valid 10-digit mobile number';
     }
-    if (!formData.builderId.trim()) {
+
+    const cleanAlias = cleanBuilderAlias(formData.builderId);
+    if (!cleanAlias) {
       errs.builderId = 'AWS Builder Center alias is required';
-    } else if (verificationResult?.status === 'valid' && verificationResult.hasEventRegistration === false) {
-      errs.builderId = 'Please register on AWS Builder Center first, then return here to submit';
-    } else if (verificationResult?.status === 'invalid') {
-      errs.builderId = 'Please provide a valid AWS Builder Center alias';
+    } else if (isVerifying) {
+      errs.builderId = 'Verifying your AWS Builder Center registration. Please wait...';
+    } else if (!verificationResult || verificationResult.alias !== cleanAlias) {
+      errs.builderId = 'Please wait for your AWS Builder Center alias to be verified';
+    } else if (verificationResult.status === 'invalid') {
+      errs.builderId = verificationResult.error || 'Profile not found on AWS Builder Center (404). Please provide a valid AWS Builder alias.';
+    } else if (verificationResult.status === 'valid' && !verificationResult.hasEventRegistration) {
+      errs.builderId = 'You must register on the AWS Builder Center event page before submitting here.';
     }
+
     if (!formData.college.trim()) {
       errs.college = 'Please enter your college name';
     }
@@ -203,7 +211,7 @@ export const Registration: React.FC<RegistrationProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  // Auto-verification timer and cache refs (checks after 3s typing stop or immediately on field blur)
+  // Auto-verification timer and cache refs (checks after typing stop or immediately on field blur)
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCheckedAliasRef = useRef<string>('');
 
@@ -217,28 +225,30 @@ export const Registration: React.FC<RegistrationProps> = ({
   }, []);
 
   // Test alias live against AWS Builder Center endpoint automatically
-  const triggerAutoVerify = async (rawInput: string, force = false) => {
+  const triggerAutoVerify = async (rawInput: string, force = false): Promise<BuilderVerificationResult | null> => {
     const alias = cleanBuilderAlias(rawInput);
     if (!alias) {
       setVerificationResult(null);
       lastCheckedAliasRef.current = '';
-      return;
+      return null;
     }
     // Skip duplicate network check if already verified for this exact alias unless forced
     if (!force && alias === lastCheckedAliasRef.current && verificationResult) {
-      return;
+      return verificationResult;
     }
     setIsVerifying(true);
     lastCheckedAliasRef.current = alias;
     const result = await verifyAwsBuilderAlias(alias, force);
     setVerificationResult(result);
     setIsVerifying(false);
+    return result;
   };
 
   const handleAliasChange = (val: string) => {
     // Automatically convert to lowercase even if CapsLock is active or user enters uppercase
     const lowerVal = val.toLowerCase();
     setFormData((prev) => ({ ...prev, builderId: lowerVal }));
+    setSubmitError(null);
     if (errors.builderId) {
       setErrors((prev) => {
         const copy = { ...prev };
@@ -256,10 +266,10 @@ export const Registration: React.FC<RegistrationProps> = ({
       lastCheckedAliasRef.current = '';
       return;
     }
-    // If user stops typing for 1.8 seconds, verify automatically
+    // If user stops typing for 1.2 seconds, verify automatically
     typingTimerRef.current = setTimeout(() => {
       triggerAutoVerify(lowerVal);
-    }, 1800);
+    }, 1200);
   };
 
   const handleAliasBlur = () => {
@@ -272,13 +282,50 @@ export const Registration: React.FC<RegistrationProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+
+    const cleanAlias = cleanBuilderAlias(formData.builderId);
+    if (!cleanAlias) {
+      setErrors((prev) => ({ ...prev, builderId: 'AWS Builder Center alias is required' }));
+      return;
+    }
+
+    // Cancel typing timer if running
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+    }
+
+    // If verification has not run, is still checking, or does not match current input, verify live now
+    let currentVerification = verificationResult;
+    if (!currentVerification || currentVerification.alias !== cleanAlias || isVerifying) {
+      setIsVerifying(true);
+      currentVerification = await verifyAwsBuilderAlias(cleanAlias, true);
+      setVerificationResult(currentVerification);
+      lastCheckedAliasRef.current = cleanAlias;
+      setIsVerifying(false);
+    }
+
+    if (currentVerification.status !== 'valid') {
+      const msg = currentVerification?.error || 'Profile not found on AWS Builder Center (404). Please create/verify your AWS Builder ID first.';
+      setErrors((prev) => ({ ...prev, builderId: msg }));
+      setSubmitError(msg);
+      return;
+    }
+
+    if (!currentVerification.hasEventRegistration) {
+      const msg = 'You have not registered for this event on AWS Builder Center. Please register on the official event page first.';
+      setErrors((prev) => ({ ...prev, builderId: msg }));
+      setSubmitError(msg);
+      return;
+    }
+
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      const cleanAlias = cleanBuilderAlias(formData.builderId);
+
+    try {
       const newAttendee: Attendee = {
         id: attendee?.id || `riv-26-${Math.floor(1000 + Math.random() * 9000)}`,
         fullName: formData.fullName.trim(),
@@ -288,30 +335,45 @@ export const Registration: React.FC<RegistrationProps> = ({
         college: formData.college.trim(),
         year: formData.year,
         whyJoin: formData.whyJoin.trim(),
-        status: attendee?.status || 'pending', // Starts as pending manual review
+        status: attendee?.status || 'pending',
         registeredAt: attendee?.registeredAt || Date.now(),
-        builderCenterVerified: verificationResult?.hasEventRegistration || false,
-        builderCenterStatus: verificationResult?.hasEventRegistration ? 'registered_on_builder_center' : 'not_registered',
-        builderCenterVerifiedAt: verificationResult?.hasEventRegistration ? Date.now() : undefined,
+        builderCenterVerified: true,
+        builderCenterStatus: 'registered_on_builder_center',
+        builderCenterVerifiedAt: Date.now(),
       };
 
-      // Add or update in allRegistrations
-      const updatedList = [
-        newAttendee,
-        ...allRegistrations.filter((r) => r.id !== newAttendee.id && r.email.toLowerCase() !== newAttendee.email.toLowerCase())
-      ];
-      saveAllRegistrations(updatedList);
-
-      // Asynchronously sync registration to Server
-      fetch(apiUrl('/api/registrations'), {
+      const res = await fetch(apiUrl('/api/registrations'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newAttendee),
-      }).catch((err) => console.warn('Could not sync registration to server:', err));
+      });
 
-      onRegisterSuccess(newAttendee);
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.success) {
+        const errorMsg = data?.message || 'Registration rejected: AWS Builder Center verification could not be confirmed.';
+        setSubmitError(errorMsg);
+        setErrors((prev) => ({ ...prev, builderId: errorMsg }));
+        setIsSubmitting(false);
+        return;
+      }
+
+      const confirmedAttendee = data.attendee || newAttendee;
+
+      // Add or update in allRegistrations only on verified server confirmation
+      const updatedList = [
+        confirmedAttendee,
+        ...allRegistrations.filter((r) => r.id !== confirmedAttendee.id && r.email.toLowerCase() !== confirmedAttendee.email.toLowerCase())
+      ];
+      saveAllRegistrations(updatedList);
+
+      onRegisterSuccess(confirmedAttendee);
+    } catch (err: any) {
+      const errorMsg = err?.message || 'Network error: Could not reach the registration server. Please try again.';
+      setSubmitError(errorMsg);
+    } finally {
       setIsSubmitting(false);
-    }, 350);
+    }
   };
 
   // Admin Actions
@@ -842,6 +904,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                       <p className="text-slate-400 mt-0.5 text-[11px] leading-relaxed">
                         I will provide my valid AWS Builder alias in Step 2 for organizer verification.
                       </p>
+                      <p className="text-amber-400/90 mt-1.5 text-[11px] font-semibold leading-relaxed flex items-center gap-1.5">
+                        <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+                        <span>Mandatory: You must register on AWS Builder Center first. Applications with unverified aliases or missing event RSVPs cannot be submitted.</span>
+                      </p>
                     </div>
                   </label>
 
@@ -1242,27 +1308,65 @@ export const Registration: React.FC<RegistrationProps> = ({
                 </div>
 
                 {/* Submit Action */}
-                <div className="mt-7 flex items-center gap-3">
+                <div className="mt-7 flex flex-col gap-3">
+                  {submitError && (
+                    <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/40 text-xs text-rose-300 flex items-start gap-2.5">
+                      <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
+                      <div className="leading-relaxed">
+                        <span className="font-bold">Submission Rejected:</span> {submitError}
+                      </div>
+                    </div>
+                  )}
+
                   {(() => {
-                    const isRsvpMissing = verificationResult?.status === 'valid' && verificationResult.hasEventRegistration === false;
+                    const cleanAlias = cleanBuilderAlias(formData.builderId);
+                    const isAliasFilled = Boolean(cleanAlias);
+                    const isVerified = verificationResult?.status === 'valid' && verificationResult.alias === cleanAlias;
+                    const isEventRegistered = isVerified && verificationResult?.hasEventRegistration === true;
+                    const is404 = verificationResult?.status === 'invalid' && verificationResult.alias === cleanAlias;
+                    const isMissingRsvp = isVerified && !isEventRegistered;
+
+                    const canSubmit = isEventRegistered && !isVerifying && !isSubmitting;
+
                     return (
                       <button
                         type="submit"
-                        disabled={isSubmitting || isRsvpMissing}
-                        className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full py-3.5 px-6 text-sm font-bold transition-all shadow-lg ${
-                          isRsvpMissing
+                        disabled={!canSubmit}
+                        className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 px-6 text-sm font-bold transition-all shadow-lg ${
+                          canSubmit
+                            ? 'bg-[#AB5CFF] hover:bg-[#b873ff] text-[#0E131A] cursor-pointer shadow-[#AB5CFF]/20 active:scale-[0.99]'
+                            : isMissingRsvp
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-90'
-                            : 'bg-[#AB5CFF] hover:bg-[#b873ff] text-[#0E131A] cursor-pointer shadow-[#AB5CFF]/20 disabled:opacity-50'
+                            : is404
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 cursor-not-allowed opacity-90'
+                            : 'bg-slate-800/60 text-slate-500 border border-slate-800 cursor-not-allowed'
                         }`}
                       >
-                        {isRsvpMissing ? (
+                        {isSubmitting ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            <span>Submitting RSVP Request...</span>
+                          </>
+                        ) : isVerifying ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin text-[#3FB1FF]" />
+                            <span>Verifying AWS Builder Registration...</span>
+                          </>
+                        ) : !isAliasFilled ? (
+                          <span>Enter AWS Builder Center Alias</span>
+                        ) : is404 ? (
+                          <span className="flex items-center gap-1.5">
+                            <AlertTriangle className="h-4 w-4 text-rose-400" />
+                            <span>AWS Builder Alias Not Found (404)</span>
+                          </span>
+                        ) : isMissingRsvp ? (
                           <span className="flex items-center gap-1.5">
                             <AlertTriangle className="h-4 w-4 text-amber-400" />
-                            <span>Register on Builder Center First to Submit</span>
+                            <span>Register on AWS Builder Center Event First</span>
                           </span>
                         ) : (
                           <>
-                            <span>{isSubmitting ? 'Submitting Request...' : 'Submit Attendance Request'}</span>
+                            <span>Submit Attendance Request</span>
                             <ArrowRight className="h-4 w-4" />
                           </>
                         )}

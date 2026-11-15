@@ -182,8 +182,25 @@ class RegistrationsService {
     const cleanEmail = data.email.trim().toLowerCase();
     const cleanBuilderId = data.builderId.trim().toLowerCase().replace(/^@/, '');
 
-    // Check if the user is registered/requested on the AWS Builder Center event page
-    const eventCheck = await builderCenterAgentService.checkEventRegistration(cleanBuilderId);
+    if (!cleanBuilderId) {
+      throw new Error('AWS Builder Center alias is required.');
+    }
+
+    // 1. Live verify that the AWS Builder ID exists (cannot be 404)
+    // 2. Live verify that the applicant is registered/requested on the AWS Builder Center event page
+    const verification = await this.verifyAwsBuilderAlias(cleanBuilderId, true);
+
+    if (verification.status !== 'valid') {
+      throw new Error(
+        `Invalid AWS Builder Alias: "@${cleanBuilderId}". ${verification.error || 'No profile found on AWS Builder Center (404). Please create and verify your profile on builder.aws.com before registering.'}`
+      );
+    }
+
+    if (!verification.hasEventRegistration) {
+      throw new Error(
+        `Registration rejected: No event registration or RSVP request found for @${cleanBuilderId} on the AWS Builder Center event page. You must register/RSVP on AWS Builder Center first before submitting an RSVP request here.`
+      );
+    }
 
     const newAttendee: Attendee = {
       id: data.id || `riv-26-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -198,21 +215,19 @@ class RegistrationsService {
       whyJoin: data.whyJoin ? data.whyJoin.trim() : undefined,
       status: 'pending',
       registeredAt: Date.now(),
-      builderCenterVerified: eventCheck.isRegistered,
-      builderCenterStatus: eventCheck.isRegistered ? 'registered_on_builder_center' : 'not_registered',
-      builderCenterVerifiedAt: eventCheck.isRegistered ? Date.now() : undefined,
+      builderCenterVerified: true,
+      builderCenterStatus: 'registered_on_builder_center',
+      builderCenterVerifiedAt: Date.now(),
     };
 
-    if (eventCheck.isRegistered) {
-      await builderCenterAgentService.saveAttendee({
-        eventId: 'c8a38d77-8262-34c4-b744-ea8dfb7b35a6',
-        builderId: cleanBuilderId,
-        displayName: eventCheck.displayName || newAttendee.fullName,
-        email: cleanEmail,
-        rosterType: eventCheck.rosterType || 'request',
-        registeredAt: eventCheck.registeredAt || Date.now(),
-      });
-    }
+    await builderCenterAgentService.saveAttendee({
+      eventId: 'c8a38d77-8262-34c4-b744-ea8dfb7b35a6',
+      builderId: cleanBuilderId,
+      displayName: verification.displayName || newAttendee.fullName,
+      email: cleanEmail,
+      rosterType: 'request',
+      registeredAt: Date.now(),
+    });
 
     if (supabase) {
       try {

@@ -420,10 +420,11 @@ class BuilderCenterAgentService {
       }
     }
 
-    // 3. If force=true (user clicked "Re-check Now"), run live sync right now
-    if (force) {
-      console.log(`🔄 [Agent Service] Live re-check triggered for @${alias}. Running sync...`);
-      await this.syncRosterFromBuilderCenter(`recheck_click:${alias}`);
+    // 3. If force=true (user clicked "Re-check Now") OR not found and last sync was > 15s ago, run live sync right now
+    const shouldSync = force || (Date.now() - this.lastSyncTimestamp > 15000);
+    if (shouldSync) {
+      console.log(`🔄 [Agent Service] Live sync triggered for @${alias}. Running sync...`);
+      await this.syncRosterFromBuilderCenter(force ? `recheck_click:${alias}` : `lookup:${alias}`);
 
       // Re-check in-memory cache after sync
       if (this.inMemoryAttendees.has(alias)) {

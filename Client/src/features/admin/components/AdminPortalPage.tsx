@@ -90,6 +90,26 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   }, [token]);
 
   const handleUpdateStatus = async (id: string, newStatus: RegistrationStatus) => {
+    // If approving, warn if alias is unverified (404) or missing event RSVP
+    if (newStatus === 'approved') {
+      const check = adminVerifyMap[id];
+      const item = allRegistrations.find((r) => r.id === id);
+      const isInvalid = check?.status === 'invalid';
+      const isMissingRsvp =
+        (check && check.status === 'valid' && !check.hasEventRegistration) ||
+        (!check && item?.builderCenterStatus === 'not_registered');
+
+      if (isInvalid) {
+        if (!window.confirm(`⚠️ WARNING: @${item?.builderId || id} was NOT found on AWS Builder Center (404 Not Found).\n\nAre you sure you want to approve this unverified applicant?`)) {
+          return;
+        }
+      } else if (isMissingRsvp) {
+        if (!window.confirm(`⚠️ WARNING: @${item?.builderId || id} does not have a confirmed event registration on AWS Builder Center.\n\nAre you sure you want to approve this applicant?`)) {
+          return;
+        }
+      }
+    }
+
     // Optimistic local update
     const updated = allRegistrations.map((r) => {
       if (r.id === id) {

@@ -11,25 +11,33 @@ export class RegistrationsController {
       return;
     }
 
-    const attendee = await registrationsService.create({
-      fullName,
-      email,
-      phone,
-      builderId,
-      college,
-      year,
-      skillLevel,
-      interestTrack,
-      whyJoin,
-    });
+    try {
+      const attendee = await registrationsService.create({
+        fullName,
+        email,
+        phone,
+        builderId,
+        college,
+        year,
+        skillLevel,
+        interestTrack,
+        whyJoin,
+      });
 
-    // NOTE: Only confirmation email is sent when attendee is approved by admin (sendRegistrationReceivedEmail disabled per requirement)
+      // NOTE: Only confirmation email is sent when attendee is approved by admin (sendRegistrationReceivedEmail disabled per requirement)
 
-    res.status(201).json({
-      success: true,
-      message: 'Registration submitted successfully',
-      attendee,
-    });
+      res.status(201).json({
+        success: true,
+        message: 'Registration submitted successfully',
+        attendee,
+      });
+    } catch (err: any) {
+      console.warn(`❌ Registration rejected for alias "${builderId}":`, err.message);
+      res.status(400).json({
+        success: false,
+        message: err.message || 'Registration rejected',
+      });
+    }
   }
 
   public static async getByEmail(req: Request, res: Response): Promise<void> {

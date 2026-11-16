@@ -20,14 +20,14 @@ app.use(express.json());
 
 // Health & Keep-Alive Check
 // Hit every 5 minutes by external monitors (UptimeRobot, Render cron) to keep server active
-// Automatically triggers background sync if > 10 min since last sync or if ?sync=true
+// Automatically triggers background sync if > 5 min since last sync or if ?sync=true
 app.get('/health', async (req, res) => {
   const lastSync = builderCenterAgentService.getLastSyncTime();
   const minutesSinceLastSync = lastSync ? (Date.now() - lastSync) / 60000 : null;
 
   const shouldTriggerSync =
     req.query.sync === 'true' ||
-    (minutesSinceLastSync !== null && minutesSinceLastSync >= 10);
+    (minutesSinceLastSync !== null && minutesSinceLastSync >= 5);
 
   if (shouldTriggerSync && !builderCenterAgentService.isSyncing()) {
     builderCenterAgentService
@@ -64,6 +64,6 @@ app.listen(config.port, () => {
   console.log(`🚀 Server running on http://localhost:${config.port}`);
   console.log(`🔒 Admin Auth: Ready (using ADMIN_KEY from .env)`);
 
-  // Start periodic 10-minute automated scanner
-  builderCenterAgentService.startPeriodicScan(10 * 60 * 1000);
+  // Start periodic 5-minute automated scanner
+  builderCenterAgentService.startPeriodicScan(5 * 60 * 1000);
 });

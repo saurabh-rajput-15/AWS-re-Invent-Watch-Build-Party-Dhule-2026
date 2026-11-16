@@ -153,6 +153,18 @@ export async function runRosterSync(headless = false): Promise<{ count: number; 
       await attendeesTab.first().click().catch(() => {});
       await page.waitForTimeout(3000);
 
+      // Auto-click "Load more" until all attendees are loaded into DOM (supports 500+ attendees)
+      while (true) {
+        const loadMore = page.locator('button').filter({ hasText: /^Load more/i });
+        if ((await loadMore.count()) > 0 && (await loadMore.first().isVisible())) {
+          console.log('👉 Clicking "Load more" to reveal next batch of attendees...');
+          await loadMore.first().click().catch(() => {});
+          await page.waitForTimeout(1500);
+        } else {
+          break;
+        }
+      }
+
       // Extract all profile links from DOM
       const links = await page.locator('a[href*="/@"], a[href*="/profile/"]').all();
       for (const link of links) {
@@ -192,6 +204,18 @@ export async function runRosterSync(headless = false): Promise<{ count: number; 
       console.log('👉 Opening "Invites and requests" tab...');
       await requestsTab.first().click().catch(() => {});
       await page.waitForTimeout(3000);
+
+      // Auto-click "Load more" until all requests are loaded into DOM (supports 500+ requests)
+      while (true) {
+        const loadMore = page.locator('button').filter({ hasText: /^Load more/i });
+        if ((await loadMore.count()) > 0 && (await loadMore.first().isVisible())) {
+          console.log('👉 Clicking "Load more" to reveal next batch of requests...');
+          await loadMore.first().click().catch(() => {});
+          await page.waitForTimeout(1500);
+        } else {
+          break;
+        }
+      }
 
       const links = await page.locator('a[href*="/@"], a[href*="/profile/"]').all();
       for (const link of links) {

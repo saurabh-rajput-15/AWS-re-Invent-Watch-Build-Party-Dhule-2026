@@ -254,6 +254,25 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
     document.body.removeChild(link);
   };
 
+  const handleDirectLiveSync = async () => {
+    if (!token) {
+      setActionFeedback('Admin session expired. Please re-login.');
+      return;
+    }
+    setIsSyncingRoster(true);
+    try {
+      const res = await AdminService.triggerLiveSync(token);
+      setActionFeedback(`✓ ${res.message || `Successfully synced ${res.totalSynced} attendees from AWS Builder Center!`}`);
+      setTimeout(() => setActionFeedback(null), 5000);
+      setShowRosterModal(false);
+      await loadRegistrations();
+    } catch (err: any) {
+      alert(`Live AWS sync failed: ${err.message}`);
+    } finally {
+      setIsSyncingRoster(false);
+    }
+  };
+
   const handleSyncRoster = async () => {
     if (!token) {
       setActionFeedback('Admin session expired. Please re-login.');
@@ -685,6 +704,36 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
               >
                 <X className="h-5 w-5" />
               </button>
+            </div>
+
+            {/* 1-Click Autonomous Live API Sync (Strategy 1) */}
+            <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#3FB1FF]/10 via-[#0C1222] to-[#05E08A]/10 border border-[#3FB1FF]/30 space-y-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>⚡ Autonomous Live API Sync</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono font-bold">500+ Auto-Paging</span>
+                  </h4>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Fetches all approved members and pending join requests directly from AWS via internal API in seconds.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={isSyncingRoster}
+                onClick={handleDirectLiveSync}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3FB1FF] to-[#05E08A] hover:opacity-95 text-slate-950 px-3.5 py-2 text-xs font-bold transition cursor-pointer disabled:opacity-50 shadow-md"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isSyncingRoster ? 'animate-spin' : ''}`} />
+                <span>{isSyncingRoster ? 'Syncing All Pages from AWS...' : 'Fetch All from AWS Builder Center Now'}</span>
+              </button>
+            </div>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-slate-800"></div>
+              <span className="flex-shrink mx-2 text-[10px] uppercase font-mono text-slate-500">Or Manually Paste Aliases</span>
+              <div className="flex-grow border-t border-slate-800"></div>
             </div>
 
             <div className="space-y-2 text-xs text-slate-300">

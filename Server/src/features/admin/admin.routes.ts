@@ -21,6 +21,7 @@ router.post('/registrations/:id/resend-ticket', requireAdminAuth, AdminControlle
 router.delete('/registrations/:id', requireAdminAuth, AdminController.deleteRegistration);
 router.post('/registrations/batch-verify', requireAdminAuth, AdminController.batchVerify);
 router.get('/builder-center/stats', requireAdminAuth, AdminController.getBuilderCenterStats);
+router.post('/builder-center/sync', requireAdminAuth, AdminController.syncBuilderCenterRoster);
 router.post('/builder-center/import', requireAdminAuth, AdminController.importBuilderCenterRoster);
 
 export const adminRoutes = router;

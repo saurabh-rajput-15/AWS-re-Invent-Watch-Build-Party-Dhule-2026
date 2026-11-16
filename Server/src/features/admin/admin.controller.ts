@@ -166,6 +166,19 @@ export class AdminController {
     });
   }
 
+  public static async syncBuilderCenterRoster(_req: Request, res: Response): Promise<void> {
+    try {
+      const result = await builderCenterAgentService.syncRosterFromBuilderCenter('admin_manual_trigger');
+      res.json({
+        success: result.success,
+        message: result.message,
+        totalSynced: result.totalSynced,
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  }
+
   public static async importBuilderCenterRoster(req: Request, res: Response): Promise<void> {
     const items = req.body?.items || [];
     if (!Array.isArray(items) || items.length === 0) {

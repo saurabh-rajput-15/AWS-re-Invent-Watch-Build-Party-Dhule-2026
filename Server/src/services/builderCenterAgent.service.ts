@@ -30,7 +30,7 @@ export interface CheckRegistrationResult {
   rosterType?: 'request' | 'attendee' | 'invited' | 'host' | 'co-host';
   registeredAt?: number;
   displayName?: string;
-  source: 'database' | 'live_aws' | 'session_cache' | 'none';
+  source: 'database' | 'live_aws' | 'session_cache' | 'lazy_on_demand' | 'none';
 }
 
 class BuilderCenterAgentService {
@@ -293,12 +293,15 @@ class BuilderCenterAgentService {
     this.isRefreshingSession = true;
     console.log('🔄 [Agent Session] Auto-refreshing AWS session via /ams/refreshToken...');
 
+    const tokenMatch = this.activeCookie.match(/builder-session-token=([^;]+)/);
+    const sessionToken = tokenMatch ? tokenMatch[1] : 'dummy';
+
     try {
       const res = await this.fetchWithRetry('https://api.builder.aws.com/ams/refreshToken', {
         method: 'POST',
         headers: {
           'accept': '*/*',
-          'builder-session-token': 'dummy',
+          'builder-session-token': sessionToken,
           'Cookie': this.activeCookie,
           'x-csrf-token': this.activeCsrf,
           'origin': 'https://builder.aws.com',
@@ -361,10 +364,9 @@ class BuilderCenterAgentService {
   }
 
   /**
-   * Fast verification method (<10ms):
-   * 1. Check in-memory cache (0ms)
-   * 2. Check Supabase (public.builder_center_attendees) (<10ms)
-   * 3. If force=true (user clicked Re-check Now), trigger live direct API sync and verify instantly
+   * Dual-Strategy Verification:
+   * Strategy 1: "Fetch All & Save to DB (Sync & Cache)" - Checks local in-memory cache & Supabase (<1ms - 10ms)
+   * Strategy 2: "Fetch Only Requested (Lazy / On-Demand)" - If cache misses or force=true, targets AWS live with early exit
    */
   public async checkEventRegistration(rawAlias: string, force = false): Promise<CheckRegistrationResult> {
     const alias = rawAlias.trim().toLowerCase().replace(/^@/, '');
@@ -374,8 +376,8 @@ class BuilderCenterAgentService {
 
     const startTime = Date.now();
 
-    // 1. Check in-memory cache first (instant 0ms)
-    if (this.inMemoryAttendees.has(alias)) {
+    // 1. Strategy 1 (Sync & Cache): In-memory lookup (instant 0ms)
+    if (!force && this.inMemoryAttendees.has(alias)) {
       const item = this.inMemoryAttendees.get(alias)!;
       this.logSync('live_alias_check', alias, true, Date.now() - startTime);
       return {
@@ -387,8 +389,8 @@ class BuilderCenterAgentService {
       };
     }
 
-    // 2. Check Supabase
-    if (supabase) {
+    // 2. Strategy 1 (Sync & Cache): Database lookup (<10ms)
+    if (!force && supabase) {
       try {
         const { data, error } = await supabase
           .from('builder_center_attendees')
@@ -420,24 +422,12 @@ class BuilderCenterAgentService {
       }
     }
 
-    // 3. If force=true (user clicked "Re-check Now") OR not found and last sync was > 15s ago, run live sync right now
-    const shouldSync = force || (Date.now() - this.lastSyncTimestamp > 15000);
-    if (shouldSync) {
-      console.log(`🔄 [Agent Service] Live sync triggered for @${alias}. Running sync...`);
-      await this.syncRosterFromBuilderCenter(force ? `recheck_click:${alias}` : `lookup:${alias}`);
-
-      // Re-check in-memory cache after sync
-      if (this.inMemoryAttendees.has(alias)) {
-        const item = this.inMemoryAttendees.get(alias)!;
-        this.logSync('live_alias_check', alias, true, Date.now() - startTime);
-        return {
-          isRegistered: true,
-          rosterType: item.rosterType,
-          registeredAt: item.registeredAt,
-          displayName: item.displayName,
-          source: 'live_aws',
-        };
-      }
+    // 3. Strategy 2 (Lazy / On-Demand): Target AWS Builder Center live specifically for this requested alias!
+    console.log(`🔍 [Lazy On-Demand] ${force ? 'Force check' : 'Cache miss'} for @${alias}. Querying AWS live...`);
+    const lazyResult = await this.fetchRequestedAliasLive(alias);
+    if (lazyResult.isRegistered) {
+      this.logSync('live_alias_check', alias, true, Date.now() - startTime);
+      return lazyResult;
     }
 
     this.logSync('live_alias_check', alias, false, Date.now() - startTime);
@@ -445,11 +435,193 @@ class BuilderCenterAgentService {
   }
 
   /**
+   * Strategy 2: "Fetch Only Requested (Lazy / On-Demand)"
+   * Directly queries AWS Builder Center on-demand for a single targeted alias.
+   * Short-circuits on first matching page without fetching remaining pages.
+   * If found, immediately persists that attendee record into Supabase & in-memory cache.
+   */
+  public async fetchRequestedAliasLive(rawAlias: string): Promise<CheckRegistrationResult> {
+    const alias = rawAlias.trim().toLowerCase().replace(/^@/, '');
+    if (!alias || alias === SYSTEM_SESSION_KEY) {
+      return { isRegistered: false, source: 'none' };
+    }
+
+    if (!this.activeCookie) {
+      await this.loadSession();
+    }
+    if (!this.activeCookie) {
+      return { isRegistered: false, source: 'none' };
+    }
+
+    const startTime = Date.now();
+
+    // 1. Search Approved Members (pages 1 to N, pageSize=100)
+    let nextToken: string | undefined = undefined;
+    let page = 0;
+    do {
+      page++;
+      const sep = `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`.includes('?') ? '&' : '?';
+      let url = `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT${sep}pageSize=100`;
+      if (nextToken) url += `&nextToken=${encodeURIComponent(nextToken)}`;
+
+      let res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+      if (res.status === 401 || res.status === 403) {
+        const refreshed = await this.refreshAwsSession(true);
+        if (refreshed) res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+      }
+
+      if (!res.ok) break;
+
+      const data = (await res.json()) as any;
+      const members = data?.members || [];
+      const match = members.find(
+        (m: any) => (m.userAlias || m.userId || '').trim().toLowerCase() === alias
+      );
+
+      if (match) {
+        const cleanName = match.userAlias || alias;
+        console.log(`🎯 [Lazy On-Demand] Found @${alias} as approved MEMBER on page ${page} in ${Date.now() - startTime}ms.`);
+        await this.saveAttendee({
+          eventId: this.eventId,
+          builderId: alias,
+          displayName: cleanName,
+          rosterType: 'attendee',
+        });
+        return {
+          isRegistered: true,
+          rosterType: 'attendee',
+          displayName: cleanName,
+          registeredAt: match.createdAt ? match.createdAt * 1000 : Date.now(),
+          source: 'lazy_on_demand',
+        };
+      }
+
+      nextToken = data?.nextToken;
+    } while (nextToken && page < 20);
+
+    // 2. Search Pending Requests (pages 1 to N, pageSize=100)
+    nextToken = undefined;
+    page = 0;
+    do {
+      page++;
+      const sep = `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`.includes('?') ? '&' : '?';
+      let url = `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT${sep}pageSize=100`;
+      if (nextToken) url += `&nextToken=${encodeURIComponent(nextToken)}`;
+
+      let res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+      if (res.status === 401 || res.status === 403) {
+        const refreshed = await this.refreshAwsSession(true);
+        if (refreshed) res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+      }
+
+      if (!res.ok) break;
+
+      const data = (await res.json()) as any;
+      const requests = data?.requests || [];
+      const match = requests.find(
+        (r: any) => (r.memberUserAlias || r.memberId || '').trim().toLowerCase() === alias
+      );
+
+      if (match) {
+        const cleanName = match.memberUserAlias || alias;
+        console.log(`🎯 [Lazy On-Demand] Found @${alias} as pending REQUEST on page ${page} in ${Date.now() - startTime}ms.`);
+        await this.saveAttendee({
+          eventId: this.eventId,
+          builderId: alias,
+          displayName: cleanName,
+          rosterType: 'request',
+        });
+        return {
+          isRegistered: true,
+          rosterType: 'request',
+          displayName: cleanName,
+          registeredAt: match.createdAt ? match.createdAt * 1000 : Date.now(),
+          source: 'lazy_on_demand',
+        };
+      }
+
+      nextToken = data?.nextToken;
+    } while (nextToken && page < 20);
+
+    console.log(`ℹ️ [Lazy On-Demand] Checked live AWS roster: @${alias} not found (${Date.now() - startTime}ms).`);
+    return { isRegistered: false, source: 'none' };
+  }
+
+  /**
+   * Constructs valid HTTP request headers using the active session credentials.
+   * Extracts the actual builder-session-token from activeCookie to prevent 401/403 errors.
+   */
+  private getHeaders(contentType?: string): Record<string, string> {
+    const tokenMatch = this.activeCookie.match(/builder-session-token=([^;]+)/);
+    const sessionToken = tokenMatch ? tokenMatch[1] : 'dummy';
+    const headers: Record<string, string> = {
+      'accept': 'application/json, text/plain, */*',
+      'builder-session-token': sessionToken,
+      'Cookie': this.activeCookie,
+      'x-csrf-token': this.activeCsrf,
+      'origin': 'https://builder.aws.com',
+      'referer': 'https://builder.aws.com/',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    };
+    if (contentType) {
+      headers['content-type'] = contentType;
+    }
+    return headers;
+  }
+
+  /**
+   * Fetches all pages for a given endpoint (supports 500+ attendees).
+   * Uses AWS Builder Center's maximum allowed pageSize of 100 per request,
+   * following nextToken pagination until all records are retrieved.
+   */
+  private async fetchAllPages(
+    endpoint: string,
+    listKey: 'members' | 'requests',
+    maxPages = 20
+  ): Promise<any[]> {
+    const allItems: any[] = [];
+    let nextToken: string | undefined = undefined;
+    let pageCount = 0;
+
+    do {
+      pageCount++;
+      const sep = endpoint.includes('?') ? '&' : '?';
+      let url = `${endpoint}${sep}pageSize=100`;
+      if (nextToken) {
+        url += `&nextToken=${encodeURIComponent(nextToken)}`;
+      }
+
+      let res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+
+      // Self-heal on session expiration
+      if (res.status === 401 || res.status === 403) {
+        console.log(`⚠️ [Direct API] Session expired while fetching ${listKey} (page ${pageCount}). Auto-refreshing...`);
+        const refreshed = await this.refreshAwsSession(true);
+        if (refreshed) {
+          res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        }
+      }
+
+      if (!res.ok) {
+        console.warn(`⚠️ [Direct API] ${endpoint} returned HTTP ${res.status}`);
+        break;
+      }
+
+      const data = (await res.json()) as any;
+      const items = data?.[listKey] || [];
+      allItems.push(...items);
+      nextToken = data?.nextToken;
+    } while (nextToken && pageCount < maxPages);
+
+    return allItems;
+  }
+
+  /**
    * PURE AUTONOMOUS DIRECT-API SYNC (Zero browser, 200ms execution, runs anywhere):
    * Hits the AWS Builder Center internal APIs discovered via DevTools:
    * 1. Auto-refreshes session if needed or if 401/403 encountered
-   * 2. GET /sms/entities/:id/members (Approved Attendees & Hosts)
-   * 3. GET /sms/membership-requests/entities/:id (Pending Join Requests)
+   * 2. GET /sms/entities/:id/members (Approved Attendees & Hosts) with pageSize=100 + pagination
+   * 3. GET /sms/membership-requests/entities/:id (Pending Join Requests) with pageSize=100 + pagination
    */
   public async syncRosterFromBuilderCenter(
     triggerReason = 'manual'
@@ -476,89 +648,44 @@ class BuilderCenterAgentService {
 
     const discovered = new Map<string, { builderId: string; displayName: string; rosterType: 'attendee' | 'request' }>();
 
-    const getHeaders = () => ({
-      'accept': '*/*',
-      'builder-session-token': 'dummy',
-      'Cookie': this.activeCookie,
-      'x-csrf-token': this.activeCsrf,
-      'origin': 'https://builder.aws.com',
-      'referer': 'https://builder.aws.com/',
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    });
-
     try {
-      // 1 & 2. Concurrently fetch Approved Members and Pending Membership Requests
-      let [resMembers, resRequests] = await Promise.all([
-        this.fetchWithRetry(
+      // Concurrently fetch ALL pages for Approved Members and Pending Requests (handles 500+ attendees)
+      const [membersList, reqList] = await Promise.all([
+        this.fetchAllPages(
           `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
-          { headers: getHeaders() }
+          'members'
         ),
-        this.fetchWithRetry(
+        this.fetchAllPages(
           `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-          { headers: getHeaders() }
+          'requests'
         ),
       ]);
 
-      // Self-heal on session expiration if either returns 401/403:
-      if (
-        resMembers.status === 401 ||
-        resMembers.status === 403 ||
-        resRequests.status === 401 ||
-        resRequests.status === 403
-      ) {
-        console.log(`⚠️ [Direct API] Session expired or unauthorized. Auto-refreshing session...`);
-        const refreshed = await this.refreshAwsSession(true);
-        if (refreshed) {
-          [resMembers, resRequests] = await Promise.all([
-            this.fetchWithRetry(
-              `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
-              { headers: getHeaders() }
-            ),
-            this.fetchWithRetry(
-              `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-              { headers: getHeaders() }
-            ),
-          ]);
+      for (const m of membersList) {
+        const alias = (m.userAlias || m.userId || '').trim().toLowerCase();
+        if (alias && alias.length > 1 && alias !== SYSTEM_SESSION_KEY) {
+          discovered.set(alias, {
+            builderId: alias,
+            displayName: alias,
+            rosterType: 'attendee',
+          });
         }
       }
+      console.log(`📥 [Direct API] Retrieved ${membersList.length} approved members across all pages.`);
 
-      if (resMembers.ok) {
-        const data = (await resMembers.json()) as any;
-        const membersList = data?.members || [];
-        for (const m of membersList) {
-          const alias = (m.userAlias || m.userId || '').trim().toLowerCase();
-          if (alias && alias.length > 1 && alias !== SYSTEM_SESSION_KEY) {
+      for (const r of reqList) {
+        const alias = (r.memberUserAlias || r.memberId || '').trim().toLowerCase();
+        if (alias && alias.length > 1 && alias !== SYSTEM_SESSION_KEY) {
+          if (!discovered.has(alias)) {
             discovered.set(alias, {
               builderId: alias,
               displayName: alias,
-              rosterType: 'attendee',
+              rosterType: 'request',
             });
           }
         }
-        console.log(`📥 [Direct API] Retrieved ${membersList.length} approved members.`);
-      } else {
-        console.warn(`⚠️ [Direct API] Members endpoint HTTP ${resMembers.status}`);
       }
-
-      if (resRequests.ok) {
-        const data = (await resRequests.json()) as any;
-        const reqList = data?.requests || [];
-        for (const r of reqList) {
-          const alias = (r.memberUserAlias || r.memberId || '').trim().toLowerCase();
-          if (alias && alias.length > 1 && alias !== SYSTEM_SESSION_KEY) {
-            if (!discovered.has(alias)) {
-              discovered.set(alias, {
-                builderId: alias,
-                displayName: alias,
-                rosterType: 'request',
-              });
-            }
-          }
-        }
-        console.log(`📥 [Direct API] Retrieved ${reqList.length} pending requests.`);
-      } else {
-        console.warn(`⚠️ [Direct API] Requests endpoint HTTP ${resRequests.status}`);
-      }
+      console.log(`📥 [Direct API] Retrieved ${reqList.length} pending requests across all pages.`);
 
       // 3. Batch Save: Update in-memory fast cache and execute single-batch Supabase upsert
       const nowIso = new Date().toISOString();
@@ -662,109 +789,45 @@ class BuilderCenterAgentService {
 
     console.log(`⚡ [Agent Approval] Attempting to approve @${alias} on AWS Builder Center...`);
 
-    const getHeaders = () => ({
-      'accept': '*/*',
-      'builder-session-token': 'dummy',
-      'Cookie': this.activeCookie,
-      'x-csrf-token': this.activeCsrf,
-      'content-type': 'application/json',
-      'origin': 'https://builder.aws.com',
-      'referer': 'https://builder.aws.com/',
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    });
-
     try {
-      // 1. Fetch current pending requests to find matching requestId
-      let resRequests = await this.fetchWithRetry(
+      // 1. Fetch ALL current pending requests across all pages to find matching requestId
+      const reqList = await this.fetchAllPages(
         `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-        { headers: getHeaders() }
+        'requests'
+      );
+      const matchingReq = reqList.find(
+        (r: any) => (r.memberUserAlias || r.memberId || '').trim().toLowerCase() === alias
       );
 
-      // Self-heal on session expiration:
-      if (resRequests.status === 401 || resRequests.status === 403) {
-        const refreshed = await this.refreshAwsSession(true);
-        if (refreshed) {
-          resRequests = await this.fetchWithRetry(
-            `https://api.builder.aws.com/sms/membership-requests/entities/${this.eventId}?entityType=EVENT`,
-            { headers: getHeaders() }
-          );
-        }
-      }
+      if (matchingReq && matchingReq.requestId) {
+        console.log(`🎯 [Agent Approval] Found pending request ${matchingReq.requestId} for @${alias}. Sending APPROVE...`);
 
-      if (resRequests.ok) {
-        const reqData = (await resRequests.json()) as any;
-        const reqList = reqData?.requests || [];
-        const matchingReq = reqList.find(
-          (r: any) => (r.memberUserAlias || r.memberId || '').trim().toLowerCase() === alias
+        let approveRes = await this.fetchWithRetry(
+          `https://api.builder.aws.com/sms/entity-membership-requests/${matchingReq.requestId}`,
+          {
+            method: 'PUT',
+            headers: this.getHeaders('application/json'),
+            body: JSON.stringify({ responseStatus: 'APPROVE' }),
+          }
         );
 
-        if (matchingReq && matchingReq.requestId) {
-          console.log(`🎯 [Agent Approval] Found pending request ${matchingReq.requestId} for @${alias}. Sending APPROVE...`);
-
-          let approveRes = await this.fetchWithRetry(
-            `https://api.builder.aws.com/sms/entity-membership-requests/${matchingReq.requestId}`,
-            {
-              method: 'PUT',
-              headers: getHeaders(),
-              body: JSON.stringify({ responseStatus: 'APPROVE' }),
-            }
-          );
-
-          if (approveRes.status === 401 || approveRes.status === 403) {
-            const refreshed = await this.refreshAwsSession(true);
-            if (refreshed) {
-              approveRes = await this.fetchWithRetry(
-                `https://api.builder.aws.com/sms/entity-membership-requests/${matchingReq.requestId}`,
-                {
-                  method: 'PUT',
-                  headers: getHeaders(),
-                  body: JSON.stringify({ responseStatus: 'APPROVE' }),
-                }
-              );
-            }
-          }
-
-          if (approveRes.ok) {
-            console.log(`🎉 [Agent Approval] Successfully approved @${alias} on AWS Builder Center!`);
-            // Update local attendee record to confirmed attendee
-            await this.saveAttendee({
-              eventId: this.eventId,
-              builderId: alias,
-              displayName: alias,
-              rosterType: 'attendee',
-            });
-            return {
-              success: true,
-              message: `Approved @${alias} on AWS Builder Center`,
-              actionTaken: 'approved',
-            };
-          } else {
-            const errText = await approveRes.text().catch(() => '');
-            console.warn(`⚠️ [Agent Approval] Approval API returned HTTP ${approveRes.status}: ${errText.slice(0, 100)}`);
-            return {
-              success: false,
-              message: `AWS Builder Center returned HTTP ${approveRes.status}`,
-              actionTaken: 'error',
-            };
+        if (approveRes.status === 401 || approveRes.status === 403) {
+          const refreshed = await this.refreshAwsSession(true);
+          if (refreshed) {
+            approveRes = await this.fetchWithRetry(
+              `https://api.builder.aws.com/sms/entity-membership-requests/${matchingReq.requestId}`,
+              {
+                method: 'PUT',
+                headers: this.getHeaders('application/json'),
+                body: JSON.stringify({ responseStatus: 'APPROVE' }),
+              }
+            );
           }
         }
-      }
 
-      // 2. If not found in pending requests, check if already an approved member
-      let resMembers = await this.fetchWithRetry(
-        `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
-        { headers: getHeaders() }
-      );
-
-      if (resMembers.ok) {
-        const memData = (await resMembers.json()) as any;
-        const membersList = memData?.members || [];
-        const isMember = membersList.some(
-          (m: any) => (m.userAlias || m.userId || '').trim().toLowerCase() === alias
-        );
-
-        if (isMember) {
-          console.log(`ℹ️ [Agent Approval] @${alias} is already an approved member on AWS Builder Center.`);
+        if (approveRes.ok) {
+          console.log(`🎉 [Agent Approval] Successfully approved @${alias} on AWS Builder Center!`);
+          // Update local attendee record to confirmed attendee
           await this.saveAttendee({
             eventId: this.eventId,
             builderId: alias,
@@ -773,10 +836,42 @@ class BuilderCenterAgentService {
           });
           return {
             success: true,
-            message: `@${alias} is already an approved member on AWS Builder Center`,
-            actionTaken: 'already_member',
+            message: `Approved @${alias} on AWS Builder Center`,
+            actionTaken: 'approved',
+          };
+        } else {
+          const errText = await approveRes.text().catch(() => '');
+          console.warn(`⚠️ [Agent Approval] Approval API returned HTTP ${approveRes.status}: ${errText.slice(0, 100)}`);
+          return {
+            success: false,
+            message: `AWS Builder Center returned HTTP ${approveRes.status}`,
+            actionTaken: 'error',
           };
         }
+      }
+
+      // 2. If not found in pending requests, check if already an approved member (across all pages)
+      const membersList = await this.fetchAllPages(
+        `https://api.builder.aws.com/sms/entities/${this.eventId}/members?entityType=EVENT`,
+        'members'
+      );
+      const isMember = membersList.some(
+        (m: any) => (m.userAlias || m.userId || '').trim().toLowerCase() === alias
+      );
+
+      if (isMember) {
+        console.log(`ℹ️ [Agent Approval] @${alias} is already an approved member on AWS Builder Center.`);
+        await this.saveAttendee({
+          eventId: this.eventId,
+          builderId: alias,
+          displayName: alias,
+          rosterType: 'attendee',
+        });
+        return {
+          success: true,
+          message: `@${alias} is already an approved member on AWS Builder Center`,
+          actionTaken: 'already_member',
+        };
       }
 
       console.log(`ℹ️ [Agent Approval] No pending request found on Builder Center for @${alias}.`);

@@ -111,6 +111,20 @@ export class AdminService {
     return data.results || {};
   }
 
+  public static async triggerLiveSync(
+    token: string
+  ): Promise<{ success: boolean; totalSynced: number; message: string }> {
+    const res = await fetch(apiUrl('/api/admin/builder-center/sync'), {
+      method: 'POST',
+      headers: this.getHeaders(token),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || 'Failed to sync with AWS Builder Center');
+    }
+    return data;
+  }
+
   public static async importBuilderCenterAttendees(
     token: string,
     items: Array<{ builderId: string; displayName?: string; email?: string }>

@@ -12,11 +12,15 @@ export function useGsapLenis() {
     // Respect reduced motion preferences
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // 1. Initialize Lenis Smooth Scrolling
+    // 1. Initialize Lenis Smooth Scrolling (Calibrated for a relaxed, butter-smooth, controlled glide)
     const lenis = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.5,
+      duration: 1.4, // Controlled glide duration in seconds (prevents fast jumps)
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential deceleration curve
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 0.75, // Gentle wheel resistance so scrolling feels easy and weighted, not fast
+      touchMultiplier: 1.0, // Natural 1:1 touch response
       infinite: false,
     });
     lenisRef.current = lenis;
@@ -43,7 +47,8 @@ export function useGsapLenis() {
         e.preventDefault();
         lenis.scrollTo(element as HTMLElement, {
           offset: -85,
-          duration: 1.2,
+          duration: 1.4,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         });
       }
     };

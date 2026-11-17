@@ -259,7 +259,10 @@ export default function App() {
 
   const scrollToTop = () => {
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { duration: 1 });
+      lenisRef.current.scrollTo(0, {
+        duration: 1.4,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

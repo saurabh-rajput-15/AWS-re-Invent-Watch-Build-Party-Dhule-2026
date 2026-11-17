@@ -153,7 +153,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
   };
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col justify-between selection:bg-[#3FB1FF]/30">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col justify-between selection:bg-aws-blue/30">
       {/* Top Header */}
       <header className="border-b border-slate-800/80 bg-[#0A0E1A]/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
@@ -172,7 +172,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                 onClick={() => setViewMode('lanyard')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'lanyard'
-                    ? 'bg-linear-to-r from-[#3FB1FF] to-[#05E08A] text-[#090D16] shadow-md shadow-[#3FB1FF]/20'
+                    ? 'bg-linear-to-r from-aws-blue to-aws-green text-[#090D16] shadow-md shadow-aws-blue/20'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -183,7 +183,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                 onClick={() => setViewMode('ticket')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'ticket'
-                    ? 'bg-linear-to-r from-[#3FB1FF] to-[#05E08A] text-[#090D16] shadow-md shadow-[#3FB1FF]/20'
+                    ? 'bg-linear-to-r from-aws-blue to-aws-green text-[#090D16] shadow-md shadow-aws-blue/20'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -201,7 +201,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
         {loading ? (
           <div className="text-center py-24 space-y-4">
-            <div className="w-12 h-12 border-3 border-[#3FB1FF] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="w-12 h-12 border-3 border-aws-blue border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-slate-400 text-sm font-mono">Loading official pass #{currentId}...</p>
           </div>
         ) : error && !attendee ? (
@@ -219,11 +219,11 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                 placeholder="Enter Ticket ID (e.g. riv-26-3495)"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="flex-1 px-3 py-2 bg-[#090D16] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3FB1FF]"
+                className="flex-1 px-3 py-2 bg-[#090D16] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aws-blue"
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#3FB1FF] text-[#090D16] rounded-xl text-xs font-bold hover:bg-[#3FB1FF]/90 transition-all cursor-pointer"
+                className="px-4 py-2 bg-aws-blue text-[#090D16] rounded-xl text-xs font-bold hover:bg-aws-blue/90 transition-all cursor-pointer"
               >
                 Search
               </button>
@@ -248,7 +248,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                     placeholder="Enter Pass ID (e.g. riv-26-3495)..."
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-[#0E1526] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3FB1FF]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#0E1526] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aws-blue"
                   />
                 </div>
                 <button
@@ -265,7 +265,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
               <div className="space-y-4">
                 <div className="relative w-full h-[520px] sm:h-[620px] rounded-3xl border border-slate-800/80 bg-radial from-[#131B2E] via-[#0A0F1D] to-[#050811] overflow-hidden shadow-2xl shadow-black/90">
                   {/* Top Rainbow Accent Line */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A] z-10" />
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-aws-blue via-aws-magenta to-aws-green z-10" />
 
                   {/* Lanyard Physics Canvas */}
                   {badgeTextures ? (
@@ -299,11 +299,11 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
 
                   {/* Status Indicator */}
                   <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30 uppercase tracking-widest backdrop-blur-md">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-aws-green/15 text-aws-green border border-aws-green/30 uppercase tracking-widest backdrop-blur-md">
                       ● {attendee?.status === 'approved' ? 'CONFIRMED PASS' : 'SUBMITTED REQUEST'}
                     </span>
                     {attendee?.id && (
-                      <span className="hidden sm:inline-block px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-[#1E293B]/80 text-[#3FB1FF] border border-slate-700 backdrop-blur-md">
+                      <span className="hidden sm:inline-block px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-[#1E293B]/80 text-aws-blue border border-slate-700 backdrop-blur-md">
                         {attendee.id}
                       </span>
                     )}
@@ -326,14 +326,14 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                       {attendee?.fullName || 'AWS Student Builder Pass'}
                     </div>
                     <div className="text-slate-400 text-[11px] font-mono">
-                      Pass ID: <span className="text-[#3FB1FF]">{currentId || 'riv-26-XXXX'}</span> · @{attendee?.builderId || 'awsbuilder'}
+                      Pass ID: <span className="text-aws-blue">{currentId || 'riv-26-XXXX'}</span> · @{attendee?.builderId || 'awsbuilder'}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => setViewMode('ticket')}
-                      className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-bold text-xs bg-[#05E08A] text-[#090D16] hover:bg-[#05E08A]/90 transition-all cursor-pointer text-center"
+                      className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-bold text-xs bg-aws-green text-[#090D16] hover:bg-aws-green/90 transition-all cursor-pointer text-center"
                     >
                       View Scannable QR &amp; Details &rarr;
                     </button>
@@ -341,7 +341,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                       href={calendarUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl border border-slate-700 bg-slate-800/80 text-[#3FB1FF] hover:bg-slate-700 transition-all"
+                      className="p-2 rounded-xl border border-slate-700 bg-slate-800/80 text-aws-blue hover:bg-slate-700 transition-all"
                       title="Add to Google Calendar"
                     >
                       <Calendar className="w-4 h-4" />
@@ -356,12 +356,12 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
               <div className="max-w-xl mx-auto space-y-6">
                 <div className="rounded-3xl border border-slate-800 bg-[#0E1526] overflow-hidden shadow-2xl shadow-black/80">
                   {/* Top Rainbow Accent */}
-                  <div className="h-1.5 w-full bg-linear-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A]" />
+                  <div className="h-1.5 w-full bg-linear-to-r from-aws-blue via-aws-magenta to-aws-green" />
 
                   <div className="p-6 sm:p-8 space-y-6">
                     {/* Header */}
                     <div className="text-center space-y-1.5">
-                      <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30 uppercase tracking-widest mb-1">
+                      <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-aws-green/15 text-aws-green border border-aws-green/30 uppercase tracking-widest mb-1">
                         ● {attendee?.status === 'approved' ? 'CONFIRMED PASS' : 'SUBMITTED REQUEST'}
                       </span>
                       <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -374,7 +374,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
 
                     {/* QR Code Card */}
                     <div className="rounded-2xl border-2 border-dashed border-slate-700/80 bg-[#090D16] p-6 text-center space-y-4">
-                      <div className="inline-block rounded-lg border border-[#3FB1FF]/40 bg-[#1E293B] px-3.5 py-1 text-xs sm:text-sm font-mono font-bold text-[#3FB1FF]">
+                      <div className="inline-block rounded-lg border border-aws-blue/40 bg-[#1E293B] px-3.5 py-1 text-xs sm:text-sm font-mono font-bold text-aws-blue">
                         PASS ID: {currentId || 'riv-26-XXXX'}
                       </div>
 
@@ -424,7 +424,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                         </div>
                         <div className="flex justify-between py-2.5">
                           <span className="text-slate-400">AWS Builder Center:</span>
-                          <span className="font-mono font-bold text-[#3FB1FF] text-right">@{attendee.builderId}</span>
+                          <span className="font-mono font-bold text-aws-blue text-right">@{attendee.builderId}</span>
                         </div>
                         <div className="flex justify-between py-2.5">
                           <span className="text-slate-400">Institution / College:</span>
@@ -432,7 +432,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                         </div>
                         <div className="flex justify-between py-2.5">
                           <span className="text-slate-400">Check-In Hours:</span>
-                          <span className="font-bold text-[#05E08A] text-right">09:00 AM – 09:30 AM IST</span>
+                          <span className="font-bold text-aws-green text-right">09:00 AM – 09:30 AM IST</span>
                         </div>
                         <div className="flex justify-between py-2.5 items-center">
                           <span className="text-slate-400">Venue Location:</span>
@@ -440,7 +440,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                             href={mapsUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#3FB1FF] font-semibold text-right hover:underline inline-flex items-center gap-1"
+                            className="text-aws-blue font-semibold text-right hover:underline inline-flex items-center gap-1"
                           >
                             Hotel Anand Regency Riverfront, Dhule
                             <ExternalLink className="w-3.5 h-3.5" />
@@ -463,7 +463,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                       </ul>
                       <div className="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400">
                         Questions? Reach us at{' '}
-                        <a href="mailto:info@reinvent.awssbgdhule.in" className="text-[#3FB1FF] font-semibold underline">
+                        <a href="mailto:info@reinvent.awssbgdhule.in" className="text-aws-blue font-semibold underline">
                           info@reinvent.awssbgdhule.in
                         </a>
                       </div>
@@ -475,7 +475,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                         href={calendarUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs bg-[#3FB1FF] text-[#090D16] hover:bg-[#3FB1FF]/90 transition-all text-center"
+                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs bg-aws-blue text-[#090D16] hover:bg-aws-blue/90 transition-all text-center"
                       >
                         <Calendar className="w-4 h-4" />
                         <span>Add to Google Calendar</span>
@@ -484,7 +484,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                         href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs border border-slate-700 bg-slate-800/70 text-[#3FB1FF] hover:bg-slate-800 transition-all text-center"
+                        className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs border border-slate-700 bg-slate-800/70 text-aws-blue hover:bg-slate-800 transition-all text-center"
                       >
                         <MapPin className="w-4 h-4 text-rose-400" />
                         <span>View on Google Maps</span>

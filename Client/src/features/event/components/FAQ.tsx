@@ -15,13 +15,13 @@ export const FAQ: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Left Sticky Heading Column - Stays pinned on scroll until last question */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 xl:top-32 self-start space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#FF57E8]">
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-magenta">
               <HelpCircle className="h-3.5 w-3.5" />
               <span>06 · FAQ</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.08]">
               Frequently Asked<br />
-              <span className="text-[#FF57E8]">Questions</span>
+              <span className="text-aws-magenta">Questions</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-md pt-1">
               Have questions about eligibility, team requirements, registration passes, or what to bring? Check our answers.
@@ -31,7 +31,7 @@ export const FAQ: React.FC = () => {
             <div className="pt-2">
               <div className="rounded-xl border border-slate-800/90 bg-[#0E1526]/80 p-4 max-w-md">
                 <div className="flex items-center gap-2 text-xs font-bold text-white">
-                  <span className="inline-block h-2 w-2 rounded-full bg-[#05E08A] animate-pulse" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-aws-green animate-pulse" />
                   <span>Still have questions?</span>
                 </div>
                 <p className="mt-1 text-xs text-slate-400 leading-relaxed">
@@ -39,7 +39,7 @@ export const FAQ: React.FC = () => {
                 </p>
                 <a
                   href={`mailto:${EVENT_DETAILS.contactEmail}`}
-                  className="mt-2 inline-block max-w-full break-all text-xs font-semibold text-[#3FB1FF] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3FB1FF]"
+                  className="mt-2 inline-block max-w-full break-all text-xs font-semibold text-aws-blue hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aws-blue"
                 >
                   {EVENT_DETAILS.contactEmail}
                 </a>
@@ -61,14 +61,14 @@ export const FAQ: React.FC = () => {
                   >
                     <span
                       className={`text-base sm:text-lg font-semibold transition-colors duration-200 ${
-                        isOpen ? 'text-[#FF57E8]' : 'text-slate-100 group-hover:text-white'
+                        isOpen ? 'text-aws-magenta' : 'text-slate-100 group-hover:text-white'
                       }`}
                     >
                       {faq.question}
                     </span>
                     <ChevronDown
                       className={`h-5 w-5 shrink-0 transition-transform duration-300 ${
-                        isOpen ? 'rotate-180 text-[#FF9F1C]' : 'text-slate-500 group-hover:text-slate-300'
+                        isOpen ? 'rotate-180 text-aws-orange' : 'text-slate-500 group-hover:text-slate-300'
                       }`}
                     />
                   </button>

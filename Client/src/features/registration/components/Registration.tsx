@@ -463,12 +463,12 @@ export const Registration: React.FC<RegistrationProps> = ({
           
           {/* Left Column: Context & Verification Process */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#AB5CFF]">
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-purple">
               <span>Pass Application · Official Registration</span>
             </div>
 
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
-              Request Your <span className="text-[#AB5CFF]">Seat.</span>
+              Request Your <span className="text-aws-purple">Seat.</span>
             </h2>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
@@ -478,7 +478,7 @@ export const Registration: React.FC<RegistrationProps> = ({
             {/* How verification works step-by-step */}
             <div className="space-y-4 pt-2">
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#FF9F1C]/15 p-2 text-[#FF9F1C] shrink-0 mt-0.5">
+                <div className="rounded-lg bg-aws-orange/15 p-2 text-aws-orange shrink-0 mt-0.5">
                   <ExternalLink className="h-4 w-4" />
                 </div>
                 <div>
@@ -490,7 +490,7 @@ export const Registration: React.FC<RegistrationProps> = ({
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#3FB1FF]/10 p-2 text-[#3FB1FF] shrink-0 mt-0.5">
+                <div className="rounded-lg bg-aws-blue/10 p-2 text-aws-blue shrink-0 mt-0.5">
                   <User className="h-4 w-4" />
                 </div>
                 <div>
@@ -502,7 +502,7 @@ export const Registration: React.FC<RegistrationProps> = ({
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#AB5CFF]/10 p-2 text-[#AB5CFF] shrink-0 mt-0.5">
+                <div className="rounded-lg bg-aws-purple/10 p-2 text-aws-purple shrink-0 mt-0.5">
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
@@ -514,7 +514,7 @@ export const Registration: React.FC<RegistrationProps> = ({
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-[#05E08A]/10 p-2 text-[#05E08A] shrink-0 mt-0.5">
+                <div className="rounded-lg bg-aws-green/10 p-2 text-aws-green shrink-0 mt-0.5">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
                 <div>
@@ -531,7 +531,7 @@ export const Registration: React.FC<RegistrationProps> = ({
               <div className="text-slate-400 font-medium">For registration assistance, email the organizing team:</div>
               <a
                 href={`mailto:${EVENT_DETAILS.contactEmail}`}
-                className="inline-block max-w-full break-all font-bold text-[#05E08A] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#05E08A]"
+                className="inline-block max-w-full break-all font-bold text-aws-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aws-green"
               >
                 {EVENT_DETAILS.contactEmail}
               </a>
@@ -544,7 +544,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                 href="/codeofconduct"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
               >
-                <Scale className="h-4 w-4 text-[#3FB1FF]" />
+                <Scale className="h-4 w-4 text-aws-blue" />
                 <span>Code of Conduct &amp; Policy</span>
               </a>
             </div>
@@ -559,10 +559,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                 <div
                   className={`absolute top-0 left-0 right-0 h-1.5 ${
                     attendee.status === 'approved'
-                      ? 'bg-gradient-to-r from-[#05E08A] to-[#3FB1FF]'
+                      ? 'bg-linear-to-r from-aws-green to-aws-blue'
                       : attendee.status === 'rejected'
                       ? 'bg-rose-500'
-                      : 'bg-gradient-to-r from-[#FF9F1C] via-[#FF57E8] to-[#AB5CFF]'
+                      : 'bg-linear-to-r from-aws-orange via-aws-magenta to-aws-purple'
                   }`}
                 />
 
@@ -572,10 +572,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <div
                       className={`rounded-xl p-2.5 shrink-0 ${
                         attendee.status === 'approved'
-                          ? 'bg-[#05E08A]/15 text-[#05E08A]'
+                          ? 'bg-aws-green/15 text-aws-green'
                           : attendee.status === 'rejected'
                           ? 'bg-rose-500/15 text-rose-400'
-                          : 'bg-[#05E08A]/15 text-[#05E08A]'
+                          : 'bg-aws-green/15 text-aws-green'
                       }`}
                     >
                       {attendee.status === 'approved' ? (
@@ -583,7 +583,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       ) : attendee.status === 'rejected' ? (
                         <XCircle className="h-6 w-6" />
                       ) : (
-                        <CheckCircle2 className="h-6 w-6 text-[#05E08A]" />
+                        <CheckCircle2 className="h-6 w-6 text-aws-green" />
                       )}
                     </div>
                     <div>
@@ -591,10 +591,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                         <span
                           className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-mono font-bold tracking-wider uppercase ${
                             attendee.status === 'approved'
-                              ? 'bg-[#05E08A]/20 text-[#05E08A] border border-[#05E08A]/40'
+                              ? 'bg-aws-green/20 text-aws-green border border-aws-green/40'
                               : attendee.status === 'rejected'
                               ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
-                              : 'bg-[#FF9F1C]/20 text-[#FF9F1C] border border-[#FF9F1C]/40'
+                              : 'bg-aws-orange/20 text-aws-orange border border-aws-orange/40'
                           }`}
                         >
                           {attendee.status === 'approved'
@@ -625,15 +625,15 @@ export const Registration: React.FC<RegistrationProps> = ({
                 {/* Status Notice Callout */}
                 {attendee.status === 'approved' ? (
                   <div className="mt-5 space-y-4">
-                    <div className="p-4 sm:p-5 rounded-xl border border-[#05E08A]/40 bg-[#05E08A]/10 text-xs sm:text-sm text-emerald-200">
+                    <div className="p-4 sm:p-5 rounded-xl border border-aws-green/40 bg-aws-green/10 text-xs sm:text-sm text-emerald-200">
                       <p>
                         <strong>Congratulations!</strong> Your registration has been verified and approved by the organizing team. Your seat at Hotel Anand Regency Riverfront is reserved for 04 December 2026.
                       </p>
                     </div>
 
                     {/* Official Digital QR Code Pass */}
-                    <div className="rounded-2xl border-2 border-dashed border-[#3FB1FF]/40 bg-[#0A1220] p-6 text-center shadow-xl">
-                      <div className="inline-block rounded-lg border border-[#3FB1FF]/30 bg-[#1E293B] px-3.5 py-1 text-xs font-mono font-bold text-[#3FB1FF] mb-4">
+                    <div className="rounded-2xl border-2 border-dashed border-aws-blue/40 bg-[#0A1220] p-6 text-center shadow-xl">
+                      <div className="inline-block rounded-lg border border-aws-blue/30 bg-[#1E293B] px-3.5 py-1 text-xs font-mono font-bold text-aws-blue mb-4">
                         PASS ID: {attendee.id}
                       </div>
 
@@ -682,7 +682,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         <li className="flex items-start gap-2"><span>✅</span> Keep this email accessible on the event day.</li>
                       </ul>
                       <div className="mt-3 pt-2.5 border-t border-slate-800 text-[11px] text-slate-400">
-                        Questions? Reach us at <a href="mailto:info@reinvent.awssbgdhule.in" className="text-[#3FB1FF] font-semibold underline">info@reinvent.awssbgdhule.in</a>
+                        Questions? Reach us at <a href="mailto:info@reinvent.awssbgdhule.in" className="text-aws-blue font-semibold underline">info@reinvent.awssbgdhule.in</a>
                       </div>
                     </div>
                   </div>
@@ -693,8 +693,8 @@ export const Registration: React.FC<RegistrationProps> = ({
                     </p>
                   </div>
                 ) : (
-                  <div className="mt-5 p-4 sm:p-5 rounded-xl border border-[#05E08A]/40 bg-[#05E08A]/10 text-xs sm:text-sm flex items-start gap-3.5">
-                    <div className="rounded-lg bg-[#05E08A]/20 p-2 text-[#05E08A] shrink-0 mt-0.5">
+                  <div className="mt-5 p-4 sm:p-5 rounded-xl border border-aws-green/40 bg-aws-green/10 text-xs sm:text-sm flex items-start gap-3.5">
+                    <div className="rounded-lg bg-aws-green/20 p-2 text-aws-green shrink-0 mt-0.5">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
                     <div className="space-y-1">
@@ -728,7 +728,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       href={`https://builder.aws.com/community/@${cleanBuilderAlias(attendee.builderId)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-mono font-bold text-[#3FB1FF] hover:underline inline-flex items-center gap-1 text-xs min-w-0 truncate"
+                      className="font-mono font-bold text-aws-blue hover:underline inline-flex items-center gap-1 text-xs min-w-0 truncate"
                     >
                       <span className="truncate max-w-[260px] sm:max-w-xs md:max-w-none">
                         @{cleanBuilderAlias(attendee.builderId)}
@@ -743,7 +743,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                   {attendee.whyJoin && (
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 py-1.5 border-b border-slate-800/60">
                       <span className="text-slate-400 shrink-0">Why Join:</span>
-                      <span className="font-medium text-[#AB5CFF] italic text-left sm:text-right sm:max-w-md">"{attendee.whyJoin}"</span>
+                      <span className="font-medium text-aws-purple italic text-left sm:text-right sm:max-w-md">"{attendee.whyJoin}"</span>
                     </div>
                   )}
                   <div className="flex justify-between py-1.5">
@@ -758,7 +758,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                     href={EVENT_DETAILS.calendarGoogleUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3FB1FF] to-[#05E08A] hover:opacity-95 py-3.5 px-5 text-xs font-bold text-slate-950 shadow-md cursor-pointer transition-all active:scale-[0.99]"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-aws-blue to-aws-green hover:opacity-95 py-3.5 px-5 text-xs font-bold text-slate-950 shadow-md cursor-pointer transition-all active:scale-[0.99]"
                   >
                     <Calendar className="h-4 w-4" />
                     <span>Add to Google Calendar</span>
@@ -770,18 +770,18 @@ export const Registration: React.FC<RegistrationProps> = ({
               /* STEP 1: AWS Builder Center Official Registration                          */
               /* ========================================================================= */
               <div className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF9F1C] via-[#FF57E8] to-[#3FB1FF]" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-aws-orange via-aws-magenta to-aws-blue" />
 
                 {/* Stepper Progress Bar */}
                 <div className="mb-6 pb-5 border-b border-slate-800/80">
                   <div className="flex items-center justify-between gap-2">
                     {/* Step 1 Pill */}
                     <div className="flex items-center gap-2.5">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF9F1C] text-xs font-bold text-slate-950 font-mono shadow-md shadow-[#FF9F1C]/20">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-aws-orange text-xs font-bold text-slate-950 font-mono shadow-md shadow-aws-orange/20">
                         1
                       </span>
                       <div>
-                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#FF9F1C]">
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-aws-orange">
                           Step 1 of 2
                         </div>
                         <h3 className="text-base sm:text-lg font-bold text-white">
@@ -808,9 +808,9 @@ export const Registration: React.FC<RegistrationProps> = ({
                 {/* Step 1 Main Body */}
                 <div className="space-y-6">
                   {/* Prerequisite Notice */}
-                  <div className="rounded-xl border border-[#FF9F1C]/30 bg-[#FF9F1C]/5 p-4 sm:p-5">
+                  <div className="rounded-xl border border-aws-orange/30 bg-aws-orange/5 p-4 sm:p-5">
                     <div className="flex items-start gap-3.5">
-                      <div className="rounded-lg bg-[#FF9F1C]/15 p-2 text-[#FF9F1C] shrink-0 mt-0.5">
+                      <div className="rounded-lg bg-aws-orange/15 p-2 text-aws-orange shrink-0 mt-0.5">
                         <Sparkles className="h-5 w-5" />
                       </div>
                       <div className="space-y-1">
@@ -826,14 +826,14 @@ export const Registration: React.FC<RegistrationProps> = ({
 
                   {/* Step-by-Step Instructions */}
                   <div className="space-y-3 rounded-xl border border-slate-800 bg-[#090D16]/90 p-4 sm:p-5 text-xs text-slate-300">
-                    <div className="font-mono font-semibold uppercase tracking-wider text-[11px] text-[#3FB1FF] flex items-center gap-1.5">
-                      <ShieldCheck className="h-4 w-4 text-[#3FB1FF]" />
+                    <div className="font-mono font-semibold uppercase tracking-wider text-[11px] text-aws-blue flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-aws-blue" />
                       <span>How to Complete Step 1:</span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-2.5 pt-1">
                       <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3FB1FF]/15 text-[#3FB1FF] font-mono font-bold text-[11px]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-aws-blue/15 text-aws-blue font-mono font-bold text-[11px]">
                           1
                         </span>
                         <div className="leading-relaxed">
@@ -842,7 +842,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       </div>
 
                       <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FF9F1C]/15 text-[#FF9F1C] font-mono font-bold text-[11px]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-aws-orange/15 text-aws-orange font-mono font-bold text-[11px]">
                           2
                         </span>
                         <div className="leading-relaxed">
@@ -851,7 +851,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       </div>
 
                       <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#05E08A]/15 text-[#05E08A] font-mono font-bold text-[11px]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-aws-green/15 text-aws-green font-mono font-bold text-[11px]">
                           3
                         </span>
                         <div className="leading-relaxed">
@@ -860,7 +860,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       </div>
 
                       <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FF57E8]/15 text-[#FF57E8] font-mono font-bold text-[11px]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-aws-magenta/15 text-aws-magenta font-mono font-bold text-[11px]">
                           4
                         </span>
                         <div className="leading-relaxed">
@@ -876,7 +876,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setHasOpenedBuilderCenter(true)}
-                    className="w-full inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF9F1C] via-[#FF57E8] to-[#3FB1FF] py-3.5 px-6 text-sm font-bold text-slate-950 hover:opacity-95 shadow-lg shadow-[#FF9F1C]/20 transition-all active:scale-[0.99] cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-aws-orange via-aws-magenta to-aws-blue py-3.5 px-6 text-sm font-bold text-slate-950 hover:opacity-95 shadow-lg shadow-aws-orange/20 transition-all active:scale-[0.99] cursor-pointer"
                   >
                     <span>1. Open AWS Builder Center Event Page</span>
                     <ExternalLink className="h-4 w-4" />
@@ -884,7 +884,7 @@ export const Registration: React.FC<RegistrationProps> = ({
 
                   {hasOpenedBuilderCenter && (
                     <div className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#05E08A]" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-aws-green" />
                       <span>AWS event page opened in a new tab! Once you finish registering on AWS, check the box below to proceed.</span>
                     </div>
                   )}
@@ -895,7 +895,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       type="checkbox"
                       checked={hasConfirmedBuilderRsvp}
                       onChange={(e) => setHasConfirmedBuilderRsvp(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-800 text-[#05E08A] focus:ring-[#05E08A] focus:ring-offset-0 cursor-pointer"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-800 text-aws-green focus:ring-aws-green focus:ring-offset-0 cursor-pointer"
                     />
                     <div className="text-xs text-slate-300 select-none">
                       <span className="font-semibold text-white">
@@ -922,7 +922,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                     }}
                     className={`w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-6 text-sm font-bold transition-all ${
                       hasConfirmedBuilderRsvp
-                        ? 'bg-gradient-to-r from-[#3FB1FF] to-[#05E08A] text-slate-950 hover:opacity-95 shadow-lg shadow-[#3FB1FF]/25 cursor-pointer active:scale-[0.99]'
+                        ? 'bg-linear-to-r from-aws-blue to-aws-green text-slate-950 hover:opacity-95 shadow-lg shadow-aws-blue/25 cursor-pointer active:scale-[0.99]'
                         : 'bg-slate-800/60 text-slate-500 border border-slate-800 cursor-not-allowed'
                     }`}
                   >
@@ -939,16 +939,16 @@ export const Registration: React.FC<RegistrationProps> = ({
                 onSubmit={handleSubmit}
                 className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#3FB1FF] via-[#05E08A] to-[#AB5CFF]" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-aws-blue via-aws-green to-aws-purple" />
 
                 {/* Stepper Progress Bar */}
                 <div className="mb-6 pb-4 border-b border-slate-800/80 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#05E08A] text-xs font-bold text-slate-950 font-mono shadow-md shadow-[#05E08A]/20">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-aws-green text-xs font-bold text-slate-950 font-mono shadow-md shadow-aws-green/20">
                       2
                     </span>
                     <div>
-                      <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#05E08A]">
+                      <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-aws-green">
                         Step 2 of 2
                       </div>
                       <h3 className="text-base sm:text-lg font-bold text-white">
@@ -969,7 +969,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                 {/* Step 1 Completion Banner */}
                 <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#05E08A] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-aws-green shrink-0" />
                     <span>Step 1 Confirmed: Registered on AWS Builder Center</span>
                   </div>
                   <a
@@ -994,7 +994,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       placeholder="e.g. Soham Chaudhari"
-                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
+                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none focus:ring-1 focus:ring-aws-purple"
                       required
                       maxLength={80}
                     />
@@ -1014,7 +1014,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="name@example.com"
-                        className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
+                        className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none focus:ring-1 focus:ring-aws-purple"
                         required
                         maxLength={120}
                       />
@@ -1032,7 +1032,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="e.g. 9834382337"
-                        className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
+                        className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none focus:ring-1 focus:ring-aws-purple"
                         required
                         maxLength={15}
                       />
@@ -1045,14 +1045,14 @@ export const Registration: React.FC<RegistrationProps> = ({
                   {/* AWS Builder Center Alias ID with Direct 404 Check */}
                   <div className="rounded-xl border border-slate-800 bg-[#090D16]/90 p-4 space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-[#3FB1FF]">
+                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-aws-blue">
                         AWS Builder Center Alias / ID *
                       </label>
                       <a
                         href="https://profile.aws.amazon.com/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#05E08A] hover:underline"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-aws-green hover:underline"
                       >
                         <span>Create Builder ID on Builder Center</span>
                         <ExternalLink className="h-3 w-3" />
@@ -1067,20 +1067,20 @@ export const Registration: React.FC<RegistrationProps> = ({
                         onChange={(e) => handleAliasChange(e.target.value)}
                         onBlur={handleAliasBlur}
                         placeholder="e.g. saurabhrajput1 or @saurabhrajput1"
-                        className="w-full rounded-xl border border-slate-700 bg-[#0E1526] pl-4 pr-36 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF] font-mono lowercase"
+                        className="w-full rounded-xl border border-slate-700 bg-[#0E1526] pl-4 pr-36 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-blue focus:outline-none focus:ring-1 focus:ring-aws-blue font-mono lowercase"
                         required
                         maxLength={120}
                       />
                       {/* Inline live status indicator */}
                       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                         {isVerifying ? (
-                          <span className="flex items-center gap-1.5 text-xs text-[#3FB1FF] font-mono">
+                          <span className="flex items-center gap-1.5 text-xs text-aws-blue font-mono">
                             <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                             <span className="text-[11px]">Checking...</span>
                           </span>
                         ) : verificationResult?.status === 'valid' ? (
                           verificationResult.hasEventRegistration ? (
-                            <span className="flex items-center gap-1 text-[11px] text-[#05E08A] font-mono font-bold bg-[#05E08A]/10 px-2 py-0.5 rounded border border-[#05E08A]/30">
+                            <span className="flex items-center gap-1 text-[11px] text-aws-green font-mono font-bold bg-aws-green/10 px-2 py-0.5 rounded border border-aws-green/30">
                               <span>✓ Registered on AWS</span>
                             </span>
                           ) : (
@@ -1121,7 +1121,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                                 )}
                                 <div className="flex-1">
                                   <div className="font-bold text-white flex items-center gap-1.5">
-                                    <span className="text-[#05E08A]">✓ We found that you have registered on Builder Center!</span>
+                                    <span className="text-aws-green">✓ We found that you have registered on Builder Center!</span>
                                   </div>
                                   <div className="text-[11px] text-emerald-300 font-mono mt-0.5">
                                     @{verificationResult.alias} {verificationResult.displayName ? `(${verificationResult.displayName})` : ''}
@@ -1152,7 +1152,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                                   href={EVENT_DETAILS.builderCenterEventUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md transition-all cursor-pointer"
+                                  className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-r from-amber-500 to-orange-500 hover:opacity-95 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md transition-all cursor-pointer"
                                 >
                                   <span>1. Open Builder Center &amp; Register</span>
                                   <ExternalLink className="h-3.5 w-3.5" />
@@ -1209,7 +1209,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       value={formData.college}
                       onChange={(e) => setFormData({ ...formData, college: e.target.value })}
                       placeholder="e.g. Government College of Engineering"
-                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none focus:ring-1 focus:ring-[#AB5CFF]"
+                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none focus:ring-1 focus:ring-aws-purple"
                       required
                       maxLength={120}
                     />
@@ -1226,7 +1226,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <select
                       value={formData.year}
                       onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-3.5 py-2.5 text-sm text-white focus:border-[#AB5CFF] focus:outline-none"
+                      className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-3.5 py-2.5 text-sm text-white focus:border-aws-purple focus:outline-none"
                     >
                       <option value="1st Year">1st Year (FE)</option>
                       <option value="2nd Year">2nd Year (SE)</option>
@@ -1241,7 +1241,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                 <div className="mt-5 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400">
-                      Why do you want to join this event? <span className="text-[#AB5CFF]">*</span>
+                      Why do you want to join this event? <span className="text-aws-purple">*</span>
                     </label>
                     <span
                       className={`text-[11px] font-mono px-2 py-0.5 rounded ${
@@ -1270,7 +1270,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                     className={`w-full rounded-xl border bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 ${
                       errors.whyJoin || countWords(formData.whyJoin) > 10
                         ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
-                        : 'border-slate-700 focus:border-[#AB5CFF] focus:ring-[#AB5CFF]'
+                        : 'border-slate-700 focus:border-aws-purple focus:ring-aws-purple'
                     }`}
                     required
                   />
@@ -1289,13 +1289,13 @@ export const Registration: React.FC<RegistrationProps> = ({
                       type="checkbox"
                       checked={agreedToTerms}
                       onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-[#AB5CFF] focus:ring-[#AB5CFF] cursor-pointer"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-aws-purple focus:ring-aws-purple cursor-pointer"
                     />
                     <span className="text-xs text-slate-300 leading-relaxed">
                       I agree to the{' '}
                       <a
                         href="/codeofconduct"
-                        className="text-[#3FB1FF] font-semibold underline hover:text-[#72c7ff] inline-flex items-center gap-0.5 cursor-pointer"
+                        className="text-aws-blue font-semibold underline hover:text-[#72c7ff] inline-flex items-center gap-0.5 cursor-pointer"
                       >
                         <span>Terms &amp; Conditions and Code of Conduct</span>
                       </a>
@@ -1334,7 +1334,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         disabled={!canSubmit}
                         className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 px-6 text-sm font-bold transition-all shadow-lg ${
                           canSubmit
-                            ? 'bg-[#AB5CFF] hover:bg-[#b873ff] text-[#0E131A] cursor-pointer shadow-[#AB5CFF]/20 active:scale-[0.99]'
+                            ? 'bg-aws-purple hover:bg-[#b873ff] text-[#0E131A] cursor-pointer shadow-aws-purple/20 active:scale-[0.99]'
                             : isMissingRsvp
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-90'
                             : is404
@@ -1349,7 +1349,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           </>
                         ) : isVerifying ? (
                           <>
-                            <RefreshCw className="h-4 w-4 animate-spin text-[#3FB1FF]" />
+                            <RefreshCw className="h-4 w-4 animate-spin text-aws-blue" />
                             <span>Verifying AWS Builder Registration...</span>
                           </>
                         ) : !isAliasFilled ? (
@@ -1377,9 +1377,9 @@ export const Registration: React.FC<RegistrationProps> = ({
 
                 {/* Post-Submit Email Instruction Note */}
                 <div className="mt-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
-                  <Mail className="h-4 w-4 text-[#3FB1FF] shrink-0 mt-0.5" />
+                  <Mail className="h-4 w-4 text-aws-blue shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
-                    <strong className="text-white">What happens next:</strong> After submitting your request, you will receive an email with quick next steps to complete to <strong className="text-[#3FB1FF]">significantly increase your chances of ticket confirmation</strong>.
+                    <strong className="text-white">What happens next:</strong> After submitting your request, you will receive an email with quick next steps to complete to <strong className="text-aws-blue">significantly increase your chances of ticket confirmation</strong>.
                   </p>
                 </div>
 
@@ -1399,7 +1399,7 @@ export const Registration: React.FC<RegistrationProps> = ({
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-[#090D16]">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#AB5CFF]/15 p-2 text-[#AB5CFF]">
+                <div className="rounded-xl bg-aws-purple/15 p-2 text-aws-purple">
                   <ShieldCheck className="h-6 w-6" />
                 </div>
                 <div>
@@ -1424,7 +1424,7 @@ export const Registration: React.FC<RegistrationProps> = ({
             {!isAdminUnlocked ? (
               /* Passcode Unlock Screen */
               <div className="p-8 sm:p-12 text-center max-w-md mx-auto my-auto space-y-4">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#090D16] border border-slate-800 text-[#05E08A]">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#090D16] border border-slate-800 text-aws-green">
                   <Lock className="h-7 w-7" />
                 </div>
                 <h4 className="text-lg font-bold text-white">Organizer Access</h4>
@@ -1438,13 +1438,13 @@ export const Registration: React.FC<RegistrationProps> = ({
                     value={adminPin}
                     onChange={(e) => setAdminPin(e.target.value)}
                     placeholder="Enter passcode (e.g. aws2026)"
-                    className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-center text-sm text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none"
+                    className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-center text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none"
                     autoFocus
                   />
                   {adminError && <p className="text-xs text-rose-400">{adminError}</p>}
                   <button
                     type="submit"
-                    className="w-full rounded-xl bg-[#AB5CFF] hover:bg-[#b873ff] py-2.5 text-xs font-bold text-slate-950 transition-colors cursor-pointer"
+                    className="w-full rounded-xl bg-aws-purple hover:bg-[#b873ff] py-2.5 text-xs font-bold text-slate-950 transition-colors cursor-pointer"
                   >
                     Unlock Organizer Portal
                   </button>
@@ -1464,7 +1464,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       onClick={() => setAdminFilter('all')}
                       className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                         adminFilter === 'all'
-                          ? 'bg-[#3FB1FF] text-slate-950 font-bold'
+                          ? 'bg-aws-blue text-slate-950 font-bold'
                           : 'bg-slate-800 text-slate-300 hover:text-white'
                       }`}
                     >
@@ -1474,7 +1474,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       onClick={() => setAdminFilter('pending')}
                       className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                         adminFilter === 'pending'
-                          ? 'bg-[#FF9F1C] text-slate-950 font-bold'
+                          ? 'bg-aws-orange text-slate-950 font-bold'
                           : 'bg-slate-800 text-slate-300 hover:text-white'
                       }`}
                     >
@@ -1484,7 +1484,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       onClick={() => setAdminFilter('approved')}
                       className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                         adminFilter === 'approved'
-                          ? 'bg-[#05E08A] text-slate-950 font-bold'
+                          ? 'bg-aws-green text-slate-950 font-bold'
                           : 'bg-slate-800 text-slate-300 hover:text-white'
                       }`}
                     >
@@ -1520,7 +1520,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search name, builder ID..."
-                        className="rounded-xl border border-slate-700 bg-[#090D16] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none w-full sm:w-56"
+                        className="rounded-xl border border-slate-700 bg-[#090D16] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none w-full sm:w-56"
                       />
                     </div>
                   </div>
@@ -1551,10 +1551,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                                 <span
                                   className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold uppercase ${
                                     item.status === 'approved'
-                                      ? 'bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30'
+                                      ? 'bg-aws-green/15 text-aws-green border border-aws-green/30'
                                       : item.status === 'rejected'
                                       ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
-                                      : 'bg-[#FF9F1C]/15 text-[#FF9F1C] border border-[#FF9F1C]/30'
+                                      : 'bg-aws-orange/15 text-aws-orange border border-aws-orange/30'
                                   }`}
                                 >
                                   {item.status}
@@ -1571,7 +1571,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                                 </a>
                                 <a
                                   href={`tel:${item.phone}`}
-                                  className="inline-flex items-center gap-1 text-[#05E08A] hover:underline font-mono"
+                                  className="inline-flex items-center gap-1 text-aws-green hover:underline font-mono"
                                 >
                                   <Phone className="h-3 w-3" />
                                   <span>{item.phone}</span>
@@ -1585,7 +1585,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                               {/* Builder Center Profile & Verification Status */}
                               <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
                                 <span className="text-slate-400">Builder Profile:</span>
-                                <span className="font-mono font-bold text-[#3FB1FF] bg-[#0E1526] px-2 py-0.5 rounded border border-slate-800">
+                                <span className="font-mono font-bold text-aws-blue bg-[#0E1526] px-2 py-0.5 rounded border border-slate-800">
                                   @{cleanAlias}
                                 </span>
 
@@ -1625,7 +1625,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                                   href={`https://builder.aws.com/community/@${cleanAlias}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 rounded bg-[#3FB1FF]/15 hover:bg-[#3FB1FF]/25 border border-[#3FB1FF]/30 px-2 py-0.5 text-[11px] font-mono font-bold text-[#3FB1FF] transition-colors"
+                                  className="inline-flex items-center gap-1 rounded bg-aws-blue/15 hover:bg-aws-blue/25 border border-aws-blue/30 px-2 py-0.5 text-[11px] font-mono font-bold text-aws-blue transition-colors"
                                 >
                                   <span>Open Page ↗</span>
                                 </a>
@@ -1637,7 +1637,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                               {item.status !== 'approved' && (
                                 <button
                                   onClick={() => handleUpdateStatus(item.id, 'approved')}
-                                  className="inline-flex items-center gap-1 rounded-lg bg-[#05E08A] hover:bg-[#0fd686] px-3 py-1.5 text-xs font-bold text-slate-950 transition-colors cursor-pointer"
+                                  className="inline-flex items-center gap-1 rounded-lg bg-aws-green hover:bg-[#0fd686] px-3 py-1.5 text-xs font-bold text-slate-950 transition-colors cursor-pointer"
                                 >
                                   <Check className="h-3.5 w-3.5" />
                                   <span>Approve</span>

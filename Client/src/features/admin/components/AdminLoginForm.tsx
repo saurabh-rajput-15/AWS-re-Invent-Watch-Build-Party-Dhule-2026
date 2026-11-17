@@ -46,12 +46,12 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#AB5CFF]/10 text-[#AB5CFF] border border-[#AB5CFF]/30 mb-3 shadow-inner">
+          <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-aws-purple/10 text-aws-purple border border-aws-purple/30 mb-3 shadow-inner">
             <ShieldCheck className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Admin & Organizer Portal</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Server-protected route · Requires valid <code className="text-[#3FB1FF] font-mono">ADMIN KEY</code>
+            Server-protected route · Requires valid <code className="text-aws-blue font-mono">ADMIN KEY</code>
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
                 placeholder="Enter ADMIN KEY"
                 value={adminKey}
                 onChange={(e) => setAdminKey(e.target.value)}
-                className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#AB5CFF] focus:ring-1 focus:ring-[#AB5CFF]"
+                className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-aws-purple focus:ring-1 focus:ring-aws-purple"
               />
             </div>
            
@@ -85,7 +85,7 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-xl bg-gradient-to-r from-[#AB5CFF] to-[#3FB1FF] py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/20 hover:opacity-95 transition disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full rounded-xl bg-linear-to-r from-aws-purple to-aws-blue py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/20 hover:opacity-95 transition disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <Lock className="h-4 w-4" />
             <span>{isLoading ? 'Verifying with Server...' : 'Unlock Admin Portal'}</span>

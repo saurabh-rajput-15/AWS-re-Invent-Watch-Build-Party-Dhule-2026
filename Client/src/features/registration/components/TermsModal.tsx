@@ -28,7 +28,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
         {/* Header */}
         <div className="flex items-center justify-between p-5 sm:p-6 border-b border-slate-800 bg-[#090D16]">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-[#AB5CFF]/15 p-2 text-[#AB5CFF]">
+            <div className="rounded-xl bg-aws-purple/15 p-2 text-aws-purple">
               <Scale className="h-6 w-6" />
             </div>
             <div>
@@ -43,7 +43,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
                 <a
                   href="/codeofconduct"
                   onClick={onClose}
-                  className="text-xs font-mono text-[#3FB1FF] hover:underline inline-flex items-center gap-1"
+                  className="text-xs font-mono text-aws-blue hover:underline inline-flex items-center gap-1"
                 >
                   <span>Open Full /codeofconduct Page</span>
                   <ExternalLink className="h-3 w-3" />
@@ -65,8 +65,8 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-xs sm:text-sm leading-relaxed">
           
           {/* Important Callout */}
-          <div className="rounded-xl border border-[#FF9F1C]/30 bg-[#FF9F1C]/10 p-4 text-amber-200 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-[#FF9F1C] shrink-0 mt-0.5" />
+          <div className="rounded-xl border border-aws-orange/30 bg-aws-orange/10 p-4 text-amber-200 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-aws-orange shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-white">Attendee Acknowledgement</p>
               <p className="mt-0.5 text-xs text-amber-200/90 leading-relaxed">
@@ -116,7 +116,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
           {/* Section 3: Right of Admission & Removal */}
           <div className="space-y-2 rounded-xl bg-slate-900/60 border border-slate-800/80 p-4">
             <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <FileText className="h-4 w-4 text-[#3FB1FF] shrink-0" />
+              <FileText className="h-4 w-4 text-aws-blue shrink-0" />
               <h3>3. Registration Approval &amp; Right of Admission</h3>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-slate-400 text-xs">
@@ -135,7 +135,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
           {/* Section 4: Swags & International Logistics */}
           <div className="space-y-2 rounded-xl bg-slate-900/60 border border-slate-800/80 p-4">
             <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <Gift className="h-4 w-4 text-[#FF57E8] shrink-0" />
+              <Gift className="h-4 w-4 text-aws-magenta shrink-0" />
               <h3>4. Swags, Goodies &amp; International Shipping Disclaimer</h3>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-slate-400 text-xs">
@@ -154,7 +154,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
           {/* Section 5: Media & Photography */}
           <div className="space-y-2 rounded-xl bg-slate-900/60 border border-slate-800/80 p-4">
             <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <CheckCircle2 className="h-4 w-4 text-[#05E08A] shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-aws-green shrink-0" />
               <h3>5. Event Media &amp; Community Photography</h3>
             </div>
             <p className="text-slate-400 text-xs">
@@ -177,7 +177,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
                   onAccept();
                   onClose();
                 }}
-                className="flex-1 sm:flex-initial rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] px-6 py-2.5 text-xs font-bold text-[#0E131A] transition-all cursor-pointer shadow-md"
+                className="flex-1 sm:flex-initial rounded-full bg-aws-purple hover:bg-[#b873ff] px-6 py-2.5 text-xs font-bold text-[#0E131A] transition-all cursor-pointer shadow-md"
               >
                 I Agree &amp; Understand
               </button>

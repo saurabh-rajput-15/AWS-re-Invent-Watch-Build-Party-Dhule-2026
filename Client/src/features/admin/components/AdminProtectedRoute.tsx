@@ -17,7 +17,7 @@ export const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({
     return (
       <div className="min-h-screen bg-[#090D16] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#AB5CFF] border-t-transparent" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-aws-purple border-t-transparent" />
           <span className="text-xs text-slate-400">Verifying admin session with server...</span>
         </div>
       </div>

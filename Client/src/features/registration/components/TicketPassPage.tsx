@@ -263,7 +263,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
             {/* 1. 3D LANYARD VIEW */}
             {viewMode === 'lanyard' && (
               <div className="space-y-4">
-                <div className="relative w-full h-[520px] sm:h-[620px] rounded-3xl border border-slate-800/80 bg-radial from-[#131B2E] via-[#0A0F1D] to-[#050811] overflow-hidden shadow-2xl shadow-black/90">
+                <div className="relative w-full h-130 sm:h-155 rounded-3xl border border-slate-800/80 bg-radial from-[#131B2E] via-[#0A0F1D] to-[#050811] overflow-hidden shadow-2xl shadow-black/90">
                   {/* Top Rainbow Accent Line */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-aws-blue via-aws-magenta to-aws-green z-10" />
 
@@ -454,7 +454,7 @@ export const TicketPassPage: React.FC<TicketPassPageProps> = ({ ticketId = '', o
                       <h4 className="font-bold text-white flex items-center gap-1.5 text-xs">
                         <span>📋</span> Important Information
                       </h4>
-                      <ul className="space-y-1.5 text-[12px] leading-relaxed">
+                      <ul className="space-y-1.5 text-xs leading-relaxed">
                         <li className="flex items-start gap-2"><span>✅</span> Carry a valid Government ID or College ID for verification.</li>
                         <li className="flex items-start gap-2"><span>✅</span> Please arrive at least 30 minutes before the event starts.</li>
                         <li className="flex items-start gap-2"><span>✅</span> Your ticket contains a unique QR code required for check-in.</li>

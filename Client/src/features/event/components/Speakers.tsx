@@ -47,7 +47,7 @@ export const Speakers: React.FC = () => {
 
                 <div className="space-y-5">
                   {/* Speaker Profile Photo in 5:4 Portrait Ratio (scaled down with max-width) */}
-                  <div className="relative w-full max-w-[280px] sm:max-w-[300px] mx-auto aspect-[4/5] overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-950 shadow-inner group-hover:border-slate-500/80 transition-colors">
+                  <div className="relative w-full max-w-70 sm:max-w-75 mx-auto aspect-4/5 overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-950 shadow-inner group-hover:border-slate-500/80 transition-colors">
                     {speaker.image ? (
                       <>
                         <img
@@ -97,7 +97,7 @@ export const Speakers: React.FC = () => {
                     )}
 
                     {/* Gradient bottom scrim to ease transition into text */}
-                    <div className="absolute inset-0 bg-linear-to- from-[#0E1526] via-[#0E1526]/15 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-linear-to-t from-[#0E1526] via-[#0E1526]/15 to-transparent pointer-events-none" />
 
                     {/* Status Badge in Top-Left */}
                     <div className="absolute top-3.5 left-3.5 z-10">

@@ -390,7 +390,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   return (
     <div className="min-h-screen bg-[#090D16] text-[#F3F4F6] selection:bg-aws-purple/30 selection:text-white flex flex-col">
       {/* Top Hairline */}
-      <div className="h-[2px] w-full bg-linear-to-r from-aws-blue/70 via-aws-magenta/70 to-aws-green/70" />
+      <div className="h-0.5 w-full bg-linear-to-r from-aws-blue/70 via-aws-magenta/70 to-aws-green/70" />
 
       {/* Top Bar */}
       <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-linear-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-lg shadow-black/20">

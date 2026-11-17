@@ -151,7 +151,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
         </div>
 
         {/* Highlight Banner with Fast Registration CTA */}
-        <div className="mt-12 rounded-2xl border border-white/10 bg-linear-to- from-[#0E1526] via-[#121b33] to-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="mt-12 rounded-2xl border border-white/10 bg-linear-to-br from-[#0E1526] via-[#121b33] to-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div
             aria-hidden="true"
             className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-aws-green/10 blur-3xl pointer-events-none"

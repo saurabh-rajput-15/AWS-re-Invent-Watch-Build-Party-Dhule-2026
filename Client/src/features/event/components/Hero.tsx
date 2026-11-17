@@ -64,12 +64,12 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
 
         {/* Vivid Scrim - Preserves Video Clarity with High Contrast Text */}
         <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute inset-0 bg-linear-to- from-[#090D16] via-[#090D16]/25 to-black/20" />
-        <div className="absolute inset-0 bg-linear-to- from-black/65 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#090D16] via-[#090D16]/25 to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/65 via-black/30 to-transparent" />
 
         {/* Ambient colored highlights */}
-        <div className="ambient-glow bg-aws-blue w-[500px] h-[400px] -top-20 -left-20 opacity-25" />
-        <div className="ambient-glow bg-aws-magenta w-[450px] h-[350px] top-1/3 -right-20 opacity-20" />
+        <div className="ambient-glow bg-aws-blue w-125 h-100 -top-20 -left-20 opacity-25" />
+        <div className="ambient-glow bg-aws-magenta w-112.5 h-87.5 top-1/3 -right-20 opacity-20" />
       </div>
 
       {/* Main Content Area - Automatically fits in 100vh on Laptop & Responsive on Mobile */}

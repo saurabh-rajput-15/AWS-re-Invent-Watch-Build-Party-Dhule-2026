@@ -109,7 +109,7 @@ export const Venue: React.FC = () => {
           {/* Picture-in-Picture (PiP) Visual Showcase */}
           <div className="lg:col-span-7 flex flex-col">
             {/* Main Display Container with PiP Overlay */}
-            <div className="relative w-full flex-1 min-h-[460px] sm:min-h-[520px] rounded-2xl overflow-hidden border border-slate-800 bg-[#0E1526] shadow-2xl flex flex-col">
+            <div className="relative w-full flex-1 min-h-115 sm:min-h-130 rounded-2xl overflow-hidden border border-slate-800 bg-[#0E1526] shadow-2xl flex flex-col">
               {mainView === 'photo' ? (
                 /* MAIN: Full Crisp Venue Photo (Zero obscuring overlays on hotel signage) */
                 <div className="relative w-full h-full flex-1 flex flex-col">

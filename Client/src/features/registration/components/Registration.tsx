@@ -730,7 +730,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                       rel="noopener noreferrer"
                       className="font-mono font-bold text-aws-blue hover:underline inline-flex items-center gap-1 text-xs min-w-0 truncate"
                     >
-                      <span className="truncate max-w-[260px] sm:max-w-xs md:max-w-none">
+                      <span className="truncate max-w-65 sm:max-w-xs md:max-w-none">
                         @{cleanBuilderAlias(attendee.builderId)}
                       </span>
                       <ExternalLink className="h-3 w-3 shrink-0" />

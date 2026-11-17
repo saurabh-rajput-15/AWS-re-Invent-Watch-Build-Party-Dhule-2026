@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="min-w-0 space-y-5 lg:col-span-7">
               {/* Proportional logo columns keep both assets on one row. */}
-              <div className="grid w-full max-w-[640px] grid-cols-[minmax(0,1fr)_1px_minmax(0,1.3fr)] items-center gap-3 sm:gap-6">
+              <div className="grid w-full max-w-160 grid-cols-[minmax(0,1fr)_1px_minmax(0,1.3fr)] items-center gap-3 sm:gap-6">
                 <img
                   src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent Dhule 2026"

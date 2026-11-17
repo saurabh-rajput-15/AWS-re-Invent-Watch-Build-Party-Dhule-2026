@@ -31,6 +31,14 @@ interface AdminPortalPageProps {
   onLogout?: () => void;
 }
 
+interface ToastNotification {
+  id: number;
+  title: string;
+  message: string;
+  type: 'success' | 'warning' | 'error' | 'info';
+  alias?: string;
+}
+
 const STORAGE_KEY_ALL = 'aws_reinvent_dhule_all_registrations';
 
 export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
@@ -46,10 +54,23 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   const [isBatchVerifying, setIsBatchVerifying] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const [toast, setToast] = useState<ToastNotification | null>(null);
   const [isSendingTicketId, setIsSendingTicketId] = useState<string | null>(null);
   const [showRosterModal, setShowRosterModal] = useState(false);
   const [rosterInput, setRosterInput] = useState('');
   const [isSyncingRoster, setIsSyncingRoster] = useState(false);
+
+  const showToast = (
+    toastData: Omit<ToastNotification, 'id'>,
+    duration = 5000
+  ) => {
+    const id = Date.now();
+    setToast({ ...toastData, id });
+    setActionFeedback(toastData.message);
+    setTimeout(() => {
+      setToast((prev) => (prev?.id === id ? null : prev));
+    }, duration);
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -111,6 +132,9 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
     }
 
     // Optimistic local update
+    const targetItem = allRegistrations.find((r) => r.id === id);
+    const targetAlias = targetItem ? cleanBuilderAlias(targetItem.builderId) : '';
+
     const updated = allRegistrations.map((r) => {
       if (r.id === id) {
         return {
@@ -130,20 +154,52 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
       try {
         const res = await AdminService.updateStatus(token, id, newStatus, 'Event Organizer');
         if (newStatus === 'approved') {
+          let toastMessage = `✓ Registration approved for @${targetAlias || id} & QR ticket dispatched.`;
+
           if (res.awsApproval?.actionTaken === 'approved') {
-            setActionFeedback(`🎉 Registration approved & automatically approved on AWS Builder Center!`);
+            toastMessage = `🎉 Registration approved & automatically approved on AWS Builder Center!`;
           } else if (res.awsApproval?.actionTaken === 'already_member') {
-            setActionFeedback(`✓ Approved! Already an active attendee on AWS Builder Center.`);
+            toastMessage = `✓ Approved! @${targetAlias || id} is already an accepted member on AWS Builder Center.`;
           } else if (res.awsApproval?.message) {
-            setActionFeedback(`✓ Approved! AWS status: ${res.awsApproval.message}`);
-          } else {
-            setActionFeedback(`✓ Registration approved & QR ticket dispatched.`);
+            toastMessage = `✓ Approved! Builder Center: ${res.awsApproval.message}`;
           }
-          setTimeout(() => setActionFeedback(null), 5000);
+
+          showToast({
+            title: 'Builder Center Accepted or Approved',
+            message: toastMessage,
+            type: 'success',
+            alias: targetAlias,
+          });
+        } else if (newStatus === 'rejected') {
+          showToast({
+            title: 'Registration Rejected',
+            message: `Registration marked as rejected for @${targetAlias || id}.`,
+            type: 'info',
+            alias: targetAlias,
+          });
+        } else {
+          showToast({
+            title: 'Status Reset',
+            message: `Registration status reset to pending for @${targetAlias || id}.`,
+            type: 'info',
+            alias: targetAlias,
+          });
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to sync status update with server', err);
+        showToast({
+          title: 'Update Error',
+          message: err.message || 'Failed to sync status update with server',
+          type: 'error',
+        });
       }
+    } else if (newStatus === 'approved') {
+      showToast({
+        title: 'Builder Center Accepted or Approved',
+        message: `✓ Status updated to approved for @${targetAlias || id} (offline mode).`,
+        type: 'success',
+        alias: targetAlias,
+      });
     }
 
     // Also update single stored attendee if matching
@@ -182,14 +238,19 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   const handleResendTicket = async (id: string, email: string) => {
     if (!token) return;
     setIsSendingTicketId(id);
-    setActionFeedback(null);
     try {
       await AdminService.resendTicket(token, id);
-      setActionFeedback(`Confirmed ticket with QR code dispatched to ${email}`);
-      setTimeout(() => setActionFeedback(null), 4000);
+      showToast({
+        title: 'Ticket Dispatched',
+        message: `Confirmed ticket with QR code dispatched to ${email}`,
+        type: 'success',
+      });
     } catch (err: any) {
-      setActionFeedback(`Failed to send email: ${err.message || 'Check Brevo credentials'}`);
-      setTimeout(() => setActionFeedback(null), 5000);
+      showToast({
+        title: 'Email Delivery Failed',
+        message: err.message || 'Check Brevo credentials or sender settings',
+        type: 'error',
+      });
     } finally {
       setIsSendingTicketId(null);
     }
@@ -256,18 +317,21 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
 
   const handleDirectLiveSync = async () => {
     if (!token) {
-      setActionFeedback('Admin session expired. Please re-login.');
+      showToast({ title: 'Session Expired', message: 'Admin session expired. Please re-login.', type: 'error' });
       return;
     }
     setIsSyncingRoster(true);
     try {
       const res = await AdminService.triggerLiveSync(token);
-      setActionFeedback(`✓ ${res.message || `Successfully synced ${res.totalSynced} attendees from AWS Builder Center!`}`);
-      setTimeout(() => setActionFeedback(null), 5000);
+      showToast({
+        title: 'Builder Center Synced',
+        message: res.message || `Successfully synced ${res.totalSynced} attendees from AWS Builder Center!`,
+        type: 'success',
+      });
       setShowRosterModal(false);
       await loadRegistrations();
     } catch (err: any) {
-      alert(`Live AWS sync failed: ${err.message}`);
+      showToast({ title: 'Live Sync Failed', message: err.message || 'Error syncing AWS roster', type: 'error' });
     } finally {
       setIsSyncingRoster(false);
     }
@@ -275,7 +339,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
 
   const handleSyncRoster = async () => {
     if (!token) {
-      setActionFeedback('Admin session expired. Please re-login.');
+      showToast({ title: 'Session Expired', message: 'Admin session expired. Please re-login.', type: 'error' });
       return;
     }
     const lines = rosterInput
@@ -292,13 +356,16 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
     try {
       const items = lines.map((builderId) => ({ builderId }));
       const res = await AdminService.importBuilderCenterAttendees(token, items);
-      setActionFeedback(`✓ ${res.message || `Successfully synced ${res.count} attendees to database!`}`);
-      setTimeout(() => setActionFeedback(null), 5000);
+      showToast({
+        title: 'Roster Synced',
+        message: res.message || `Successfully synced ${res.count} attendees to database!`,
+        type: 'success',
+      });
       setShowRosterModal(false);
       setRosterInput('');
       await loadRegistrations();
     } catch (err: any) {
-      alert(`Sync failed: ${err.message}`);
+      showToast({ title: 'Sync Failed', message: err.message || 'Error importing roster', type: 'error' });
     } finally {
       setIsSyncingRoster(false);
     }
@@ -381,70 +448,63 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-6">
+      {/* Sticky Dock: Top Stats Strip & Action Toolbar */}
+      <div className="sticky top-16 z-30 w-full border-b border-slate-800/80 bg-[#090D16]/95 backdrop-blur-xl shadow-xl shadow-black/40">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
           {/* Top Stats Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="rounded-xl border border-slate-800 bg-[#0E1526] p-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="rounded-xl border border-slate-800 bg-[#0E1526]/90 p-3 sm:p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase text-slate-400">Total Applications</span>
+                <span className="text-[11px] sm:text-xs font-mono uppercase text-slate-400">Total Applications</span>
                 <Users className="h-4 w-4 text-[#3FB1FF]" />
               </div>
-              <div className="text-2xl font-extrabold text-white mt-1 font-mono">
+              <div className="text-xl sm:text-2xl font-extrabold text-white mt-1 font-mono">
                 {allRegistrations.length}
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-[#0E1526] p-4">
+            <div className="rounded-xl border border-slate-800 bg-[#0E1526]/90 p-3 sm:p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase text-[#FF9F1C]">Pending Review</span>
+                <span className="text-[11px] sm:text-xs font-mono uppercase text-[#FF9F1C]">Pending Review</span>
                 <Clock className="h-4 w-4 text-[#FF9F1C]" />
               </div>
-              <div className="text-2xl font-extrabold text-[#FF9F1C] mt-1 font-mono">
+              <div className="text-xl sm:text-2xl font-extrabold text-[#FF9F1C] mt-1 font-mono">
                 {pendingCount}
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-[#0E1526] p-4">
+            <div className="rounded-xl border border-slate-800 bg-[#0E1526]/90 p-3 sm:p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase text-[#05E08A]">Approved Passes</span>
+                <span className="text-[11px] sm:text-xs font-mono uppercase text-[#05E08A]">Approved Passes</span>
                 <CheckCircle2 className="h-4 w-4 text-[#05E08A]" />
               </div>
-              <div className="text-2xl font-extrabold text-[#05E08A] mt-1 font-mono">
+              <div className="text-xl sm:text-2xl font-extrabold text-[#05E08A] mt-1 font-mono">
                 {approvedCount}
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-[#0E1526] p-4">
+            <div className="rounded-xl border border-slate-800 bg-[#0E1526]/90 p-3 sm:p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase text-rose-400">Rejected</span>
+                <span className="text-[11px] sm:text-xs font-mono uppercase text-rose-400">Rejected</span>
                 <XCircle className="h-4 w-4 text-rose-400" />
               </div>
-              <div className="text-2xl font-extrabold text-rose-400 mt-1 font-mono">
+              <div className="text-xl sm:text-2xl font-extrabold text-rose-400 mt-1 font-mono">
                 {rejectedCount}
               </div>
             </div>
           </div>
 
-          {actionFeedback && (
-            <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-medium text-emerald-300 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#05E08A] shrink-0" />
-              <span>{actionFeedback}</span>
-            </div>
-          )}
-
           {/* Action Toolbar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#0E1526] p-4 rounded-xl border border-slate-800">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#0E1526]/90 p-3 sm:p-4 rounded-xl border border-slate-800 shadow-sm">
             <div className="flex flex-wrap items-center gap-2">
-              <div className="relative">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                 <input
                   type="text"
                   placeholder="Search applicant, alias, email, college..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-lg border border-slate-700 bg-[#090D16] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none w-56 sm:w-64"
+                  className="rounded-lg border border-slate-700 bg-[#090D16] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-[#AB5CFF] focus:outline-none w-full sm:w-64"
                 />
               </div>
 
@@ -465,7 +525,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={handleAdminVerifyAllPending}
                 disabled={isBatchVerifying || pendingCount === 0}
@@ -492,6 +552,18 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <main className="flex-1 pb-12 pt-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-4">
+          {actionFeedback && (
+            <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-medium text-emerald-300 flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-[#05E08A] shrink-0" />
+              <span>{actionFeedback}</span>
+            </div>
+          )}
 
           {/* Applicant Cards / Table */}
           <div className="rounded-xl border border-slate-800 bg-[#0E1526] overflow-hidden">
@@ -683,6 +755,69 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
           </div>
         </div>
       </main>
+
+      {/* Floating Toast Notification */}
+      {toast && (
+        <aside
+          role="status"
+          aria-live="polite"
+          className={`fixed top-20 right-4 sm:right-6 z-50 max-w-md w-[calc(100vw-2rem)] sm:w-auto rounded-2xl border p-4 shadow-2xl backdrop-blur-xl text-white flex items-start gap-3.5 transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
+            toast.type === 'error'
+              ? 'bg-[#180A0A]/95 border-rose-500/50 shadow-rose-950/40'
+              : toast.type === 'warning'
+              ? 'bg-[#181108]/95 border-amber-500/50 shadow-amber-950/40'
+              : 'bg-[#0E1526]/95 border-emerald-500/50 shadow-emerald-950/40'
+          }`}
+        >
+          <div
+            className={`rounded-xl p-2 shrink-0 ${
+              toast.type === 'error'
+                ? 'bg-rose-500/20 text-rose-400'
+                : toast.type === 'warning'
+                ? 'bg-amber-500/20 text-amber-400'
+                : 'bg-emerald-500/20 text-[#05E08A]'
+            }`}
+          >
+            {toast.type === 'error' ? (
+              <XCircle className="h-5 w-5" />
+            ) : toast.type === 'warning' ? (
+              <AlertTriangle className="h-5 w-5" />
+            ) : (
+              <CheckCircle2 className="h-5 w-5" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0 pr-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h4
+                className={`text-xs font-bold tracking-wide uppercase font-mono ${
+                  toast.type === 'error'
+                    ? 'text-rose-400'
+                    : toast.type === 'warning'
+                    ? 'text-amber-400'
+                    : 'text-emerald-400'
+                }`}
+              >
+                {toast.title}
+              </h4>
+              {toast.alias && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-300 border border-slate-700">
+                  @{toast.alias}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-slate-200 mt-1 leading-relaxed">
+              {toast.message}
+            </p>
+          </div>
+          <button
+            onClick={() => setToast(null)}
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0 cursor-pointer"
+            aria-label="Dismiss notification"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </aside>
+      )}
 
       {/* Sync Builder Center Roster Modal */}
       {showRosterModal && (

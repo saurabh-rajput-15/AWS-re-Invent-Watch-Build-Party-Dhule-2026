@@ -51,7 +51,7 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Admin & Organizer Portal</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Server-protected route · Requires valid <code className="text-[#3FB1FF] font-mono">ADMIN_KEY</code>
+            Server-protected route · Requires valid <code className="text-[#3FB1FF] font-mono">ADMIN KEY</code>
           </p>
         </div>
 
@@ -73,15 +73,13 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
                 type="password"
                 required
                 autoFocus
-                placeholder="Enter ADMIN_KEY"
+                placeholder="Enter ADMIN KEY"
                 value={adminKey}
                 onChange={(e) => setAdminKey(e.target.value)}
                 className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#AB5CFF] focus:ring-1 focus:ring-[#AB5CFF]"
               />
             </div>
-            <p className="text-[11px] text-slate-400 mt-1.5">
-              Configured in Server <code className="text-slate-300 font-mono">.env</code> as <code className="text-[#3FB1FF] font-mono">ADMIN_KEY</code>
-            </p>
+           
           </div>
 
           <button

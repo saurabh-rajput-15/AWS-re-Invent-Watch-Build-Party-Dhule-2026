@@ -21,7 +21,7 @@ export const FAQ: React.FC = () => {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.08]">
               Frequently Asked<br />
-              <span className="text-[#3FB1FF]">Questions</span>
+              <span className="text-[#FF57E8]">Questions</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-md pt-1">
               Have questions about eligibility, team requirements, registration passes, or what to bring? Check our answers.
@@ -61,7 +61,7 @@ export const FAQ: React.FC = () => {
                   >
                     <span
                       className={`text-base sm:text-lg font-semibold transition-colors duration-200 ${
-                        isOpen ? 'text-[#3FB1FF]' : 'text-slate-100 group-hover:text-white'
+                        isOpen ? 'text-[#FF57E8]' : 'text-slate-100 group-hover:text-white'
                       }`}
                     >
                       {faq.question}

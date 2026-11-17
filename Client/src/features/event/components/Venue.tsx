@@ -1,8 +1,10 @@
-import React from 'react';
-import { MapPin, Navigation, Coffee, Car } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Navigation, Coffee, Car, Image as ImageIcon, Maximize2 } from 'lucide-react';
 import { EVENT_DETAILS } from '../data/eventData';
 
 export const Venue: React.FC = () => {
+  const [mainView, setMainView] = useState<'photo' | 'map'>('photo');
+
   return (
     <section id="venue" className="relative py-16 md:py-24 border-b border-slate-800/80 bg-[#090D16]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -21,9 +23,9 @@ export const Venue: React.FC = () => {
           </p>
         </div>
 
-        {/* 2-Column Split: Venue Card & Google Map Embed */}
+        {/* 2-Column Split: Venue Card & Picture-in-Picture (PiP) Showcase */}
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Venue Card - Height matched with map */}
+          {/* Venue Card - Height matched with visual showcase */}
           <div className="lg:col-span-5 flex flex-col">
             <div className="rounded-2xl border border-slate-800 bg-[#0E1526] p-6 sm:p-7 shadow-xl flex flex-col justify-between h-full">
               <div>
@@ -104,28 +106,92 @@ export const Venue: React.FC = () => {
             </div>
           </div>
 
-          {/* Embedded Google Map Frame - Shows vibrant color on hover */}
+          {/* Picture-in-Picture (PiP) Visual Showcase */}
           <div className="lg:col-span-7 flex flex-col">
-            <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526] shadow-xl flex-1 flex flex-col min-h-[420px] transition-all duration-300 hover:border-slate-700">
-              {/* Floating Map Pin Badge */}
-              <div className="absolute top-3 right-3 z-10 rounded-lg bg-[#0E1526]/90 px-3 py-1.5 text-xs font-mono text-white backdrop-blur-md border border-slate-700/80 shadow-md flex items-center gap-1.5 pointer-events-none">
-                <span className="inline-block h-2 w-2 rounded-full bg-[#05E08A] animate-pulse" />
-                <span>Hotel Anand Regency Riverfront</span>
-              </div>
+            {/* Main Display Container with PiP Overlay */}
+            <div className="relative w-full flex-1 min-h-[460px] sm:min-h-[520px] rounded-2xl overflow-hidden border border-slate-800 bg-[#0E1526] shadow-2xl flex flex-col">
+              {mainView === 'photo' ? (
+                /* MAIN: Full Crisp Venue Photo (Zero obscuring overlays on hotel signage) */
+                <div className="relative w-full h-full flex-1 flex flex-col">
+                  <img
+                    src="/Anand-Regency-Riverfront.png"
+                    alt="Hotel Anand Regency Riverfront, Dhule"
+                    className="w-full h-full flex-1 object-cover object-center"
+                  />
 
-              {/* Hover indicator tooltip */}
-              <div className="absolute bottom-3 right-3 z-10 rounded-lg bg-[#0E1526]/85 px-2.5 py-1 text-[11px] font-mono text-slate-400 backdrop-blur-md border border-slate-700/60 opacity-80 group-hover:opacity-0 transition-opacity pointer-events-none">
-                Hover to explore map
-              </div>
+                  {/* Minimal Top-Left Venue Tag (Tucked in corner so logo stays completely clear) */}
+                  <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-2 rounded-lg bg-[#090D16]/80 px-3 py-1.5 text-xs font-mono text-white backdrop-blur-md border border-slate-700/70 shadow-md pointer-events-none">
+                    <span className="inline-block h-2 w-2 rounded-full bg-[#05E08A] animate-pulse" />
+                    <span>Hotel Anand Regency Riverfront</span>
+                  </div>
 
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2209.404391763241!2d74.7752237501776!3d20.906515648056256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdec5006400aae3%3A0x3b7ea5e71530202!2sHotel%20Anand%20Regency%20Riverfront!5e1!3m2!1sen!2sin!4v1794039464594!5m2!1sen!2sin"
-                title="Map to Hotel Anand Regency Riverfront Dhule"
-                className="w-full h-full flex-1 min-h-[380px] border-0 grayscale contrast-125 brightness-90 opacity-85 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:opacity-100"
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
+                  {/* Picture-in-Picture Mini-Map Card (Docked Bottom-Right) */}
+                  <div
+                    onClick={() => setMainView('map')}
+                    className="absolute bottom-4 right-4 z-20 w-48 sm:w-60 h-32 sm:h-40 rounded-xl border-2 border-slate-700/90 hover:border-[#3FB1FF] bg-[#0E1526] shadow-2xl shadow-black/90 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105"
+                    title="Click to view Interactive Google Map"
+                  >
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2209.404391763241!2d74.7752237501776!3d20.906515648056256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdec5006400aae3%3A0x3b7ea5e71530202!2sHotel%20Anand%20Regency%20Riverfront!5e1!3m2!1sen!2sin!4v1794039464594!5m2!1sen!2sin"
+                      title="Mini Map Preview"
+                      className="w-full h-full border-0 pointer-events-none filter contrast-125 brightness-90 opacity-85 group-hover:opacity-100 transition-opacity"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                    />
+                    {/* PiP Badge */}
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/85 text-[10px] font-mono text-white backdrop-blur border border-white/10 flex items-center gap-1 pointer-events-none">
+                      <MapPin className="h-3 w-3 text-[#3FB1FF]" />
+                      <span>Live Map</span>
+                    </div>
+                    {/* Hover Prompt */}
+                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-xs font-bold text-white gap-1.5 pointer-events-none">
+                      <Maximize2 className="h-3.5 w-3.5 text-[#3FB1FF]" />
+                      <span>Click to View Map</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* MAIN: Full Interactive Google Map Embed */
+                <div className="relative w-full h-full flex-1 flex flex-col">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2209.404391763241!2d74.7752237501776!3d20.906515648056256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdec5006400aae3%3A0x3b7ea5e71530202!2sHotel%20Anand%20Regency%20Riverfront!5e1!3m2!1sen!2sin!4v1794039464594!5m2!1sen!2sin"
+                    title="Map to Hotel Anand Regency Riverfront Dhule"
+                    className="w-full h-full flex-1 border-0"
+                    allowFullScreen={false}
+                    loading="lazy"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+
+                  {/* Minimal Top-Left Map Tag */}
+                  <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-2 rounded-lg bg-[#090D16]/85 px-3 py-1.5 text-xs font-mono text-white backdrop-blur-md border border-slate-700/70 shadow-md pointer-events-none">
+                    <span className="inline-block h-2 w-2 rounded-full bg-[#3FB1FF] animate-pulse" />
+                    <span>Interactive Map · Dhule</span>
+                  </div>
+
+                  {/* Picture-in-Picture Mini-Photo Card (Docked Bottom-Right) */}
+                  <div
+                    onClick={() => setMainView('photo')}
+                    className="absolute bottom-4 right-4 z-20 w-48 sm:w-60 h-32 sm:h-40 rounded-xl border-2 border-slate-700/90 hover:border-[#05E08A] bg-[#0E1526] shadow-2xl shadow-black/90 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105"
+                    title="Click to view Venue Façade Photo"
+                  >
+                    <img
+                      src="/Anand-Regency-Riverfront.png"
+                      alt="Venue Façade thumbnail"
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {/* PiP Badge */}
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/85 text-[10px] font-mono text-white backdrop-blur border border-white/10 flex items-center gap-1 pointer-events-none">
+                      <ImageIcon className="h-3 w-3 text-[#05E08A]" />
+                      <span>Venue Photo</span>
+                    </div>
+                    {/* Hover Prompt */}
+                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-xs font-bold text-white gap-1.5 pointer-events-none">
+                      <Maximize2 className="h-3.5 w-3.5 text-[#05E08A]" />
+                      <span>Click to View Photo</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

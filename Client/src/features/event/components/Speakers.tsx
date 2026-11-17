@@ -8,13 +8,13 @@ export const Speakers: React.FC = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl">
-          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#FF57E8]">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-magenta">
             <span>04 · Mentors &amp; Speakers</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span>Cloud Practitioners</span>
           </div>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Learn from those who <span className="text-[#FF57E8]">build and ship.</span>
+            Learn from those who <span className="text-aws-magenta">build and ship.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
             Our sessions and afternoon build sprint are guided by AWS Community Builders, college faculty advisors, and experienced solutions architects ready to help you navigate cloud architectures.
@@ -83,8 +83,8 @@ export const Speakers: React.FC = () => {
                           style={{ backgroundColor: speaker.accent }}
                         />
                         <div className="relative z-10 flex flex-col items-center gap-3">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black/40 border border-[#FF57E8]/30 shadow-lg">
-                            <Sparkles className="h-8 w-8 text-[#FF57E8] animate-pulse" />
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black/40 border border-aws-magenta/30 shadow-lg">
+                            <Sparkles className="h-8 w-8 text-aws-magenta animate-pulse" />
                           </div>
                           <span className="text-sm font-mono font-bold tracking-widest uppercase text-slate-300">
                             Second Speaker
@@ -97,18 +97,18 @@ export const Speakers: React.FC = () => {
                     )}
 
                     {/* Gradient bottom scrim to ease transition into text */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1526] via-[#0E1526]/15 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-linear-to- from-[#0E1526] via-[#0E1526]/15 to-transparent pointer-events-none" />
 
                     {/* Status Badge in Top-Left */}
                     <div className="absolute top-3.5 left-3.5 z-10">
                       {speaker.isAnnouncingSoon ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF57E8]/20 backdrop-blur-md border border-[#FF57E8]/40 px-3 py-1 text-[11px] font-mono font-bold text-[#FF57E8] tracking-wide shadow-md animate-pulse">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-aws-magenta/20 backdrop-blur-md border border-aws-magenta/40 px-3 py-1 text-[11px] font-mono font-bold text-aws-magenta tracking-wide shadow-md animate-pulse">
                           <Sparkles className="h-3 w-3" />
                           <span>Announcing Soon</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#05E08A]/20 backdrop-blur-md border border-[#05E08A]/40 px-3 py-1 text-[11px] font-mono font-bold text-[#05E08A] tracking-wide shadow-md">
-                          <span className="h-2 w-2 rounded-full bg-[#05E08A] animate-ping" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-aws-green/20 backdrop-blur-md border border-aws-green/40 px-3 py-1 text-[11px] font-mono font-bold text-aws-green tracking-wide shadow-md">
+                          <span className="h-2 w-2 rounded-full bg-aws-green animate-ping" />
                           <span>Confirmed Speaker</span>
                         </span>
                       )}
@@ -143,10 +143,10 @@ export const Speakers: React.FC = () => {
 
                   {/* Name, Role & Organization */}
                   <div className="space-y-1">
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white group-hover:text-[#3FB1FF] transition-colors tracking-tight">
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white group-hover:text-aws-blue transition-colors tracking-tight">
                       {speaker.name}
                     </h3>
-                    <div className="text-sm sm:text-base font-semibold text-[#05E08A]">
+                    <div className="text-sm sm:text-base font-semibold text-aws-green">
                       {speaker.role}
                     </div>
                     <div className="text-xs text-slate-400 font-mono">
@@ -161,8 +161,8 @@ export const Speakers: React.FC = () => {
 
                   {/* Talk / Session Highlight Card */}
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 space-y-1">
-                    <div className="text-[11px] font-mono text-[#3FB1FF] font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                      <Terminal className="h-3.5 w-3.5 text-[#3FB1FF]" />
+                    <div className="text-[11px] font-mono text-aws-blue font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                      <Terminal className="h-3.5 w-3.5 text-aws-blue" />
                       <span>Featured Session</span>
                     </div>
                     <div className="text-xs sm:text-sm font-semibold text-white leading-snug">

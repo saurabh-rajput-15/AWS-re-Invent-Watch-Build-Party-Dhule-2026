@@ -350,7 +350,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#090D16] text-[#F3F4F6] selection:bg-[#AB5CFF]/30 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-[#090D16] text-[#F3F4F6] selection:bg-aws-purple/30 selection:text-white flex flex-col">
       {/* Scroll Progress Bar at the top of the viewport */}
       <div
         id="scroll-progress"
@@ -391,9 +391,9 @@ export default function App() {
           <button
             onClick={scrollToTop}
             aria-label="Back to top"
-            className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#0E1526]/90 hover:bg-[#1a233a] border border-slate-700/80 hover:border-[#3FB1FF]/60 text-slate-200 hover:text-white shadow-2xl backdrop-blur-md transition-all active:scale-90 cursor-pointer group"
+            className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#0E1526]/90 hover:bg-[#1a233a] border border-slate-700/80 hover:border-aws-blue/60 text-slate-200 hover:text-white shadow-2xl backdrop-blur-md transition-all active:scale-90 cursor-pointer group"
           >
-            <ArrowUp className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 text-[#3FB1FF]" />
+            <ArrowUp className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 text-aws-blue" />
           </button>
         </div>
       )}

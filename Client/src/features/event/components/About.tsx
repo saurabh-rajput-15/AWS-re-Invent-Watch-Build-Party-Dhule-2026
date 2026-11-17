@@ -7,14 +7,14 @@ export const About: React.FC = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl">
-          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3FB1FF]">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-blue">
             <span>01 · The Concept</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span>Why Join</span>
           </div>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Three core tracks,{' '}
-            <span className="text-[#3FB1FF]">one transformative day.</span>
+            <span className="text-aws-blue">one transformative day.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
             Every December, AWS re:Invent in Las Vegas reveals the future of cloud computing and AI. The AWS Student Builder Group Dhule brings that epicenter of innovation to Hotel Anand Regency Riverfront—combining big-screen keynote screenings with an interactive live Kahoot Cloud Arena and community networking.
@@ -25,10 +25,10 @@ export const About: React.FC = () => {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Watch */}
           <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-7 shadow-lg transition-transform hover:-translate-y-1">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[#3FB1FF]" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-aws-blue" />
             <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold font-mono text-[#3FB1FF]">01</span>
-              <div className="rounded-xl bg-[#3FB1FF]/10 p-3 text-[#3FB1FF]">
+              <span className="text-3xl font-bold font-mono text-aws-blue">01</span>
+              <div className="rounded-xl bg-aws-blue/10 p-3 text-aws-blue">
                 <Tv className="h-6 w-6" />
               </div>
             </div>
@@ -38,7 +38,7 @@ export const About: React.FC = () => {
             <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
               Experience the big announcements on high-definition projection screens. Catch Dr. Werner Vogels and AWS executives as they unveil next-generation cloud architectures, AI foundation models, and serverless compute primitives.
             </p>
-            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-[#3FB1FF]">
+            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-aws-blue">
               <span>Curated Stream</span>
               <span aria-hidden="true">·</span>
               <span>Live Commentary</span>
@@ -47,10 +47,10 @@ export const About: React.FC = () => {
 
           {/* Card 2: Kahoot Cloud Arena */}
           <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-7 shadow-lg transition-transform hover:-translate-y-1">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[#05E08A]" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-aws-green" />
             <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold font-mono text-[#05E08A]">02</span>
-              <div className="rounded-xl bg-[#05E08A]/10 p-3 text-[#05E08A]">
+              <span className="text-3xl font-bold font-mono text-aws-green">02</span>
+              <div className="rounded-xl bg-aws-green/10 p-3 text-aws-green">
                 <Award className="h-6 w-6" />
               </div>
             </div>
@@ -60,7 +60,7 @@ export const About: React.FC = () => {
             <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
               Put your knowledge and quick reflexes to the test! Compete in real-time on your smartphone across multiple Kahoot rounds covering keynote announcements, cloud architectures, and tech trivia to top the giant live leaderboard.
             </p>
-            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-[#05E08A]">
+            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-aws-green">
               <span>Live Mobile Battles</span>
               <span aria-hidden="true">·</span>
               <span>Instant Leaderboard</span>
@@ -69,10 +69,10 @@ export const About: React.FC = () => {
 
           {/* Card 3: Connect & Win */}
           <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-7 shadow-lg transition-transform hover:-translate-y-1">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[#FF57E8]" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-aws-magenta" />
             <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold font-mono text-[#FF57E8]">03</span>
-              <div className="rounded-xl bg-[#FF57E8]/10 p-3 text-[#FF57E8]">
+              <span className="text-3xl font-bold font-mono text-aws-magenta">03</span>
+              <div className="rounded-xl bg-aws-magenta/10 p-3 text-aws-magenta">
                 <Network className="h-6 w-6" />
               </div>
             </div>
@@ -82,7 +82,7 @@ export const About: React.FC = () => {
             <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
               Network with 300+ fellow student builders, collegiate cloud captains, and industry practitioners. Cheer for the Kahoot champions on stage, participate in lightning talks, and take home official re:Invent swags and certificates.
             </p>
-            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-[#FF57E8]">
+            <div className="mt-5 flex items-center gap-2 text-xs font-mono text-aws-magenta">
               <span>Certificates</span>
               <span aria-hidden="true">·</span>
               <span>Exclusive Swag</span>
@@ -93,7 +93,7 @@ export const About: React.FC = () => {
         {/* Quantified Impact / Stats Strip */}
         <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-xl border border-slate-800/80 bg-[#0E1526]/60 p-5 text-center">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#3FB1FF] font-mono tabular-nums">
+            <div className="text-3xl sm:text-4xl font-extrabold text-aws-blue font-mono tabular-nums">
               300+
             </div>
             <div className="mt-1 text-xs sm:text-sm font-medium text-slate-400">
@@ -102,7 +102,7 @@ export const About: React.FC = () => {
           </div>
 
           <div className="rounded-xl border border-slate-800/80 bg-[#0E1526]/60 p-5 text-center">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#05E08A] font-mono tabular-nums">
+            <div className="text-3xl sm:text-4xl font-extrabold text-aws-green font-mono tabular-nums">
               7 Hours
             </div>
             <div className="mt-1 text-xs sm:text-sm font-medium text-slate-400">
@@ -111,7 +111,7 @@ export const About: React.FC = () => {
           </div>
 
           <div className="rounded-xl border border-slate-800/80 bg-[#0E1526]/60 p-5 text-center">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#FF57E8] font-mono tabular-nums">
+            <div className="text-3xl sm:text-4xl font-extrabold text-aws-magenta font-mono tabular-nums">
               100%
             </div>
             <div className="mt-1 text-xs sm:text-sm font-medium text-slate-400">
@@ -120,7 +120,7 @@ export const About: React.FC = () => {
           </div>
 
           <div className="rounded-xl border border-slate-800/80 bg-[#0E1526]/60 p-5 text-center">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#FF9F1C] font-mono tabular-nums">
+            <div className="text-3xl sm:text-4xl font-extrabold text-aws-orange font-mono tabular-nums">
               DHULE
             </div>
             <div className="mt-1 text-xs sm:text-sm font-medium text-slate-400">

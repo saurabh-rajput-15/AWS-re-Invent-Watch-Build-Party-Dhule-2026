@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 w-full px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pointer-events-none">
-      <div className="mx-auto max-w-7xl rounded-full border border-white/10 bg-gradient-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-2xl shadow-black/40 pointer-events-auto relative">
+      <div className="mx-auto max-w-7xl rounded-full border border-white/10 bg-linear-to- from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-2xl shadow-black/40 pointer-events-auto relative">
         <div className="flex h-16 items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
         {/* Left: AWS re:Invent Logo */}
         <a
@@ -103,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={onScrollToRegister}
-            className="relative p-[1.5px] rounded-full bg-gradient-to-r from-[#3FB1FF] via-[#FF57E8] to-[#FF9F1C] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-[#FF57E8]/20 cursor-pointer"
+            className="relative p-[1.5px] rounded-full bg-linear-to- from-aws-blue via-aws-magenta to-aws-orange transition-all hover:scale-105 active:scale-95 shadow-lg shadow-aws-magenta/20 cursor-pointer"
           >
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0C1222]/90 hover:bg-[#0C1222]/70 px-4 py-1.5 sm:px-5 sm:py-2 text-xs font-bold text-white transition-all whitespace-nowrap">
               <span>Register</span>
@@ -194,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
                   className="rounded-xl px-4 py-2.5 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-colors flex items-center justify-between"
                 >
                   <span>Terms &amp; Code of Conduct</span>
-                  <span className="font-mono text-[11px] text-[#3FB1FF]">/codeofconduct</span>
+                  <span className="font-mono text-[11px] text-aws-blue">/codeofconduct</span>
                 </a>
                 <div className="pt-3">
                   <button
@@ -202,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
                       setMobileMenuOpen(false);
                       onScrollToRegister();
                     }}
-                    className="w-full rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] py-3 text-center text-xs font-bold text-[#0E131A] shadow-lg shadow-[#AB5CFF]/20 active:scale-95 transition-all cursor-pointer"
+                    className="w-full rounded-full bg-aws-purple hover:bg-[#b873ff] py-3 text-center text-xs font-bold text-[#0E131A] shadow-lg shadow-aws-purple/20 active:scale-95 transition-all cursor-pointer"
                   >
                     Register Now →
                   </button>

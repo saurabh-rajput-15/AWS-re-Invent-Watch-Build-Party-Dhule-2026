@@ -64,12 +64,12 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
 
         {/* Vivid Scrim - Preserves Video Clarity with High Contrast Text */}
         <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#090D16] via-[#090D16]/25 to-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to- from-[#090D16] via-[#090D16]/25 to-black/20" />
+        <div className="absolute inset-0 bg-linear-to- from-black/65 via-black/30 to-transparent" />
 
         {/* Ambient colored highlights */}
-        <div className="ambient-glow bg-[#3FB1FF] w-[500px] h-[400px] -top-20 -left-20 opacity-25" />
-        <div className="ambient-glow bg-[#FF57E8] w-[450px] h-[350px] top-1/3 -right-20 opacity-20" />
+        <div className="ambient-glow bg-aws-blue w-[500px] h-[400px] -top-20 -left-20 opacity-25" />
+        <div className="ambient-glow bg-aws-magenta w-[450px] h-[350px] top-1/3 -right-20 opacity-20" />
       </div>
 
       {/* Main Content Area - Automatically fits in 100vh on Laptop & Responsive on Mobile */}
@@ -79,17 +79,17 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
           {/* Left Column: Heading, Subtext & Action Buttons */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-5 lg:space-y-4 xl:space-y-5">
             {/* Eyebrow */}
-            <p className="text-xs sm:text-sm font-mono font-semibold uppercase tracking-[0.14em] text-[#3FB1FF]">
+            <p className="text-xs sm:text-sm font-mono font-semibold uppercase tracking-[0.14em] text-aws-blue">
               AWS STUDENT BUILDER GROUP · DHULE
             </p>
 
             {/* Headline - Responsive typography scales cleanly across all devices */}
             <h1 className="text-3xl sm:text-5xl md:text-[46px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] font-black tracking-tight text-white leading-[0.98]">
               AWS re:Invent<br />
-              <span className="text-[#3FB1FF]">Watch</span><br />
+              <span className="text-aws-blue">Watch</span><br />
               <span>&amp; </span>
-              <span className="text-[#05E08A]">Build</span>{' '}
-              <span className="text-[#FF57E8]">Party</span>{' '}
+              <span className="text-aws-green">Build</span>{' '}
+              <span className="text-aws-magenta">Party</span>{' '}
               <span className="text-white">Dhule</span><br />
               <span className="text-white">2026</span>
             </h1>
@@ -103,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
               <button
                 onClick={onScrollToRegister}
-                className="inline-flex items-center justify-center rounded-full bg-[#AB5CFF] hover:bg-[#b873ff] px-7 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-[#AB5CFF]/25 transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center justify-center rounded-full bg-aws-purple hover:bg-[#b873ff] px-7 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-aws-purple/25 transition-all active:scale-95 cursor-pointer"
               >
                 Register
               </button>
@@ -124,7 +124,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
             <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] border border-white/20 bg-[#0E1424]/30 bg-linear-to-br from-white/10 via-white/[0.03] to-transparent p-6 sm:p-8 lg:p-7 xl:p-9 shadow-[0_16px_48px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md backdrop-saturate-150">
               {/* Top Status Capsule & Logo Header */}
               <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5 lg:mb-4">
-                <span className="inline-block rounded-full bg-[#05E08A] px-3.5 sm:px-4 py-1 text-xs font-mono font-bold text-[#0A0F1D] tracking-wide">
+                <span className="inline-block rounded-full bg-aws-green px-3.5 sm:px-4 py-1 text-xs font-mono font-bold text-[#0A0F1D] tracking-wide">
                   {statusText}
                 </span>
                 <img
@@ -178,7 +178,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                 {/* Ticks */}
                 <div className="mt-2 flex justify-between font-mono text-[11px] sm:text-xs text-slate-400">
                   <span>9:00</span>
-                  <span className="text-[#05E08A] font-semibold">9:30 start</span>
+                  <span className="text-aws-green font-semibold">9:30 start</span>
                   <span>4:00</span>
                 </div>
               </div>

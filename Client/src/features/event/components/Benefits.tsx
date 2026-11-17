@@ -44,17 +44,17 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
       {/* Background glow accents */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 right-0 -z-10 h-96 w-96 rounded-full bg-[#FF9F1C]/10 blur-[120px]"
+        className="pointer-events-none absolute -top-40 right-0 -z-10 h-96 w-96 rounded-full bg-aws-orange/10 blur-[120px]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-40 left-0 -z-10 h-96 w-96 rounded-full bg-[#3FB1FF]/10 blur-[120px]"
+        className="pointer-events-none absolute -bottom-40 left-0 -z-10 h-96 w-96 rounded-full bg-aws-blue/10 blur-[120px]"
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl">
-          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#FF9F1C]">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-orange">
             <span>02 · What You'll Get</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span>Exclusive Benefits</span>
@@ -62,7 +62,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
 
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             More than just a watch party,{' '}
-            <span className="text-[#FF9F1C]">an exclusive experience.</span>
+            <span className="text-aws-orange">an exclusive experience.</span>
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
@@ -151,14 +151,14 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
         </div>
 
         {/* Highlight Banner with Fast Registration CTA */}
-        <div className="mt-12 rounded-2xl border border-white/10 bg-gradient-to-r from-[#0E1526] via-[#121b33] to-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="mt-12 rounded-2xl border border-white/10 bg-linear-to- from-[#0E1526] via-[#121b33] to-[#0E1526] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div
             aria-hidden="true"
-            className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#05E08A]/10 blur-3xl pointer-events-none"
+            className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-aws-green/10 blur-3xl pointer-events-none"
           />
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="space-y-1.5 max-w-2xl">
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#05E08A] uppercase">
+              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-aws-green uppercase">
                 <Sparkle className="h-3.5 w-3.5" />
                 <span>100% Free for Confirmed Attendees</span>
               </div>
@@ -174,7 +174,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
               {onScrollToRegister ? (
                 <button
                   onClick={onScrollToRegister}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9F1C] hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-[#FF9F1C]/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-aws-orange hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-aws-orange/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
                 >
                   <span>Claim Your Pass</span>
                   <ArrowRight className="h-4 w-4" />
@@ -182,7 +182,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
               ) : (
                 <a
                   href="/register"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9F1C] hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-[#FF9F1C]/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-aws-orange hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-aws-orange/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
                 >
                   <span>Claim Your Pass</span>
                   <ArrowRight className="h-4 w-4" />

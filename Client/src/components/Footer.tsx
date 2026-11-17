@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
         <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-linear-to-br from-[#0E1526]/85 to-[#0C1222]/55 p-4 shadow-xl shadow-black/20 backdrop-blur-xl sm:rounded-[28px] sm:p-8 lg:p-10">
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-[#3FB1FF]/70 via-[#FF57E8]/60 to-[#05E08A]/70"
+            className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-aws-blue/70 via-aws-magenta/60 to-aws-green/70"
           />
 
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
@@ -54,12 +54,12 @@ export const Footer: React.FC = () => {
             <div className="grid min-w-0 grid-cols-1 gap-5 border-t border-slate-800/80 pt-6 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
               <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <Mail aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#3FB1FF]" />
+                  <Mail aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-blue" />
                   <span className="font-semibold text-white">Official Email</span>
                 </div>
                 <a
                   href={`mailto:${EVENT_DETAILS.contactEmail}`}
-                  className="block break-all pl-5.5 text-sm font-medium text-[#3FB1FF] transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3FB1FF]"
+                  className="block break-all pl-5.5 text-sm font-medium text-aws-blue transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aws-blue"
                 >
                   {EVENT_DETAILS.contactEmail}
                 </a>
@@ -67,13 +67,13 @@ export const Footer: React.FC = () => {
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#05E08A]" />
+                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-green" />
                   <span className="font-semibold text-white">Soham Chaudhari</span>
                   <span className="text-slate-600">:</span>
                 </div>
                 <a
                   href="tel:9834382337"
-                  className="block pl-5.5 font-mono text-sm font-medium text-[#05E08A] transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#05E08A]"
+                  className="block pl-5.5 font-mono text-sm font-medium text-aws-green transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aws-green"
                 >
                   +91 98343 82337
                 </a>
@@ -81,13 +81,13 @@ export const Footer: React.FC = () => {
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#05E08A]" />
+                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-green" />
                   <span className="font-semibold text-white">Saurabh Rajput</span>
                   <span className="text-slate-600">:</span>
                 </div>
                 <a
                   href="tel:9890991510"
-                  className="block pl-5.5 font-mono text-sm font-medium text-[#05E08A] transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#05E08A]"
+                  className="block pl-5.5 font-mono text-sm font-medium text-aws-green transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aws-green"
                 >
                   +91 98909 91510
                 </a>
@@ -95,14 +95,14 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          <nav className="mt-8 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-5 text-xs font-medium text-slate-300 sm:gap-3 sm:text-sm lg:mt-10 [&_a]:rounded-full [&_a]:px-3 [&_a]:py-2 [&_a]:transition-colors [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-[#3FB1FF]">
-            <a href="#about" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">About</a>
-            <a href="#benefits" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Benefits</a>
-            <a href="#agenda" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Schedule</a>
-            <a href="#speakers" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Mentors</a>
-            <a href="#venue" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Venue</a>
-            <a href="/register" className="bg-[#AB5CFF]/10 font-semibold text-[#AB5CFF] hover:bg-[#AB5CFF]/20 hover:text-white">Register</a>
-            <a href="/codeofconduct" className="hover:bg-[#3FB1FF]/10 hover:text-[#3FB1FF]">Code of Conduct</a>
+          <nav className="mt-8 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-5 text-xs font-medium text-slate-300 sm:gap-3 sm:text-sm lg:mt-10 [&_a]:rounded-full [&_a]:px-3 [&_a]:py-2 [&_a]:transition-colors [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-aws-blue">
+            <a href="#about" className="hover:bg-aws-blue/10 hover:text-aws-blue">About</a>
+            <a href="#benefits" className="hover:bg-aws-blue/10 hover:text-aws-blue">Benefits</a>
+            <a href="#agenda" className="hover:bg-aws-blue/10 hover:text-aws-blue">Schedule</a>
+            <a href="#speakers" className="hover:bg-aws-blue/10 hover:text-aws-blue">Mentors</a>
+            <a href="#venue" className="hover:bg-aws-blue/10 hover:text-aws-blue">Venue</a>
+            <a href="/register" className="bg-aws-purple/10 font-semibold text-aws-purple hover:bg-aws-purple/20 hover:text-white">Register</a>
+            <a href="/codeofconduct" className="hover:bg-aws-blue/10 hover:text-aws-blue">Code of Conduct</a>
           </nav>
         </div>
 

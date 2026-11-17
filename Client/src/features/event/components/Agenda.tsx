@@ -25,13 +25,13 @@ export const Agenda: React.FC = () => {
         {/* Header & Filter Row */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-10 border-b border-slate-800">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#05E08A]">
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-green">
               <span>03 · Event Flow</span>
               <span aria-hidden="true" className="text-slate-600">·</span>
               <span>Full Day Schedule</span>
             </div>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Engineered for <span className="text-[#05E08A]">momentum.</span>
+              Engineered for <span className="text-aws-green">momentum.</span>
             </h2>
             <p className="mt-3 text-sm sm:text-base text-slate-300 max-w-xl">
               09:00 AM to 04:00 PM IST at Hotel Anand Regency Riverfront. From live keynote screenings to the hands-on building sprint and project demos.
@@ -46,7 +46,7 @@ export const Agenda: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.key)}
                 className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
                   selectedCategory === cat.key
-                    ? 'bg-[#05E08A] text-slate-950 shadow-sm'
+                    ? 'bg-aws-green text-slate-950 shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
@@ -92,7 +92,7 @@ export const Agenda: React.FC = () => {
                     </div>
 
                     {/* Session Title */}
-                    <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-[#3FB1FF] transition-colors">
+                    <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-aws-blue transition-colors">
                       {session.title}
                     </h3>
 
@@ -117,7 +117,7 @@ export const Agenda: React.FC = () => {
                             key={i}
                             className="inline-flex items-center gap-1 rounded bg-slate-800/80 px-2 py-0.5 text-[11px] font-mono text-slate-300"
                           >
-                            <CheckCircle2 className="h-3 w-3 text-[#05E08A]" />
+                            <CheckCircle2 className="h-3 w-3 text-aws-green" />
                             <span>{req}</span>
                           </span>
                         ))}
@@ -139,7 +139,7 @@ export const Agenda: React.FC = () => {
                       className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
                       title="Add this session to Google Calendar"
                     >
-                      <Calendar className="h-3.5 w-3.5 text-[#3FB1FF]" />
+                      <Calendar className="h-3.5 w-3.5 text-aws-blue" />
                       <span>Sync Calendar</span>
                     </button>
                   </div>
@@ -152,7 +152,7 @@ export const Agenda: React.FC = () => {
         {/* Global Add Calendar Reminder Banner */}
         <div className="mt-10 rounded-2xl border border-slate-800 bg-[#0E1526]/70 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-[#3FB1FF]/10 p-2.5 text-[#3FB1FF]">
+            <div className="rounded-xl bg-aws-blue/10 p-2.5 text-aws-blue">
               <Calendar className="h-5 w-5" />
             </div>
             <div>
@@ -165,7 +165,7 @@ export const Agenda: React.FC = () => {
               href={EVENT_DETAILS.calendarGoogleUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-none text-center rounded-xl bg-[#3FB1FF] px-4 py-2 text-xs font-bold text-slate-950 hover:bg-[#60c2ff] transition-colors"
+              className="flex-1 sm:flex-none text-center rounded-xl bg-aws-blue px-4 py-2 text-xs font-bold text-slate-950 hover:bg-[#60c2ff] transition-colors"
             >
               Add to Google Calendar
             </a>

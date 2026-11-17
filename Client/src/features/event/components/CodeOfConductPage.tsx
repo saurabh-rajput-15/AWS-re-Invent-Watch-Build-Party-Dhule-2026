@@ -32,18 +32,18 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#090D16] text-[#F3F4F6] selection:bg-[#AB5CFF]/30 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-[#090D16] text-[#F3F4F6] selection:bg-aws-purple/30 selection:text-white flex flex-col">
       {/* Top Rainbow hairline */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-[#3FB1FF]/70 via-[#FF57E8]/70 to-[#05E08A]/70" />
+      <div className="h-[2px] w-full bg-linear-to- from-aws-blue/70 via-aws-magenta/70 to-aws-green/70" />
 
       {/* Top Simple Sticky Bar */}
-      <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-gradient-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-lg shadow-black/20">
+      <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-linear-to- from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-lg shadow-black/20">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <button
             onClick={onNavigateHome}
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer group"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-[#3FB1FF]" />
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-aws-blue" />
             <span>Back to Event</span>
           </button>
 
@@ -62,7 +62,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
                 onScrollToRegister();
               }, 100);
             }}
-            className="rounded-full bg-gradient-to-r from-[#AB5CFF] to-[#3FB1FF] px-4 sm:px-5 py-2 text-xs font-bold text-[#0E131A] shadow-md shadow-[#AB5CFF]/20 hover:opacity-95 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+            className="rounded-full bg-linear-to- from-aws-purple to-aws-blue px-4 sm:px-5 py-2 text-xs font-bold text-[#0E131A] shadow-md shadow-aws-purple/20 hover:opacity-95 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
           >
             <span>Register →</span>
           </button>
@@ -75,15 +75,15 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
           
           {/* Page Header */}
           <div className="pb-10 border-b border-slate-800">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#FF57E8]">
-              <Scale className="h-4 w-4 text-[#FF57E8]" />
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-magenta">
+              <Scale className="h-4 w-4 text-aws-magenta" />
               <span>Official Community Policy &amp; Terms</span>
               <span aria-hidden="true" className="text-slate-600">·</span>
               <span>Dhule 2026</span>
             </div>
 
             <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-              Terms &amp; Conditions and <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A]">Code of Conduct</span>
+              Terms &amp; Conditions and <span className="text-transparent bg-clip-text bg-linear-to- from-aws-blue via-aws-magenta to-aws-green">Code of Conduct</span>
             </h1>
 
             <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
@@ -181,7 +181,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             {/* Section 3: Right of Admission & Neat Demeanor */}
             <section className="rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-6 sm:p-8 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#3FB1FF]/15 p-2.5 text-[#3FB1FF] shrink-0">
+                <div className="rounded-xl bg-aws-blue/15 p-2.5 text-aws-blue shrink-0">
                   <FileText className="h-6 w-6" />
                 </div>
                 <div>
@@ -208,7 +208,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             {/* Section 4: Swags & International Shipment Disclaimer */}
             <section className="rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-6 sm:p-8 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#FF57E8]/15 p-2.5 text-[#FF57E8] shrink-0">
+                <div className="rounded-xl bg-aws-magenta/15 p-2.5 text-aws-magenta shrink-0">
                   <Gift className="h-6 w-6" />
                 </div>
                 <div>
@@ -225,13 +225,13 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
 
               <div className="rounded-xl bg-slate-900/70 border border-slate-800 p-4 space-y-2 text-xs sm:text-sm">
                 <div className="flex items-start gap-2 text-slate-300">
-                  <span className="text-[#FF57E8] font-bold text-base leading-none">•</span>
+                  <span className="text-aws-magenta font-bold text-base leading-none">•</span>
                   <span>
                     <strong className="text-white">Courier &amp; Customs Delays:</strong> If promotional swags or merchandise parcels are delayed in international transit, held up by Indian customs clearance, or fail to arrive before event day due to logistics beyond human control, <strong>AWS Student Builder Group Dhule and the organizing committee bear no liability or responsibility</strong>.
                   </span>
                 </div>
                 <div className="flex items-start gap-2 text-slate-300">
-                  <span className="text-[#FF57E8] font-bold text-base leading-none">•</span>
+                  <span className="text-aws-magenta font-bold text-base leading-none">•</span>
                   <span>
                     Swag quantities, apparel sizes, and giveaways are distributed strictly subject to availability and Kahoot leaderboard performance.
                   </span>
@@ -242,7 +242,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             {/* Section 5: Photography & Media Consent */}
             <section className="rounded-2xl border border-slate-800 bg-[#0E1526]/80 p-6 sm:p-8 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#05E08A]/15 p-2.5 text-[#05E08A] shrink-0">
+                <div className="rounded-xl bg-aws-green/15 p-2.5 text-aws-green shrink-0">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <div>
@@ -259,9 +259,9 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
             </section>
 
             {/* Section 6: Reporting Violations & Organizer Contacts */}
-            <section className="rounded-2xl border border-[#3FB1FF]/40 bg-gradient-to-br from-[#0E1526] via-[#111A30] to-[#0E1526] p-6 sm:p-8 shadow-xl space-y-4">
+            <section className="rounded-2xl border border-aws-blue/40 bg-linear-to- from-[#0E1526] via-[#111A30] to-[#0E1526] p-6 sm:p-8 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#3FB1FF]/20 p-2.5 text-[#3FB1FF] shrink-0">
+                <div className="rounded-xl bg-aws-blue/20 p-2.5 text-aws-blue shrink-0">
                   <Mail className="h-6 w-6" />
                 </div>
                 <div>
@@ -282,7 +282,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
                   <div className="font-bold text-white text-sm mt-0.5">AWS Student Builder Group Dhule</div>
                   <a
                     href={`mailto:${EVENT_DETAILS.contactEmail}`}
-                    className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[#05E08A] hover:underline mt-2"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-aws-green hover:underline mt-2"
                   >
                     <Mail className="h-3 w-3 shrink-0" />
                     <span className="break-all">{EVENT_DETAILS.contactEmail}</span>
@@ -305,7 +305,7 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
 
             <button
               onClick={onScrollToRegister}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#AB5CFF] to-[#3FB1FF] hover:opacity-95 px-8 py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-[#AB5CFF]/20 transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-linear-to- from-aws-purple to-aws-blue hover:opacity-95 px-8 py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-aws-purple/20 transition-all cursor-pointer"
             >
               <span>Proceed to Registration →</span>
             </button>

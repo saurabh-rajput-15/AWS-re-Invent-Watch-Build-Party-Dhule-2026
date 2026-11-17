@@ -555,9 +555,9 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
   // 1. Password Protection Screen
   if (!token) {
     return (
-      <div className="min-h-screen bg-[#090D16] text-white flex flex-col justify-center items-center px-4 selection:bg-[#3FB1FF]/30">
+      <div className="min-h-screen bg-[#090D16] text-white flex flex-col justify-center items-center px-4 selection:bg-aws-blue/30">
         <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-[#0E1526] p-8 shadow-2xl relative overflow-hidden">
-          <div className="h-1.5 w-full bg-linear-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A] absolute top-0 left-0" />
+          <div className="h-1.5 w-full bg-linear-to-r from-aws-blue via-aws-magenta to-aws-green absolute top-0 left-0" />
 
           <button
             onClick={onNavigateHome}
@@ -568,12 +568,12 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           </button>
 
           <div className="text-center space-y-2 mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-[#3FB1FF]/10 border border-[#3FB1FF]/30 text-[#3FB1FF] flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-aws-blue/10 border border-aws-blue/30 text-aws-blue flex items-center justify-center mx-auto">
               <QrCode className="w-7 h-7" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">Reception QR Scanner</h1>
             <p className="text-xs text-slate-400">
-              Enter your <code className="text-[#3FB1FF] font-mono">SCANNER_KEY</code> or <code className="text-slate-300 font-mono">ADMIN_KEY</code> from Server .env to unlock live check-in camera.
+              Enter your <code className="text-aws-blue font-mono">SCANNER_KEY</code> or <code className="text-slate-300 font-mono">ADMIN_KEY</code> from Server .env to unlock live check-in camera.
             </p>
           </div>
 
@@ -591,7 +591,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                   placeholder="Enter SCANNER_KEY or ADMIN_KEY..."
                   autoFocus
                   required
-                  className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-4 py-2.5 text-sm text-white focus:border-[#3FB1FF] focus:outline-none focus:ring-1 focus:ring-[#3FB1FF]"
+                  className="w-full rounded-xl bg-[#090D16] border border-slate-700/80 pl-10 pr-4 py-2.5 text-sm text-white focus:border-aws-blue focus:outline-none focus:ring-1 focus:ring-aws-blue"
                 />
               </div>
             </div>
@@ -606,7 +606,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
             <button
               type="submit"
               disabled={isAuthenticating}
-              className="w-full py-3 rounded-xl bg-linear-to-r from-[#3FB1FF] to-[#05E08A] text-[#090D16] font-bold text-sm hover:opacity-95 transition-opacity disabled:opacity-50 cursor-pointer shadow-lg shadow-[#3FB1FF]/20"
+              className="w-full py-3 rounded-xl bg-linear-to-r from-aws-blue to-aws-green text-[#090D16] font-bold text-sm hover:opacity-95 transition-opacity disabled:opacity-50 cursor-pointer shadow-lg shadow-aws-blue/20"
             >
               {isAuthenticating ? 'Verifying Passcode...' : 'Unlock QR Scanner'}
             </button>
@@ -618,7 +618,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
   // 2. Active Scanner Screen
   return (
-    <div className="min-h-screen bg-[#090D16] text-white flex flex-col selection:bg-[#3FB1FF]/30 relative">
+    <div className="min-h-screen bg-[#090D16] text-white flex flex-col selection:bg-aws-blue/30 relative">
       {/* Top Navigation Bar */}
       <header className="border-b border-slate-800 bg-[#0A0E1A]/90 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -633,7 +633,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
             <div>
               <h1 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
                 <span>Reception Scanner</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-aws-green/15 text-aws-green border border-aws-green/30">
                   LIVE
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
@@ -649,7 +649,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               onClick={() => setSoundEnabled((prev) => !prev)}
               className={`p-2 rounded-xl border text-xs cursor-pointer transition-colors ${
                 soundEnabled
-                  ? 'border-[#3FB1FF]/30 bg-[#3FB1FF]/10 text-[#3FB1FF]'
+                  ? 'border-aws-blue/30 bg-aws-blue/10 text-aws-blue'
                   : 'border-slate-800 bg-slate-900 text-slate-500'
               }`}
               title={soundEnabled ? 'Mute Beep Chime' : 'Enable Beep Chime'}
@@ -709,13 +709,13 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="w-64 h-64 border-2 border-white/20 rounded-2xl relative">
               {/* Corner brackets */}
-              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-[#3FB1FF] rounded-tl-lg" />
-              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-[#3FB1FF] rounded-tr-lg" />
-              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-[#05E08A] rounded-bl-lg" />
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-[#05E08A] rounded-br-lg" />
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-aws-blue rounded-tl-lg" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-aws-blue rounded-tr-lg" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-aws-green rounded-bl-lg" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-aws-green rounded-br-lg" />
 
               {/* Pulsing scanning line */}
-              <div className="w-full h-0.5 bg-linear-to-r from-transparent via-[#3FB1FF] to-transparent shadow-[0_0_8px_#3FB1FF] absolute top-1/2 -translate-y-1/2 animate-pulse" />
+              <div className="w-full h-0.5 bg-linear-to-r from-transparent via-aws-blue to-transparent shadow-[0_0_8px_#3FB1FF] absolute top-1/2 -translate-y-1/2 animate-pulse" />
             </div>
           </div>
 
@@ -726,7 +726,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               <p className="text-xs sm:text-sm text-slate-300 max-w-xs">{cameraError}</p>
               <button
                 onClick={startCamera}
-                className="px-4 py-2 rounded-xl bg-[#3FB1FF] text-[#090D16] font-bold text-xs cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-aws-blue text-[#090D16] font-bold text-xs cursor-pointer"
               >
                 Retry Camera
               </button>
@@ -735,7 +735,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
 
           {/* Scanning indicator */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-[11px] font-mono text-slate-300 border border-white/10 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#05E08A] animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-aws-green animate-ping" />
             <span>Point camera at attendee QR pass</span>
           </div>
         </div>
@@ -748,7 +748,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                 ? 'bg-rose-950/30 border-rose-500/40 text-rose-200'
                 : lastScannedResult.alreadyCheckedIn
                 ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
-                : 'bg-emerald-950/30 border-[#05E08A]/50 text-emerald-200'
+                : 'bg-emerald-950/30 border-aws-green/50 text-emerald-200'
             }`}
           >
             <div className="flex items-start justify-between">
@@ -758,7 +758,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                 ) : lastScannedResult.alreadyCheckedIn ? (
                   <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0" />
                 ) : (
-                  <CheckCircle2 className="w-6 h-6 text-[#05E08A] shrink-0" />
+                  <CheckCircle2 className="w-6 h-6 text-aws-green shrink-0" />
                 )}
                 <div>
                   <h3 className="font-bold text-sm sm:text-base text-white">
@@ -789,11 +789,11 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                   </div>
                   <div>
                     <span className="text-slate-400 text-[11px] block">Pass ID</span>
-                    <span className="font-mono font-bold text-[#3FB1FF]">{lastScannedResult.attendee.id}</span>
+                    <span className="font-mono font-bold text-aws-blue">{lastScannedResult.attendee.id}</span>
                   </div>
                   <div>
                     <span className="text-slate-400 text-[11px] block">AWS Builder ID</span>
-                    <span className="font-mono text-[#3FB1FF]">@{lastScannedResult.attendee.builderId}</span>
+                    <span className="font-mono text-aws-blue">@{lastScannedResult.attendee.builderId}</span>
                   </div>
                   <div>
                     <span className="text-slate-400 text-[11px] block">College</span>
@@ -806,7 +806,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                     href={`/ticketid=${encodeURIComponent(lastScannedResult.attendee.id)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#3FB1FF] hover:underline cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-aws-blue hover:underline cursor-pointer"
                   >
                     <span>View Pass Page</span>
                     <ExternalLink className="w-3 h-3" />
@@ -837,13 +837,13 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                 value={manualTicketInput}
                 onChange={(e) => setManualTicketInput(e.target.value)}
                 placeholder="Type or scan riv-26-XXXX..."
-                className="w-full rounded-xl bg-[#090D16] border border-slate-700 pl-9 pr-3 py-2 text-xs sm:text-sm text-white focus:border-[#3FB1FF] focus:outline-none"
+                className="w-full rounded-xl bg-[#090D16] border border-slate-700 pl-9 pr-3 py-2 text-xs sm:text-sm text-white focus:border-aws-blue focus:outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={!manualTicketInput.trim() || isProcessing}
-              className="px-4 py-2 rounded-xl bg-[#3FB1FF] text-[#090D16] font-bold text-xs hover:opacity-90 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-aws-blue text-[#090D16] font-bold text-xs hover:opacity-90 disabled:opacity-50 cursor-pointer"
             >
               Verify
             </button>
@@ -855,7 +855,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
           <div className="rounded-2xl border border-slate-800 bg-[#0E1526] p-4 space-y-3">
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Recent Check-Ins ({scanHistory.length})</span>
-              <UserCheck className="w-4 h-4 text-[#05E08A]" />
+              <UserCheck className="w-4 h-4 text-aws-green" />
             </h4>
             <div className="divide-y divide-slate-800 text-xs">
               {scanHistory.map((item, idx) => (
@@ -865,7 +865,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                     <span className="text-[10px] font-mono text-slate-400">{item.id}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-[#05E08A] font-bold block">{item.status}</span>
+                    <span className="text-[10px] text-aws-green font-bold block">{item.status}</span>
                     <span className="text-[10px] text-slate-500">{item.time}</span>
                   </div>
                 </div>
@@ -878,13 +878,13 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
       {/* Check-In Confirmation Modal (YES / NO Dialog) */}
       {pendingConfirmation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-3xl border border-[#3FB1FF]/40 bg-[#0E1526] p-6 shadow-2xl space-y-5 relative overflow-hidden">
-            <div className="h-1.5 w-full bg-linear-to-r from-[#3FB1FF] via-[#FF57E8] to-[#05E08A] absolute top-0 left-0" />
+          <div className="w-full max-w-md rounded-3xl border border-aws-blue/40 bg-[#0E1526] p-6 shadow-2xl space-y-5 relative overflow-hidden">
+            <div className="h-1.5 w-full bg-linear-to-r from-aws-blue via-aws-magenta to-aws-green absolute top-0 left-0" />
 
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-[#3FB1FF]/10 text-[#3FB1FF] border border-[#3FB1FF]/30">
+                <div className="p-2 rounded-xl bg-aws-blue/10 text-aws-blue border border-aws-blue/30">
                   <QrCode className="w-5 h-5" />
                 </div>
                 <div>
@@ -910,11 +910,11 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs">
                 <div>
                   <span className="text-slate-400 text-[11px] block">Pass ID</span>
-                  <span className="font-mono font-bold text-[#3FB1FF]">{pendingConfirmation.attendee.id}</span>
+                  <span className="font-mono font-bold text-aws-blue">{pendingConfirmation.attendee.id}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 text-[11px] block">Status</span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#05E08A]/15 text-[#05E08A] border border-[#05E08A]/30">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-aws-green/15 text-aws-green border border-aws-green/30">
                     APPROVED
                   </span>
                 </div>
@@ -952,7 +952,7 @@ export const AdminScannerPage: React.FC<AdminScannerPageProps> = ({ onNavigateHo
                 type="button"
                 onClick={handleConfirmCheckIn}
                 disabled={isConfirmingCheckIn}
-                className="w-full py-3 rounded-xl bg-linear-to-r from-[#05E08A] to-[#3FB1FF] hover:opacity-95 text-[#090D16] font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer transition-opacity shadow-lg shadow-[#05E08A]/20"
+                className="w-full py-3 rounded-xl bg-linear-to-r from-aws-green to-aws-blue hover:opacity-95 text-[#090D16] font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer transition-opacity shadow-lg shadow-aws-green/20"
               >
                 <CheckCircle2 className="w-4 h-4 text-[#090D16]" />
                 <span>{isConfirmingCheckIn ? 'Checking In...' : 'Yes, Check In'}</span>

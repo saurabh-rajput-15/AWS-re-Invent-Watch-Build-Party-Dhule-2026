@@ -15,6 +15,7 @@ export const config = {
   brevoSmtpPass: process.env.BREVO_SMTP_PASS || process.env.BREVO_MAIL_API || '',
   frontendUrl: (process.env.FRONTEND_URL || 'https://reinvent.awssbgdhule.in').replace(/\/$/, ''),
   apiUrl: (process.env.API_URL || process.env.SERVER_URL || 'https://api.reinvent.awssbgdhule.in').replace(/\/$/, ''),
+  alertEmail: process.env.ALERT_EMAIL || 'saurabhgirase2005@gmail.com',
 };
 
 if (!config.adminKey) {

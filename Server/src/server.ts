@@ -1,3 +1,4 @@
+import './services/logger.service.js';
 import express from 'express';
 import cors from 'cors';
 import { config } from './config/env.js';

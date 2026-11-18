@@ -9,6 +9,7 @@ import QRCode from 'qrcode';
 import { config } from '../config/env.js';
 import { supabase } from '../config/supabase.js';
 import { Attendee } from '../features/registrations/registrations.service.js';
+import { loggerService } from './logger.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -598,3 +599,173 @@ AWS Student Builder Group Dhule
 
   return result.success;
 }
+
+/**
+ * Escapes characters for safe inclusion inside pre/code blocks in HTML emails
+ */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export interface SessionAlertPayload {
+  errorMessage: string;
+  actionAttempted?: string;
+  httpStatus?: number;
+  recipientEmail?: string;
+}
+
+// Rate-limiting / throttling: Send alert at most once every 30 minutes for continuous session failures
+let lastSessionAlertSentAt = 0;
+const ALERT_COOLDOWN_MS = 30 * 60 * 1000;
+
+export function resetSessionAlertCooldown(): void {
+  lastSessionAlertSentAt = 0;
+}
+
+/**
+ * EMAIL 3: Session Expiration & System Error Alert
+ * Sends emergency diagnostic email with the last 50 server logs to the organizer.
+ */
+export async function sendSessionAlertEmail(payload: SessionAlertPayload): Promise<boolean> {
+  const recipient = payload.recipientEmail || config.alertEmail || 'saurabhgirase2005@gmail.com';
+  const now = Date.now();
+
+  if (lastSessionAlertSentAt && now - lastSessionAlertSentAt < ALERT_COOLDOWN_MS) {
+    const waitMins = Math.round((ALERT_COOLDOWN_MS - (now - lastSessionAlertSentAt)) / 60000);
+    console.log(`ℹ️ [Session Alert] Alert email to ${recipient} throttled (cooldown active, next alert in ~${waitMins}m).`);
+    return false;
+  }
+
+  const recentLogs = loggerService.getRecentLogsFormatted(50) || `[${new Date().toISOString()}] No recent server logs recorded.`;
+  const timestampIso = new Date().toISOString();
+  const timestampIst = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  const subject = `🚨 [URGENT] AWS Builder Center Session Expired / Unauthorized - AWS re:Invent Dhule`;
+
+  const textContent = `
+AWS re:Invent Dhule 2026 - Critical Session Alert
+==================================================
+The AWS Builder Center session has expired or is unauthorized.
+Autonomous attendee sync and live lookups cannot authenticate with AWS.
+
+Incident Summary:
+- Timestamp (UTC): ${timestampIso}
+- Timestamp (IST): ${timestampIst}
+- Action Attempted: ${payload.actionAttempted || 'AWS API Request'}
+- Status / Error: ${payload.errorMessage} ${payload.httpStatus ? `(HTTP ${payload.httpStatus})` : ''}
+
+How to Resolve in 1 Step:
+1. Open PowerShell and run: .\\agent-login.ps1
+2. Sign in with your Organizer/Co-Host AWS Builder account in the browser.
+3. The agent will automatically capture the new session cookies and persist them to Supabase and .env.
+
+Last 50 Server Logs with Timestamp:
+--------------------------------------------------
+${recentLogs}
+--------------------------------------------------
+`.trim();
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AWS Session Alert</title>
+</head>
+<body style="margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #050811; color: #F3F4F6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 680px; margin: 0 auto; background-color: #0E1526; border: 1px solid #EF4444; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+    <!-- Alert Header Banner -->
+    <tr>
+      <td style="padding: 24px 32px; background: linear-gradient(135deg, #7F1D1D 0%, #1E1B4B 100%); border-bottom: 1px solid #DC2626;">
+        <div style="display: inline-block; padding: 4px 12px; background-color: #DC2626; color: #FFFFFF; font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 9999px;">
+          CRITICAL ALERT
+        </div>
+        <h1 style="margin: 12px 0 4px 0; font-size: 22px; font-weight: 800; color: #FFFFFF;">
+          AWS Builder Center Session Expired
+        </h1>
+        <div style="font-size: 13px; color: #FECACA;">
+          Action required: Attendee synchronization has stalled due to 401 Unauthorized.
+        </div>
+      </td>
+    </tr>
+
+    <!-- Body Content -->
+    <tr>
+      <td style="padding: 28px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #131B2E; border: 1px solid #1E293B; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 6px 12px; font-size: 13px; color: #94A3B8; width: 140px;">Timestamp:</td>
+            <td style="padding: 6px 12px; font-size: 13px; color: #F3F4F6; font-family: monospace;">${timestampIst} (IST) / ${timestampIso} (UTC)</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 12px; font-size: 13px; color: #94A3B8;">Action Failed:</td>
+            <td style="padding: 6px 12px; font-size: 13px; color: #F3F4F6; font-weight: 600;">${escapeHtml(payload.actionAttempted || 'AWS API Call')}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 12px; font-size: 13px; color: #94A3B8;">HTTP Status:</td>
+            <td style="padding: 6px 12px; font-size: 13px; color: #F87171; font-weight: 700;">${payload.httpStatus || 401} Unauthorized</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 12px; font-size: 13px; color: #94A3B8;">Error Message:</td>
+            <td style="padding: 6px 12px; font-size: 13px; color: #FCA5A5; font-family: monospace;">${escapeHtml(payload.errorMessage)}</td>
+          </tr>
+        </table>
+
+        <!-- Quick Recovery Instructions -->
+        <h3 style="margin: 0 0 10px 0; font-size: 15px; color: #38BDF8;">🛠️ How to Restore in 1 Step:</h3>
+        <div style="background-color: #0A0F1D; border-left: 4px solid #38BDF8; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 24px; font-size: 13px; line-height: 1.6; color: #E2E8F0;">
+          Run the following command in PowerShell on your local machine:
+          <div style="background-color: #020617; color: #38BDF8; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 13px; margin: 8px 0;">
+            .\\agent-login.ps1
+          </div>
+          Sign in once in the opened Chrome window. The agent will immediately capture the fresh tokens, save them to Supabase, and restore normal operations.
+        </div>
+
+        <!-- Last 50 Server Logs with Time -->
+        <h3 style="margin: 0 0 10px 0; font-size: 15px; color: #F3F4F6;">
+          📋 Last 50 Server Logs (with Timestamp):
+        </h3>
+        <div style="background-color: #020617; border: 1px solid #1E293B; border-radius: 8px; padding: 14px; max-height: 380px; overflow-y: auto;">
+          <pre style="margin: 0; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 11px; line-height: 1.5; color: #94A3B8; white-space: pre-wrap; word-break: break-all;">${escapeHtml(recentLogs)}</pre>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding: 18px 32px; background-color: #090D16; border-top: 1px solid #1E293B; text-align: center; font-size: 11px; color: #64748B;">
+        AWS re:Invent Watch &amp; Build Party Dhule 2026 · Automated Health Monitoring
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`.trim();
+
+  try {
+    const res = await sendBrevoEmail({
+      to: [{ name: 'Saurabh Girase', email: recipient }],
+      subject,
+      htmlContent,
+      textContent,
+    });
+
+    if (res.success) {
+      lastSessionAlertSentAt = now;
+      console.log(`🚨 [Session Alert] Sent emergency notification email to ${recipient} (messageId: ${res.messageId})`);
+      return true;
+    } else {
+      console.warn(`⚠️ [Session Alert] Failed to send alert email:`, res.error);
+      return false;
+    }
+  } catch (err: any) {
+    console.warn(`⚠️ [Session Alert] Exception sending alert email:`, err.message);
+    return false;
+  }
+}
+

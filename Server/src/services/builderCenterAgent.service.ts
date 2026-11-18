@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { supabase } from '../config/supabase.js';
+import { sendSessionAlertEmail, resetSessionAlertCooldown } from './email.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -316,6 +317,13 @@ class BuilderCenterAgentService {
         const errBody = await res.text().catch(() => '');
         console.warn(`⚠️ [Agent Session] Refresh returned HTTP ${res.status}: ${errBody.slice(0, 100)}`);
         this.isRefreshingSession = false;
+        if (res.status === 401 || res.status === 403) {
+          sendSessionAlertEmail({
+            errorMessage: `Token refresh endpoint /ams/refreshToken returned HTTP ${res.status}: ${errBody.slice(0, 150) || 'Unauthorized'}`,
+            actionAttempted: 'Auto-refreshing session via /ams/refreshToken',
+            httpStatus: res.status,
+          }).catch((e) => console.warn('⚠️ [Session Alert] Send error:', e.message));
+        }
         return false;
       }
 
@@ -332,6 +340,7 @@ class BuilderCenterAgentService {
 
       await this.persistSession(updatedCookie, updatedCsrf);
       console.log('✅ [Agent Session] AWS session auto-refreshed successfully (valid for 30 days).');
+      resetSessionAlertCooldown();
       this.isRefreshingSession = false;
       return true;
     } catch (err: any) {
@@ -467,7 +476,15 @@ class BuilderCenterAgentService {
       let res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
       if (res.status === 401 || res.status === 403) {
         const refreshed = await this.refreshAwsSession(true);
-        if (refreshed) res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        if (refreshed) {
+          res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        } else {
+          sendSessionAlertEmail({
+            errorMessage: `Live check for @${alias} returned HTTP ${res.status} and auto-refresh failed.`,
+            actionAttempted: `Live member lookup for @${alias}`,
+            httpStatus: res.status,
+          }).catch((e) => console.warn('⚠️ [Session Alert] Send error:', e.message));
+        }
       }
 
       if (!res.ok) break;
@@ -511,7 +528,15 @@ class BuilderCenterAgentService {
       let res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
       if (res.status === 401 || res.status === 403) {
         const refreshed = await this.refreshAwsSession(true);
-        if (refreshed) res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        if (refreshed) {
+          res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        } else {
+          sendSessionAlertEmail({
+            errorMessage: `Live check for @${alias} returned HTTP ${res.status} and auto-refresh failed.`,
+            actionAttempted: `Live member lookup for @${alias}`,
+            httpStatus: res.status,
+          }).catch((e) => console.warn('⚠️ [Session Alert] Send error:', e.message));
+        }
       }
 
       if (!res.ok) break;
@@ -599,6 +624,12 @@ class BuilderCenterAgentService {
         const refreshed = await this.refreshAwsSession(true);
         if (refreshed) {
           res = await this.fetchWithRetry(url, { headers: this.getHeaders() });
+        } else {
+          sendSessionAlertEmail({
+            errorMessage: `Direct API call returned HTTP ${res.status} and auto-refresh failed.`,
+            actionAttempted: `Fetching ${listKey} (page ${pageCount})`,
+            httpStatus: res.status,
+          }).catch((e) => console.warn('⚠️ [Session Alert] Send error:', e.message));
         }
       }
 
@@ -635,6 +666,11 @@ class BuilderCenterAgentService {
     }
 
     if (!this.activeCookie) {
+      sendSessionAlertEmail({
+        errorMessage: 'No active AWS session cookie available in database, .env, or local cache.',
+        actionAttempted: `Roster direct sync (trigger: ${triggerReason})`,
+      }).catch((e) => console.warn('⚠️ [Session Alert] Send error:', e.message));
+
       return {
         success: false,
         totalSynced: 0,
@@ -750,6 +786,7 @@ class BuilderCenterAgentService {
 
       const duration = Date.now() - startTime;
       if (count > 0) {
+        resetSessionAlertCooldown();
         console.log(`✅ [Autonomous Agent] Sync completed in ${duration}ms. ${count} verified builders synced to Supabase.`);
       } else {
         console.log(`ℹ️ [Autonomous Agent] Serving from active database cache (${this.inMemoryAttendees.size} verified builders ready).`);

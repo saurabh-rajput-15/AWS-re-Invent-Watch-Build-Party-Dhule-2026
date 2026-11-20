@@ -290,11 +290,9 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#090D16] text-[#F3F4F6] antialiased selection:bg-aws-purple/30 selection:text-white">
-    <div id="root">
-      <!-- Search Engine Crawler Static Shell (Hydrated dynamically by React on client load) -->
-      <noscript>
-        <style>#seo-crawl-shell { display: block !important; }</style>
-      </noscript>
+    <div id="root"></div>
+    <!-- Search Engine Crawler Static Fallback (Only parsed by search engine bots & crawlers without JS; completely invisible to human users with JS) -->
+    <noscript>
       <div id="seo-crawl-shell" style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #F3F4F6;">
         <header>
           <p style="color: #3FB1FF; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px;">
@@ -337,7 +335,7 @@
           <a href="https://builder.aws.com/connect/event/c8a38d77-8262-34c4-b744-ea8dfb7b35a6" style="color: #3FB1FF; text-decoration: underline;">Official AWS Builder Center Event</a>
         </nav>
       </div>
-    </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

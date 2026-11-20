@@ -116,7 +116,8 @@ export const Registration: React.FC<RegistrationProps> = ({
   const [verificationResult, setVerificationResult] = useState<BuilderVerificationResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [agreedToTerms, setAgreedToTerms] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToSponsors, setAgreedToSponsors] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
   // Admin Modal States
@@ -206,6 +207,9 @@ export const Registration: React.FC<RegistrationProps> = ({
     }
     if (!agreedToTerms) {
       errs.terms = 'You must accept the Terms & Conditions and Code of Conduct';
+    }
+    if (!agreedToSponsors) {
+      errs.sponsors = 'You must agree to share your details with event sponsors to proceed';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -353,7 +357,11 @@ export const Registration: React.FC<RegistrationProps> = ({
       if (!res.ok || !data?.success) {
         const errorMsg = data?.message || 'Registration rejected: AWS Builder Center verification could not be confirmed.';
         setSubmitError(errorMsg);
-        setErrors((prev) => ({ ...prev, builderId: errorMsg }));
+        if (errorMsg.toLowerCase().includes('email')) {
+          setErrors((prev) => ({ ...prev, email: errorMsg }));
+        } else {
+          setErrors((prev) => ({ ...prev, builderId: errorMsg }));
+        }
         setIsSubmitting(false);
         return;
       }
@@ -506,9 +514,9 @@ export const Registration: React.FC<RegistrationProps> = ({
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">3. Check Email for Next Verification Steps</h4>
+                  <h4 className="text-sm font-bold text-white">3. Confirmation Starts on 25 November</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    After submitting, you will receive an email with next steps. Complete them to significantly boost your chances of getting confirmed!
+                    Seat confirmations and official QR entry passes will begin rolling out on 25 November 2026. Keep an eye on your email!
                   </p>
                 </div>
               </div>
@@ -697,13 +705,17 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <div className="rounded-lg bg-aws-green/20 p-2 text-aws-green shrink-0 mt-0.5">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <h4 className="font-bold text-white text-sm">
                         Your request is submitted successfully!
                       </h4>
                       <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
-                        Once the admin approves your entry, you will receive a confirmation email shortly.
+                        Your registration is currently under review. The attendee confirmation process and official pass issuance will start on <strong className="text-aws-orange">25 November 2026</strong>.
                       </p>
+                      <div className="pt-2 text-xs text-amber-200/90 flex items-center gap-1.5 font-medium">
+                        <span>📧</span>
+                        <span>Please keep an eye on your registered email (<span className="text-white font-mono">{attendee.email}</span>) and spam folder!</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1282,28 +1294,76 @@ export const Registration: React.FC<RegistrationProps> = ({
                   )}
                 </div>
 
-                {/* Terms & Conditions / Code of Conduct Checkbox */}
-                <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
+                {/* 25 November Confirmation Notice Banner */}
+                <div className="mt-5 rounded-xl border border-aws-orange/30 bg-aws-orange/10 p-3.5 text-xs text-amber-200 flex items-start gap-2.5">
+                  <AlertTriangle className="h-4 w-4 text-aws-orange shrink-0 mt-0.5" />
+                  <div className="leading-relaxed">
+                    <span className="font-bold text-white">📢 Important Notice:</span> The attendee confirmation and official pass approval process will begin on <strong className="text-white underline">25 November 2026</strong>. Please keep an eye on your email inbox &amp; spam folder!
+                  </div>
+                </div>
+
+                {/* Checkbox 1: Terms & Conditions / Code of Conduct (Required) */}
+                <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
                   <label className="flex items-start gap-3 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-aws-purple focus:ring-aws-purple cursor-pointer"
+                      onChange={(e) => {
+                        setAgreedToTerms(e.target.checked);
+                        if (e.target.checked) {
+                          setErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.terms;
+                            return next;
+                          });
+                        }
+                      }}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-aws-purple focus:ring-aws-purple cursor-pointer shrink-0"
                     />
                     <span className="text-xs text-slate-300 leading-relaxed">
                       I agree to the{' '}
-                      <a
-                        href="/codeofconduct"
-                        className="text-aws-blue font-semibold underline hover:text-[#72c7ff] inline-flex items-center gap-0.5 cursor-pointer"
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowTermsModal(true);
+                        }}
+                        className="text-aws-blue font-semibold underline hover:text-[#72c7ff] inline cursor-pointer"
                       >
-                        <span>Terms &amp; Conditions and Code of Conduct</span>
-                      </a>
-                      . I understand that registration does not guarantee entry, damage to the venue will be billed to the person responsible, swags are shipped from the USA and organizers are not liable for transit delays, and zero-tolerance policies apply to any harassment.
+                        Terms &amp; Conditions and Code of Conduct
+                      </button>
+                      . I understand that registration does not guarantee entry, damage to the venue will be billed to the person responsible, swags are shipped from the USA and organizers are not liable for transit delays, and zero-tolerance policies apply to any harassment. <span className="text-rose-400 font-bold">*</span>
                     </span>
                   </label>
                   {errors.terms && (
                     <p className="text-xs text-rose-400 pl-7">{errors.terms}</p>
+                  )}
+                </div>
+
+                {/* Checkbox 2: Sponsor & Partner Information Sharing (Required) */}
+                <div className="mt-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreedToSponsors}
+                      onChange={(e) => {
+                        setAgreedToSponsors(e.target.checked);
+                        if (e.target.checked) {
+                          setErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.sponsors;
+                            return next;
+                          });
+                        }
+                      }}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-[#090D16] text-aws-purple focus:ring-aws-purple cursor-pointer shrink-0"
+                    />
+                    <span className="text-xs text-slate-300 leading-relaxed">
+                      I agree and am willing to share my registration details (full name, email, institution, and skill track) with event sponsors and community partners for networking, developer hiring, and future cloud opportunities. <span className="text-rose-400 font-bold">*</span>
+                    </span>
+                  </label>
+                  {errors.sponsors && (
+                    <p className="text-xs text-rose-400 pl-7">{errors.sponsors}</p>
                   )}
                 </div>
 

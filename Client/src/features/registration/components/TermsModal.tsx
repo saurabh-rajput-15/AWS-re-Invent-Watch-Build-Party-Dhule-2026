@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ShieldAlert, AlertTriangle, FileText, CheckCircle2, UserX, Gift, Scale, ExternalLink } from 'lucide-react';
+import { X, ShieldAlert, AlertTriangle, FileText, CheckCircle2, UserX, Gift, Scale, ExternalLink, Share2 } from 'lucide-react';
 
 interface TermsModalProps {
   isOpen: boolean;
@@ -160,6 +160,25 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onAccep
             <p className="text-slate-400 text-xs">
               By attending, you grant permission to the organizing committee and AWS community media teams to take photographs and record video clips during sessions, Kahoot arena battles, and the closing photo for non-commercial community recap articles, social channels, and builder retrospectives.
             </p>
+          </div>
+
+          {/* Section 6: Sponsor & Partner Information Sharing */}
+          <div className="space-y-2 rounded-xl bg-slate-900/60 border border-slate-800/80 p-4">
+            <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
+              <Share2 className="h-4 w-4 text-aws-blue shrink-0" />
+              <h3>6. Sponsor &amp; Partner Information Sharing</h3>
+            </div>
+            <p className="text-slate-300 text-xs sm:text-sm">
+              By consenting to sponsor data sharing during registration, you agree that your basic academic and contact information (full name, email address, college/institution, and cloud skill track) may be shared with official AWS re:Invent Dhule sponsors and community partners.
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-slate-400 text-xs">
+              <li>
+                <strong className="text-white">Legitimate Purposes:</strong> Shared information will be used exclusively for student hiring, internship/job opportunities, tech hackathon invitations, and follow-up cloud learning programs.
+              </li>
+              <li>
+                <strong className="text-white">Strict Privacy:</strong> Organizers and sponsors will never sell, lease, or distribute your personal details to third-party telemarketers or unrelated advertisers.
+              </li>
+            </ul>
           </div>
 
         </div>

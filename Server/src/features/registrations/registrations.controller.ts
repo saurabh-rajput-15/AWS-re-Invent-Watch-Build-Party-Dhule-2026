@@ -33,7 +33,8 @@ export class RegistrationsController {
       });
     } catch (err: any) {
       console.warn(`❌ Registration rejected for alias "${builderId}":`, err.message);
-      res.status(400).json({
+      const isDuplicate = err.message && (err.message.includes('already registered') || err.message.includes('already exists'));
+      res.status(isDuplicate ? 409 : 400).json({
         success: false,
         message: err.message || 'Registration rejected',
       });

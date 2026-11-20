@@ -220,6 +220,47 @@ class RegistrationsService {
       builderCenterVerifiedAt: Date.now(),
     };
 
+    // 1. Strict Duplicate Check in Supabase
+    if (supabase) {
+      // Check if email already registered
+      const { data: existingEmailRecord } = await supabase
+        .from('registrations')
+        .select('id, email')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+
+      if (existingEmailRecord) {
+        throw new Error(`This email address (${cleanEmail}) is already registered. Multiple registrations with the same email are not allowed.`);
+      }
+
+      // Check if AWS Builder ID already registered
+      const { data: existingAliasRecord } = await supabase
+        .from('registrations')
+        .select('id, builder_id')
+        .ilike('builder_id', cleanBuilderId)
+        .maybeSingle();
+
+      if (existingAliasRecord) {
+        throw new Error(`The AWS Builder ID (@${cleanBuilderId}) is already registered. Multiple registrations with the same Builder ID are not allowed.`);
+      }
+    }
+
+    // 2. Strict Duplicate Check in In-Memory Store
+    const existingEmailInMemory = this.inMemoryRegistrations.find(
+      (r) => r.email.toLowerCase() === cleanEmail
+    );
+    if (existingEmailInMemory) {
+      throw new Error(`This email address (${cleanEmail}) is already registered. Multiple registrations with the same email are not allowed.`);
+    }
+
+    const existingAliasInMemory = this.inMemoryRegistrations.find(
+      (r) => r.builderId.toLowerCase() === cleanBuilderId
+    );
+    if (existingAliasInMemory) {
+      throw new Error(`The AWS Builder ID (@${cleanBuilderId}) is already registered. Multiple registrations with the same Builder ID are not allowed.`);
+    }
+
+    // Now that duplicate check passed, save attendee to roster
     await builderCenterAgentService.saveAttendee({
       eventId: 'c8a38d77-8262-34c4-b744-ea8dfb7b35a6',
       builderId: cleanBuilderId,
@@ -230,45 +271,23 @@ class RegistrationsService {
     });
 
     if (supabase) {
-      try {
-        // Prevent duplicate rows for the same alias id (builder_id)
-        const { data: existingAliasRecord } = await supabase
-          .from('registrations')
-          .select('id')
-          .ilike('builder_id', cleanBuilderId)
-          .maybeSingle();
+      const row = attendeeToRow(newAttendee);
+      const { data: inserted, error } = await supabase
+        .from('registrations')
+        .insert(row)
+        .select()
+        .single();
 
-        if (existingAliasRecord) {
-          // Re-use existing ticket ID so alias never creates double rows
-          newAttendee.id = existingAliasRecord.id;
-        }
-
-        const row = attendeeToRow(newAttendee);
-        const { data: inserted, error } = await supabase
-          .from('registrations')
-          .upsert(row, { onConflict: existingAliasRecord ? 'id' : 'email' })
-          .select()
-          .single();
-
-        if (!error && inserted) {
-          return rowToAttendee(inserted);
-        }
-        console.error('❌ Supabase upsert error:', error?.message);
-      } catch (err: any) {
-        console.error('❌ Supabase insert failed:', err.message);
+      if (!error && inserted) {
+        return rowToAttendee(inserted);
       }
-    }
-
-    // In-memory fallback: check both email and alias to prevent double rows
-    const existingIndex = this.inMemoryRegistrations.findIndex(
-      (r) => r.email.toLowerCase() === cleanEmail || r.builderId.toLowerCase() === cleanBuilderId
-    );
-    if (existingIndex >= 0) {
-      this.inMemoryRegistrations[existingIndex] = {
-        ...newAttendee,
-        id: this.inMemoryRegistrations[existingIndex].id,
-      };
-      return this.inMemoryRegistrations[existingIndex];
+      if (error) {
+        console.error('❌ Supabase insert error:', error.message);
+        if (error.code === '23505') {
+          throw new Error('A registration with this email address or AWS Builder ID already exists. Multiple registrations are not allowed.');
+        }
+        throw new Error(`Database error: ${error.message}`);
+      }
     }
 
     this.inMemoryRegistrations.unshift(newAttendee);

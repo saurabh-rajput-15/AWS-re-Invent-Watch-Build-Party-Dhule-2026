@@ -181,6 +181,11 @@ class RegistrationsService {
   public async create(data: Omit<Attendee, 'id' | 'status' | 'registeredAt'> & { id?: string }): Promise<Attendee> {
     const cleanEmail = data.email.trim().toLowerCase();
     const cleanBuilderId = data.builderId.trim().toLowerCase().replace(/^@/, '');
+    const cleanPhone = String(data.phone || '').replace(/\D/g, '');
+
+    if (cleanPhone.length !== 10) {
+      throw new Error('Please provide a valid 10-digit mobile number.');
+    }
 
     if (!cleanBuilderId) {
       throw new Error('AWS Builder Center alias is required.');
@@ -206,7 +211,7 @@ class RegistrationsService {
       id: data.id || `riv-26-${Math.floor(1000 + Math.random() * 9000)}`,
       fullName: data.fullName.trim(),
       email: cleanEmail,
-      phone: data.phone.trim(),
+      phone: cleanPhone,
       builderId: cleanBuilderId,
       college: data.college.trim(),
       year: data.year || '3rd Year',

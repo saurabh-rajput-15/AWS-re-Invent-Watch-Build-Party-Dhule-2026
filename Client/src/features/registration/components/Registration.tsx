@@ -179,7 +179,7 @@ export const Registration: React.FC<RegistrationProps> = ({
       errs.email = 'Please provide a valid email address';
     }
     const cleanPhone = formData.phone.replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
+    if (!cleanPhone || cleanPhone.length !== 10) {
       errs.phone = 'Please provide a valid 10-digit mobile number';
     }
 
@@ -334,7 +334,7 @@ export const Registration: React.FC<RegistrationProps> = ({
         id: attendee?.id || `riv-26-${Math.floor(1000 + Math.random() * 9000)}`,
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
-        phone: formData.phone.trim(),
+        phone: formData.phone.replace(/\D/g, ''),
         builderId: cleanAlias,
         college: formData.college.trim(),
         year: formData.year,
@@ -1042,11 +1042,16 @@ export const Registration: React.FC<RegistrationProps> = ({
                       <input
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        onChange={(e) => {
+                          const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+                          setFormData({ ...formData, phone: digitsOnly });
+                        }}
                         placeholder="e.g. 9834382337"
                         className="w-full rounded-xl border border-slate-700 bg-[#090D16] px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-aws-purple focus:outline-none focus:ring-1 focus:ring-aws-purple"
                         required
-                        maxLength={15}
+                        maxLength={10}
+                        pattern="[0-9]{10}"
+                        inputMode="numeric"
                       />
                       {errors.phone && (
                         <p className="mt-1 text-xs text-rose-400">{errors.phone}</p>

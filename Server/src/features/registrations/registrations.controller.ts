@@ -11,11 +11,17 @@ export class RegistrationsController {
       return;
     }
 
+    const cleanPhone = String(phone).replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number' });
+      return;
+    }
+
     try {
       const attendee = await registrationsService.create({
         fullName,
         email,
-        phone,
+        phone: cleanPhone,
         builderId,
         college,
         year,

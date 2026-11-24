@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ChevronRight } from 'lucide-react';
-import { gsap } from 'gsap';
-import { EVENT_DETAILS } from '../features/event/data/eventData';
+import React, { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronRight } from "lucide-react";
+import { gsap } from "gsap";
+import { EVENT_DETAILS } from "../features/event/data/eventData";
 
 interface NavbarProps {
   onScrollToRegister: () => void;
@@ -25,8 +25,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
   // 1. GSAP Entrance Animation for Landscape / Desktop Navbar
   useEffect(() => {
-    const isLandscape = window.matchMedia('(min-width: 1024px), (orientation: landscape) and (min-width: 640px)').matches;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isLandscape = window.matchMedia(
+      "(min-width: 1024px), (orientation: landscape) and (min-width: 640px)",
+    ).matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     if (isLandscape && !prefersReducedMotion && navPillRef.current) {
       const anim = gsap.fromTo(
@@ -36,10 +40,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           y: 0,
           opacity: 1,
           duration: 0.8,
-          ease: 'power3.out',
+          ease: "power3.out",
           delay: 0.1,
-          clearProps: 'transform,opacity',
-        }
+          clearProps: "transform,opacity",
+        },
       );
 
       return () => {
@@ -53,8 +57,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // 3. Countdown timer logic
@@ -109,45 +113,51 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
       opacity: 0,
       scale: 0.97,
       duration: 0.22,
-      ease: 'power2.in',
+      ease: "power2.in",
     }).to(
       scrimRef.current,
       {
         opacity: 0,
         duration: 0.2,
-        ease: 'power2.in',
+        ease: "power2.in",
       },
-      '-=0.15'
+      "-=0.15",
     );
   };
 
   // Trigger GSAP entrance when mobile menu mounts into the DOM
   useEffect(() => {
     if (isRendered && drawerRef.current && scrimRef.current) {
-      const items = drawerRef.current.querySelectorAll('.mobile-nav-item');
+      const items = drawerRef.current.querySelectorAll(".mobile-nav-item");
 
       gsap.killTweensOf([scrimRef.current, drawerRef.current, items]);
 
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       tl.fromTo(
         scrimRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.25, ease: 'power2.out' }
-      )
-      .fromTo(
+        { opacity: 1, duration: 0.25, ease: "power2.out" },
+      ).fromTo(
         drawerRef.current,
         { y: -22, opacity: 0, scale: 0.97 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.32, ease: 'power3.out' },
-        '-=0.12'
+        { y: 0, opacity: 1, scale: 1, duration: 0.32, ease: "power3.out" },
+        "-=0.12",
       );
 
       if (items.length > 0) {
         tl.fromTo(
           items,
           { y: 12, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.22, stagger: 0.03, ease: 'power2.out', clearProps: 'transform,opacity' },
-          '-=0.18'
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.22,
+            stagger: 0.03,
+            ease: "power2.out",
+            clearProps: "transform,opacity",
+          },
+          "-=0.18",
         );
       }
     }
@@ -156,12 +166,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
   // Lock body scroll while mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
 
@@ -182,8 +192,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
         ref={navPillRef}
         className={`mx-auto max-w-7xl rounded-full border transition-all duration-300 ${
           isScrolled
-            ? 'border-white/15 bg-[#090D16]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 scale-[0.99]'
-            : 'border-white/10 bg-linear-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-2xl shadow-black/40 scale-100'
+            ? "border-white/15 bg-[#090D16]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 scale-[0.99]"
+            : "border-white/10 bg-linear-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-2xl shadow-black/40 scale-100"
         } pointer-events-auto relative z-50`}
       >
         <div className="flex h-16 items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
@@ -205,28 +215,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
           {/* Center-Left: Nav Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs sm:text-sm font-medium text-slate-300">
-            <a href="#about" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#about"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               About
             </a>
-            <a href="#benefits" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#benefits"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Benefits
             </a>
-            <a href="#agenda" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#agenda"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Schedule
             </a>
-            <a href="#speakers" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#speakers"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Mentors
             </a>
-            <a href="#venue" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#venue"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Venue
             </a>
-            <a href="#team" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#team"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Team
             </a>
-            <a href="#partners" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#partners"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               Partners
             </a>
-            <a href="#faq" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+            <a
+              href="#faq"
+              className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all"
+            >
               FAQ
             </a>
           </nav>
@@ -234,11 +268,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
           {/* Center-Right: Open Countdown */}
           <div className="hidden md:flex items-start gap-1.5 xl:gap-2 shrink-0">
             <CountdownUnit value={countdown.days} label="DAYS" />
-            <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+            <span
+              aria-hidden="true"
+              className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+            >
+              :
+            </span>
             <CountdownUnit value={countdown.hours} label="HOURS" />
-            <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+            <span
+              aria-hidden="true"
+              className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+            >
+              :
+            </span>
             <CountdownUnit value={countdown.minutes} label="MINS" />
-            <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+            <span
+              aria-hidden="true"
+              className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+            >
+              :
+            </span>
             <CountdownUnit value={countdown.seconds} label="SECS" />
           </div>
 
@@ -256,12 +305,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
             {/* Mobile menu button */}
             <button
-              onClick={() => (mobileMenuOpen ? closeMobileMenu() : openMobileMenu())}
+              onClick={() =>
+                mobileMenuOpen ? closeMobileMenu() : openMobileMenu()
+              }
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition-all focus:outline-none lg:hidden cursor-pointer"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
@@ -282,11 +337,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
               </div>
               <div className="flex items-start justify-center gap-3 pt-1">
                 <CountdownUnit value={countdown.days} label="DAYS" />
-                <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+                <span
+                  aria-hidden="true"
+                  className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+                >
+                  :
+                </span>
                 <CountdownUnit value={countdown.hours} label="HOURS" />
-                <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+                <span
+                  aria-hidden="true"
+                  className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+                >
+                  :
+                </span>
                 <CountdownUnit value={countdown.minutes} label="MINS" />
-                <span aria-hidden="true" className="pt-0.5 text-slate-500 font-mono text-sm select-none">:</span>
+                <span
+                  aria-hidden="true"
+                  className="pt-0.5 text-slate-500 font-mono text-sm select-none"
+                >
+                  :
+                </span>
                 <CountdownUnit value={countdown.seconds} label="SECS" />
               </div>
             </div>
@@ -416,7 +486,10 @@ const CountdownUnit: React.FC<CountdownUnitProps> = ({ value, label }) => {
       </div>
 
       {/* Micro Label */}
-      <span aria-hidden="true" className="text-[8px] font-mono font-medium text-slate-400 tracking-[0.12em] uppercase">
+      <span
+        aria-hidden="true"
+        className="text-[8px] font-mono font-medium text-slate-400 tracking-[0.12em] uppercase"
+      >
         {label}
       </span>
     </div>

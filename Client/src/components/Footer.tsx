@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Mail, PhoneCall } from 'lucide-react';
-import { EVENT_DETAILS } from '../features/event/data/eventData';
-import { TermsModal } from '../features/registration/components/TermsModal';
+import React, { useState } from "react";
+import { Mail, PhoneCall } from "lucide-react";
+import { EVENT_DETAILS } from "../features/event/data/eventData";
+import { TermsModal } from "../features/registration/components/TermsModal";
 
 export const Footer: React.FC = () => {
   const [showTermsModal, setShowTermsModal] = useState(false);
@@ -33,7 +33,10 @@ export const Footer: React.FC = () => {
                   decoding="async"
                   className="block h-auto w-full min-w-0 object-contain drop-shadow-xl"
                 />
-                <div aria-hidden="true" className="h-8 w-px bg-slate-700/70 sm:h-14 lg:h-16" />
+                <div
+                  aria-hidden="true"
+                  className="h-8 w-px bg-slate-700/70 sm:h-14 lg:h-16"
+                />
                 <img
                   src="/AWS_Builder.png"
                   alt="AWS Student Builder Group Dhule"
@@ -46,7 +49,8 @@ export const Footer: React.FC = () => {
               </div>
 
               <p className="max-w-lg text-sm leading-relaxed text-slate-400">
-                Organized with dedication by the AWS Student Builder Group Dhule for the student and developer community.
+                Organized with dedication by the AWS Student Builder Group Dhule
+                for the student and developer community.
               </p>
             </div>
 
@@ -54,8 +58,13 @@ export const Footer: React.FC = () => {
             <div className="grid min-w-0 grid-cols-1 gap-5 border-t border-slate-800/80 pt-6 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
               <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <Mail aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-blue" />
-                  <span className="font-semibold text-white">Official Email</span>
+                  <Mail
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 shrink-0 text-aws-blue"
+                  />
+                  <span className="font-semibold text-white">
+                    Official Email
+                  </span>
                 </div>
                 <a
                   href={`mailto:${EVENT_DETAILS.contactEmail}`}
@@ -67,8 +76,13 @@ export const Footer: React.FC = () => {
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-green" />
-                  <span className="font-semibold text-white">Soham Chaudhari</span>
+                  <PhoneCall
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 shrink-0 text-aws-green"
+                  />
+                  <span className="font-semibold text-white">
+                    Soham Chaudhari
+                  </span>
                   <span className="text-slate-600">:</span>
                 </div>
                 <a
@@ -81,8 +95,13 @@ export const Footer: React.FC = () => {
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <PhoneCall aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-aws-green" />
-                  <span className="font-semibold text-white">Saurabh Rajput</span>
+                  <PhoneCall
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 shrink-0 text-aws-green"
+                  />
+                  <span className="font-semibold text-white">
+                    Saurabh Rajput
+                  </span>
                   <span className="text-slate-600">:</span>
                 </div>
                 <a
@@ -96,15 +115,60 @@ export const Footer: React.FC = () => {
           </div>
 
           <nav className="mt-8 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-5 text-xs font-medium text-slate-300 sm:gap-3 sm:text-sm lg:mt-10 [&_a]:rounded-full [&_a]:px-3 [&_a]:py-2 [&_a]:transition-colors [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-aws-blue">
-            <a href="#about" className="hover:bg-aws-blue/10 hover:text-aws-blue">About</a>
-            <a href="#benefits" className="hover:bg-aws-blue/10 hover:text-aws-blue">Benefits</a>
-            <a href="#agenda" className="hover:bg-aws-blue/10 hover:text-aws-blue">Schedule</a>
-            <a href="#speakers" className="hover:bg-aws-blue/10 hover:text-aws-blue">Mentors</a>
-            <a href="#venue" className="hover:bg-aws-blue/10 hover:text-aws-blue">Venue</a>
-            <a href="#team" className="hover:bg-aws-blue/10 hover:text-aws-blue">Team</a>
-            <a href="#partners" className="hover:bg-aws-blue/10 hover:text-aws-blue">Partners</a>
-            <a href="/register" className="bg-aws-purple/10 font-semibold text-aws-purple hover:bg-aws-purple/20 hover:text-white">Register</a>
-            <a href="/codeofconduct" className="hover:bg-aws-blue/10 hover:text-aws-blue">Code of Conduct</a>
+            <a
+              href="#about"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              About
+            </a>
+            <a
+              href="#benefits"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Benefits
+            </a>
+            <a
+              href="#agenda"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Schedule
+            </a>
+            <a
+              href="#speakers"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Mentors
+            </a>
+            <a
+              href="#venue"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Venue
+            </a>
+            <a
+              href="#team"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Team
+            </a>
+            <a
+              href="#partners"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Partners
+            </a>
+            <a
+              href="/register"
+              className="bg-aws-purple/10 font-semibold text-aws-purple hover:bg-aws-purple/20 hover:text-white"
+            >
+              Register
+            </a>
+            <a
+              href="/codeofconduct"
+              className="hover:bg-aws-blue/10 hover:text-aws-blue"
+            >
+              Code of Conduct
+            </a>
           </nav>
         </div>
 

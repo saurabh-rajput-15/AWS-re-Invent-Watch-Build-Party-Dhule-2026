@@ -1,34 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowUp } from 'lucide-react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './features/event/components/Hero';
-import { Ticker } from './features/event/components/Ticker';
-import { About } from './features/event/components/About';
-import { Benefits } from './features/event/components/Benefits';
-import { Agenda } from './features/event/components/Agenda';
-import { Speakers } from './features/event/components/Speakers';
-import { RegistrationPage } from './features/registration/components/RegistrationPage';
-import { TicketPassPage } from './features/registration/components/TicketPassPage';
-import { Venue } from './features/event/components/Venue';
-import { Team } from './features/event/components/Team';
-import { Partners } from './features/event/components/Partners';
-import { FAQ } from './features/event/components/FAQ';
-import { Footer } from './components/Footer';
-import { CodeOfConductPage } from './features/event/components/CodeOfConductPage';
-import { AdminPortalPage } from './features/admin/components/AdminPortalPage';
-import { AdminScannerPage } from './features/admin/components/AdminScannerPage';
-import { AdminProtectedRoute } from './features/admin/components/AdminProtectedRoute';
-import { Attendee } from './types';
-import { useGsapLenis } from './hooks/useGsapLenis';
+import React, { useState, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
+import { Navbar } from "./components/Navbar";
+import { Hero } from "./features/event/components/Hero";
+import { Ticker } from "./features/event/components/Ticker";
+import { About } from "./features/event/components/About";
+import { Benefits } from "./features/event/components/Benefits";
+import { Agenda } from "./features/event/components/Agenda";
+import { Speakers } from "./features/event/components/Speakers";
+import { RegistrationPage } from "./features/registration/components/RegistrationPage";
+import { TicketPassPage } from "./features/registration/components/TicketPassPage";
+import { Venue } from "./features/event/components/Venue";
+import { Team } from "./features/event/components/Team";
+import { Partners } from "./features/event/components/Partners";
+import { FAQ } from "./features/event/components/FAQ";
+import { Footer } from "./components/Footer";
+import { CodeOfConductPage } from "./features/event/components/CodeOfConductPage";
+import { AdminPortalPage } from "./features/admin/components/AdminPortalPage";
+import { AdminScannerPage } from "./features/admin/components/AdminScannerPage";
+import { AdminProtectedRoute } from "./features/admin/components/AdminProtectedRoute";
+import { Attendee } from "./types";
+import { useGsapLenis } from "./hooks/useGsapLenis";
 
-type AppRoute = 'home' | 'codeofconduct' | 'admin' | 'register' | 'scanner' | 'ticket';
+type AppRoute =
+  | "home"
+  | "codeofconduct"
+  | "admin"
+  | "register"
+  | "scanner"
+  | "ticket";
 
 interface RouteState {
   route: AppRoute;
   ticketId?: string;
 }
 
-export const extractTicketId = (pathname: string, search: string, hash: string): string | null => {
+export const extractTicketId = (
+  pathname: string,
+  search: string,
+  hash: string,
+): string | null => {
   const decodedPath = decodeURIComponent(pathname);
 
   // 1. /ticketid=[id] or /ticketid/[id]
@@ -46,72 +56,83 @@ export const extractTicketId = (pathname: string, search: string, hash: string):
   // 3. Search parameters: ?ticketid=... or ?ticket=... or ?id=...
   if (search) {
     const params = new URLSearchParams(search);
-    const id = params.get('ticketid') || params.get('ticket') || params.get('id');
+    const id =
+      params.get("ticketid") || params.get("ticket") || params.get("id");
     if (id) return id.trim();
   }
 
   // 4. Hash parameters: #ticketid=... or #/ticketid=... or #ticket=...
   if (hash) {
-    const cleanHash = hash.replace(/^#\/?/, '');
+    const cleanHash = hash.replace(/^#\/?/, "");
     const matchHash = cleanHash.match(/^ticketid[=/]([a-zA-Z0-9_-]+)/i);
     if (matchHash && matchHash[1]) {
       return matchHash[1];
     }
-    const hashParams = new URLSearchParams(cleanHash.includes('?') ? cleanHash.split('?')[1] : cleanHash);
-    const id = hashParams.get('ticketid') || hashParams.get('ticket');
+    const hashParams = new URLSearchParams(
+      cleanHash.includes("?") ? cleanHash.split("?")[1] : cleanHash,
+    );
+    const id = hashParams.get("ticketid") || hashParams.get("ticket");
     if (id) return id.trim();
   }
 
   return null;
 };
 
-const detectRoute = (pathname: string, search: string, hash: string): RouteState => {
-  const p = pathname.toLowerCase().replace(/\/$/, '');
+const detectRoute = (
+  pathname: string,
+  search: string,
+  hash: string,
+): RouteState => {
+  const p = pathname.toLowerCase().replace(/\/$/, "");
   const h = hash.toLowerCase();
 
   const ticketId = extractTicketId(pathname, search, hash);
   if (ticketId) {
-    return { route: 'ticket', ticketId };
+    return { route: "ticket", ticketId };
   }
 
-  if (p === '/ticket' || h === '#ticket' || h === '#/ticket') {
-    return { route: 'ticket' };
+  if (p === "/ticket" || h === "#ticket" || h === "#/ticket") {
+    return { route: "ticket" };
   }
 
-  if (p === '/scanner' || h === '#scanner' || h === '#/scanner') {
-    return { route: 'scanner' };
+  if (p === "/scanner" || h === "#scanner" || h === "#/scanner") {
+    return { route: "scanner" };
   }
 
-  if (p === '/admin' || h === '#admin' || h === '#/admin') {
-    return { route: 'admin' };
+  if (p === "/admin" || h === "#admin" || h === "#/admin") {
+    return { route: "admin" };
   }
 
   if (
-    p === '/codeofconduct' ||
-    p === '/code-of-conduct' ||
-    h === '#codeofconduct' ||
-    h === '#/codeofconduct' ||
-    h === '#code-of-conduct' ||
-    h === '#/code-of-conduct'
+    p === "/codeofconduct" ||
+    p === "/code-of-conduct" ||
+    h === "#codeofconduct" ||
+    h === "#/codeofconduct" ||
+    h === "#code-of-conduct" ||
+    h === "#/code-of-conduct"
   ) {
-    return { route: 'codeofconduct' };
+    return { route: "codeofconduct" };
   }
 
-  if (p === '/register' || h === '#register' || h === '#/register') {
-    return { route: 'register' };
+  if (p === "/register" || h === "#register" || h === "#/register") {
+    return { route: "register" };
   }
 
-  return { route: 'home' };
+  return { route: "home" };
 };
 
 export default function App() {
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [routeState, setRouteState] = useState<RouteState>(() => {
-    if (typeof window !== 'undefined') {
-      return detectRoute(window.location.pathname, window.location.search, window.location.hash);
+    if (typeof window !== "undefined") {
+      return detectRoute(
+        window.location.pathname,
+        window.location.search,
+        window.location.hash,
+      );
     }
-    return { route: 'home' };
+    return { route: "home" };
   });
 
   const currentRoute = routeState.route;
@@ -123,177 +144,242 @@ export default function App() {
   // Listen to browser navigation back/forward and hash changes
   useEffect(() => {
     const handlePopState = () => {
-      setRouteState(detectRoute(window.location.pathname, window.location.search, window.location.hash));
+      setRouteState(
+        detectRoute(
+          window.location.pathname,
+          window.location.search,
+          window.location.hash,
+        ),
+      );
     };
 
-    window.addEventListener('popstate', handlePopState);
-    window.addEventListener('hashchange', handlePopState);
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("hashchange", handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
-      window.removeEventListener('hashchange', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("hashchange", handlePopState);
     };
   }, []);
 
   // Synchronize dynamic Page Title, Meta Description, Canonical URL & Robots for Search Engines
   useEffect(() => {
-    const setMeta = (attr: 'name' | 'property', key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+    const setMeta = (
+      attr: "name" | "property",
+      key: string,
+      content: string,
+    ) => {
+      let el = document.querySelector(
+        `meta[${attr}="${key}"]`,
+      ) as HTMLMetaElement | null;
       if (!el) {
-        el = document.createElement('meta');
+        el = document.createElement("meta");
         el.setAttribute(attr, key);
         document.head.appendChild(el);
       }
-      el.setAttribute('content', content);
+      el.setAttribute("content", content);
     };
 
     const setCanonical = (href: string) => {
-      let el = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      let el = document.querySelector(
+        'link[rel="canonical"]',
+      ) as HTMLLinkElement | null;
       if (!el) {
-        el = document.createElement('link');
-        el.setAttribute('rel', 'canonical');
+        el = document.createElement("link");
+        el.setAttribute("rel", "canonical");
         document.head.appendChild(el);
       }
-      el.setAttribute('href', href);
+      el.setAttribute("href", href);
     };
 
-    const BASE = 'https://reinvent.awssbgdhule.in';
-    const INDEX_ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
-    const NOINDEX = 'noindex, nofollow';
+    const BASE = "https://reinvent.awssbgdhule.in";
+    const INDEX_ROBOTS =
+      "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+    const NOINDEX = "noindex, nofollow";
 
     switch (routeState.route) {
-      case 'home':
-        document.title = 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group';
-        setMeta('name', 'description', 'AWS re:Invent Dhule 2026: Official Watch & Build Party in Dhule, Maharashtra on Friday, 04 December 2026 at Hotel Anand Regency Riverfront. Free registration, keynote screenings, enterprise Kubernetes masterclass by Abhishek Maurya, live Kahoot battles, lunch, and official AWS swags.');
+      case "home":
+        document.title =
+          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group";
+        setMeta(
+          "name",
+          "description",
+          "AWS re:Invent Dhule 2026: Official Watch & Build Party in Dhule, Maharashtra on Friday, 04 December 2026 at Hotel Anand Regency Riverfront. Free registration, keynote screenings, enterprise Kubernetes masterclass by Abhishek Maurya, live Kahoot battles, lunch, and official AWS swags.",
+        );
         setCanonical(`${BASE}/`);
-        setMeta('property', 'og:url', `${BASE}/`);
-        setMeta('property', 'og:title', 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group');
-        setMeta('name', 'twitter:title', 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group');
-        setMeta('name', 'robots', INDEX_ROBOTS);
+        setMeta("property", "og:url", `${BASE}/`);
+        setMeta(
+          "property",
+          "og:title",
+          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
+        );
+        setMeta(
+          "name",
+          "twitter:title",
+          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
+        );
+        setMeta("name", "robots", INDEX_ROBOTS);
         break;
-      case 'register':
-        document.title = 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026';
-        setMeta('name', 'description', 'Register for a free verified community pass for AWS re:Invent Watch & Build Party Dhule 2026. Free entry includes keynote screenings, Kubernetes masterclass, buffet lunch, and official AWS swag at Hotel Anand Regency Riverfront on 04 December 2026.');
+      case "register":
+        document.title =
+          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026";
+        setMeta(
+          "name",
+          "description",
+          "Register for a free verified community pass for AWS re:Invent Watch & Build Party Dhule 2026. Free entry includes keynote screenings, Kubernetes masterclass, buffet lunch, and official AWS swag at Hotel Anand Regency Riverfront on 04 December 2026.",
+        );
         setCanonical(`${BASE}/register`);
-        setMeta('property', 'og:url', `${BASE}/register`);
-        setMeta('property', 'og:title', 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026');
-        setMeta('name', 'twitter:title', 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026');
-        setMeta('name', 'robots', INDEX_ROBOTS);
+        setMeta("property", "og:url", `${BASE}/register`);
+        setMeta(
+          "property",
+          "og:title",
+          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026",
+        );
+        setMeta(
+          "name",
+          "twitter:title",
+          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026",
+        );
+        setMeta("name", "robots", INDEX_ROBOTS);
         break;
-      case 'codeofconduct':
-        document.title = 'Code of Conduct · AWS re:Invent Dhule 2026';
-        setMeta('name', 'description', 'Official Code of Conduct, Terms & Conditions, and attendee guidelines for AWS re:Invent Watch & Build Party Dhule 2026 hosted by AWS Student Builder Group Dhule.');
+      case "codeofconduct":
+        document.title = "Code of Conduct · AWS re:Invent Dhule 2026";
+        setMeta(
+          "name",
+          "description",
+          "Official Code of Conduct, Terms & Conditions, and attendee guidelines for AWS re:Invent Watch & Build Party Dhule 2026 hosted by AWS Student Builder Group Dhule.",
+        );
         setCanonical(`${BASE}/codeofconduct`);
-        setMeta('property', 'og:url', `${BASE}/codeofconduct`);
-        setMeta('property', 'og:title', 'Code of Conduct · AWS re:Invent Dhule 2026');
-        setMeta('name', 'twitter:title', 'Code of Conduct · AWS re:Invent Dhule 2026');
-        setMeta('name', 'robots', INDEX_ROBOTS);
+        setMeta("property", "og:url", `${BASE}/codeofconduct`);
+        setMeta(
+          "property",
+          "og:title",
+          "Code of Conduct · AWS re:Invent Dhule 2026",
+        );
+        setMeta(
+          "name",
+          "twitter:title",
+          "Code of Conduct · AWS re:Invent Dhule 2026",
+        );
+        setMeta("name", "robots", INDEX_ROBOTS);
         break;
-      case 'ticket':
+      case "ticket":
         document.title = routeState.ticketId
           ? `Event Pass #${routeState.ticketId} · AWS re:Invent Dhule 2026`
-          : 'Digital Event Pass · AWS re:Invent Dhule 2026';
-        setMeta('name', 'robots', NOINDEX);
+          : "Digital Event Pass · AWS re:Invent Dhule 2026";
+        setMeta("name", "robots", NOINDEX);
         break;
-      case 'admin':
-        document.title = 'Organizer Admin Portal · AWS re:Invent Dhule 2026';
-        setMeta('name', 'robots', NOINDEX);
+      case "admin":
+        document.title = "Organizer Admin Portal · AWS re:Invent Dhule 2026";
+        setMeta("name", "robots", NOINDEX);
         break;
-      case 'scanner':
-        document.title = 'Reception QR Scanner · AWS re:Invent Dhule 2026';
-        setMeta('name', 'robots', NOINDEX);
+      case "scanner":
+        document.title = "Reception QR Scanner · AWS re:Invent Dhule 2026";
+        setMeta("name", "robots", NOINDEX);
         break;
       default:
-        document.title = 'AWS re:Invent Watch & Build Party Dhule 2026';
-        setMeta('name', 'robots', INDEX_ROBOTS);
+        document.title = "AWS re:Invent Watch & Build Party Dhule 2026";
+        setMeta("name", "robots", INDEX_ROBOTS);
     }
   }, [routeState]);
 
   const navigateToHome = () => {
-    if (window.location.pathname !== '/' || window.location.hash || window.location.search) {
-      window.history.pushState({}, '', '/');
+    if (
+      window.location.pathname !== "/" ||
+      window.location.hash ||
+      window.location.search
+    ) {
+      window.history.pushState({}, "", "/");
     }
-    setRouteState({ route: 'home' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "home" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateToCodeOfConduct = () => {
-    if (window.location.pathname !== '/codeofconduct') {
-      window.history.pushState({}, '', '/codeofconduct');
+    if (window.location.pathname !== "/codeofconduct") {
+      window.history.pushState({}, "", "/codeofconduct");
     }
-    setRouteState({ route: 'codeofconduct' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "codeofconduct" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateToAdmin = () => {
-    if (window.location.pathname !== '/admin') {
-      window.history.pushState({}, '', '/admin');
+    if (window.location.pathname !== "/admin") {
+      window.history.pushState({}, "", "/admin");
     }
-    setRouteState({ route: 'admin' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "admin" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateToRegister = () => {
-    if (window.location.pathname !== '/register') {
-      window.history.pushState({}, '', '/register');
+    if (window.location.pathname !== "/register") {
+      window.history.pushState({}, "", "/register");
     }
-    setRouteState({ route: 'register' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "register" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateToScanner = () => {
-    if (window.location.pathname !== '/scanner') {
-      window.history.pushState({}, '', '/scanner');
+    if (window.location.pathname !== "/scanner") {
+      window.history.pushState({}, "", "/scanner");
     }
-    setRouteState({ route: 'scanner' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "scanner" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateToTicket = (ticketId?: string) => {
-    const targetUrl = ticketId ? `/ticketid=${ticketId}` : '/ticket';
+    const targetUrl = ticketId ? `/ticketid=${ticketId}` : "/ticket";
     if (window.location.pathname !== targetUrl) {
-      window.history.pushState({}, '', targetUrl);
+      window.history.pushState({}, "", targetUrl);
     }
-    setRouteState({ route: 'ticket', ticketId });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setRouteState({ route: "ticket", ticketId });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Intercept any clicks on /admin, /scanner, /ticket, /ticketid=..., /codeofconduct, /register or back to home
   useEffect(() => {
     const handleGlobalLinkClicks = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest('a');
+      const anchor = (e.target as HTMLElement).closest("a");
       if (!anchor) return;
-      const href = anchor.getAttribute('href');
+      const href = anchor.getAttribute("href");
       if (!href) return;
 
-      if (href === '/admin' || href === '#/admin' || href === '#admin') {
+      if (href === "/admin" || href === "#/admin" || href === "#admin") {
         e.preventDefault();
         navigateToAdmin();
-      } else if (href === '/scanner' || href === '#/scanner' || href === '#scanner') {
+      } else if (
+        href === "/scanner" ||
+        href === "#/scanner" ||
+        href === "#scanner"
+      ) {
         e.preventDefault();
         navigateToScanner();
       } else if (
-        href === '/ticket' ||
-        href === '#/ticket' ||
-        href === '#ticket' ||
-        href.startsWith('/ticketid=') ||
-        href.startsWith('/ticket/')
+        href === "/ticket" ||
+        href === "#/ticket" ||
+        href === "#ticket" ||
+        href.startsWith("/ticketid=") ||
+        href.startsWith("/ticket/")
       ) {
         e.preventDefault();
-        const extracted = extractTicketId(href, '', '');
+        const extracted = extractTicketId(href, "", "");
         navigateToTicket(extracted || undefined);
-      } else if (href === '/codeofconduct' || href === '/code-of-conduct') {
+      } else if (href === "/codeofconduct" || href === "/code-of-conduct") {
         e.preventDefault();
         navigateToCodeOfConduct();
-      } else if (href === '/register' || href === '#register' || href === '#/register') {
+      } else if (
+        href === "/register" ||
+        href === "#register" ||
+        href === "#/register"
+      ) {
         e.preventDefault();
         navigateToRegister();
-      } else if (href === '/' && currentRoute !== 'home') {
+      } else if (href === "/" && currentRoute !== "home") {
         e.preventDefault();
         navigateToHome();
       }
     };
-    document.addEventListener('click', handleGlobalLinkClicks);
-    return () => document.removeEventListener('click', handleGlobalLinkClicks);
+    document.addEventListener("click", handleGlobalLinkClicks);
+    return () => document.removeEventListener("click", handleGlobalLinkClicks);
   }, [currentRoute]);
 
   // Monitor scroll for Back to Top Button
@@ -301,8 +387,8 @@ export default function App() {
     const handleScroll = () => {
       setShowBackToTop(window.scrollY > 350);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
@@ -312,37 +398,40 @@ export default function App() {
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   // Load registered attendee from local storage on mount
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('aws_reinvent_dhule_attendee');
+      const stored = localStorage.getItem("aws_reinvent_dhule_attendee");
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (!parsed.status) parsed.status = 'pending';
-        if (!parsed.builderId) parsed.builderId = 'builder-aws';
-        if (!parsed.phone) parsed.phone = '9890991510';
+        if (!parsed.status) parsed.status = "pending";
+        if (!parsed.builderId) parsed.builderId = "builder-aws";
+        if (!parsed.phone) parsed.phone = "9890991510";
         setAttendee(parsed);
       }
     } catch (e) {
-      console.warn('Could not read saved attendee from localStorage', e);
+      console.warn("Could not read saved attendee from localStorage", e);
     }
   }, []);
 
   const handleRegisterSuccess = (newAttendee: Attendee) => {
     setAttendee(newAttendee);
     try {
-      localStorage.setItem('aws_reinvent_dhule_attendee', JSON.stringify(newAttendee));
+      localStorage.setItem(
+        "aws_reinvent_dhule_attendee",
+        JSON.stringify(newAttendee),
+      );
     } catch (e) {
-      console.warn('Could not save attendee to localStorage', e);
+      console.warn("Could not save attendee to localStorage", e);
     }
   };
 
   // Dedicated /scanner Route (Admin QR Camera Scanner)
-  if (currentRoute === 'scanner') {
+  if (currentRoute === "scanner") {
     return (
       <AdminScannerPage
         onNavigateHome={navigateToHome}
@@ -352,17 +441,17 @@ export default function App() {
   }
 
   // Dedicated /ticket or /ticketid=[id] Route (Digital Pass & 3D Lanyard View)
-  if (currentRoute === 'ticket') {
+  if (currentRoute === "ticket") {
     return (
       <TicketPassPage
-        ticketId={activeTicketId || ''}
+        ticketId={activeTicketId || ""}
         onNavigateHome={navigateToHome}
       />
     );
   }
 
   // Dedicated /register Route
-  if (currentRoute === 'register') {
+  if (currentRoute === "register") {
     return (
       <RegistrationPage
         attendee={attendee}
@@ -373,7 +462,7 @@ export default function App() {
   }
 
   // Protected Admin Portal Route
-  if (currentRoute === 'admin') {
+  if (currentRoute === "admin") {
     return (
       <AdminProtectedRoute onNavigateHome={navigateToHome}>
         {({ token, onLogout }) => (
@@ -388,7 +477,7 @@ export default function App() {
     );
   }
 
-  if (currentRoute === 'codeofconduct') {
+  if (currentRoute === "codeofconduct") {
     return (
       <CodeOfConductPage
         onNavigateHome={navigateToHome}
@@ -404,7 +493,8 @@ export default function App() {
         id="scroll-progress"
         className="fixed top-0 left-0 right-0 h-[3px] z-50 origin-left scale-x-0"
         style={{
-          background: 'linear-gradient(90deg, #3FB1FF, #FF57E8, #05E08A, #FF9F1C, #AB5CFF)',
+          background:
+            "linear-gradient(90deg, #3FB1FF, #FF57E8, #05E08A, #FF9F1C, #AB5CFF)",
         }}
       />
 

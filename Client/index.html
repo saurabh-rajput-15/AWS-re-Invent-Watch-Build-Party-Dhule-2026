@@ -14,6 +14,9 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://reinvent.awssbgdhule.in/" />
+    <link rel="alternate" hreflang="en-in" href="https://reinvent.awssbgdhule.in/" />
+    <link rel="alternate" hreflang="en" href="https://reinvent.awssbgdhule.in/" />
+    <link rel="alternate" hreflang="x-default" href="https://reinvent.awssbgdhule.in/" />
     
     <!-- Preload Critical Above-The-Fold Assets for Instant Core Web Vitals (LCP < 1.0s) -->
     <link rel="preload" as="image" href="/AWS_reinvent-dark.png" fetchpriority="high" />
@@ -288,40 +291,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script type="speculationrules">
+      {
+        "prerender": [
+          {
+            "source": "list",
+            "urls": ["/register"]
+          }
+        ]
+      }
+    </script>
   </head>
   <body class="bg-[#090D16] text-[#F3F4F6] antialiased selection:bg-aws-purple/30 selection:text-white">
     <div id="root"></div>
     <!-- Search Engine Crawler Static Fallback (Only parsed by search engine bots & crawlers without JS; completely invisible to human users with JS) -->
     <noscript>
-      <div id="seo-crawl-shell" style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #F3F4F6;">
+      <article itemscope itemtype="https://schema.org/Event" id="seo-crawl-shell" style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #F3F4F6;">
         <header>
           <p style="color: #3FB1FF; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px;">
-            AWS Student Builder Group · Dhule
+            <span itemprop="organizer" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">AWS Student Builder Group</span></span> · Dhule
           </p>
-          <h1 style="font-size: 2.25rem; font-weight: 900; line-height: 1.1; margin: 0 0 16px 0; color: #FFFFFF;">
+          <h1 itemprop="name" style="font-size: 2.25rem; font-weight: 900; line-height: 1.1; margin: 0 0 16px 0; color: #FFFFFF;">
             AWS re:Invent Watch &amp; Build Party Dhule 2026
           </h1>
-          <p style="font-size: 1.05rem; color: #CBD5E1; line-height: 1.6; margin: 0 0 24px 0;">
+          <p itemprop="description" style="font-size: 1.05rem; color: #CBD5E1; line-height: 1.6; margin: 0 0 24px 0;">
             The premier AWS cloud community event in North Maharashtra. Watch global AWS re:Invent keynotes together, build hands-on cloud projects, learn enterprise Kubernetes from industry leaders, and compete in interactive Kahoot championships.
           </p>
         </header>
 
         <section style="margin: 24px 0; padding: 22px; background: #0E1526; border: 1px solid #1E293B; border-radius: 12px; line-height: 1.6;">
           <h2 style="color: #3FB1FF; font-size: 1.25rem; margin-top: 0;">Event Details &amp; Venue</h2>
-          <p><strong>📅 Date:</strong> Friday, 04 December 2026 &nbsp;|&nbsp; <strong>⏰ Time:</strong> 09:00 AM – 04:00 PM IST</p>
-          <p><strong>📍 Venue:</strong> Hotel Anand Regency Riverfront, Riverfront Road, Near Tapi Bridge, Dhule, Maharashtra 424001</p>
+          <p><strong>📅 Date:</strong> <time itemprop="startDate" datetime="2026-12-04T09:00:00+05:30">Friday, 04 December 2026</time> &nbsp;|&nbsp; <strong>⏰ Time:</strong> <time datetime="09:00">09:00 AM</time> – <time itemprop="endDate" datetime="2026-12-04T16:00:00+05:30">04:00 PM</time> IST</p>
+          <p itemprop="location" itemscope itemtype="https://schema.org/Place"><strong>📍 Venue:</strong> <span itemprop="name">Hotel Anand Regency Riverfront</span>, <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"><span itemprop="streetAddress">Riverfront Road, Near Tapi Bridge</span>, <span itemprop="addressLocality">Dhule</span>, <span itemprop="addressRegion">Maharashtra</span> <span itemprop="postalCode">424001</span></span></p>
           <p><strong>🏛️ Event Spaces:</strong> Symphony Hall (2nd Floor: Keynotes, Masterclass, Kahoot Battles) &amp; Harmony Hall (3rd Floor: Buffet Lunch &amp; Networking)</p>
           <p><strong>🎟️ Entry:</strong> 100% Free Verified Community Pass (Includes Keynotes, Kubernetes Masterclass, Buffet Lunch &amp; Official AWS Swag)</p>
           <p style="margin-top: 16px;">
-            <a href="/register" style="display: inline-block; background: #AB5CFF; color: #0E131A; font-weight: 800; font-size: 0.9rem; padding: 12px 24px; border-radius: 9999px; text-decoration: none;">
+            <a itemprop="url" href="/register" style="display: inline-block; background: #AB5CFF; color: #0E131A; font-weight: 800; font-size: 0.9rem; padding: 12px 24px; border-radius: 9999px; text-decoration: none;">
               Register for Free Pass with AWS Builder ID &rarr;
             </a>
           </p>
+          <meta itemprop="eventStatus" content="https://schema.org/EventScheduled" />
+          <meta itemprop="eventAttendanceMode" content="https://schema.org/OfflineEventAttendanceMode" />
+          <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <meta itemprop="price" content="0" />
+            <meta itemprop="priceCurrency" content="INR" />
+            <meta itemprop="availability" content="https://schema.org/InStock" />
+          </div>
         </section>
 
         <section style="margin: 24px 0; line-height: 1.6;">
           <h2 style="color: #05E08A; font-size: 1.25rem;">Keynote Speaker &amp; Masterclass</h2>
-          <p><strong>Abhishek Maurya</strong> – Senior Cloud Engineer, Orange Business India. Deep dive into Enterprise Kubernetes, High Availability clusters, and production cloud architecture.</p>
+          <p itemprop="performer" itemscope itemtype="https://schema.org/Person"><strong><span itemprop="name">Abhishek Maurya</span></strong> – <span itemprop="jobTitle">Senior Cloud Engineer</span>, <span itemprop="worksFor" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">Orange Business India</span></span>. Deep dive into Enterprise Kubernetes, High Availability clusters, and production cloud architecture.</p>
         </section>
 
         <section style="margin: 24px 0; line-height: 1.6;">
@@ -334,7 +354,7 @@
           <a href="/codeofconduct" style="color: #3FB1FF; text-decoration: underline; margin-right: 20px;">Code of Conduct</a>
           <a href="https://builder.aws.com/connect/event/c8a38d77-8262-34c4-b744-ea8dfb7b35a6" style="color: #3FB1FF; text-decoration: underline;">Official AWS Builder Center Event</a>
         </nav>
-      </div>
+      </article>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

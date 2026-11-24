@@ -132,31 +132,77 @@ export default function App() {
     };
   }, []);
 
-  // Synchronize dynamic Page Title for Search Engines & Social Tab Navigation
+  // Synchronize dynamic Page Title, Meta Description, Canonical URL & Robots for Search Engines
   useEffect(() => {
+    const setMeta = (attr: 'name' | 'property', key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    };
+
+    const setCanonical = (href: string) => {
+      let el = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      if (!el) {
+        el = document.createElement('link');
+        el.setAttribute('rel', 'canonical');
+        document.head.appendChild(el);
+      }
+      el.setAttribute('href', href);
+    };
+
+    const BASE = 'https://reinvent.awssbgdhule.in';
+    const INDEX_ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    const NOINDEX = 'noindex, nofollow';
+
     switch (routeState.route) {
       case 'home':
         document.title = 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group';
+        setMeta('name', 'description', 'AWS re:Invent Dhule 2026: Official Watch & Build Party in Dhule, Maharashtra on Friday, 04 December 2026 at Hotel Anand Regency Riverfront. Free registration, keynote screenings, enterprise Kubernetes masterclass by Abhishek Maurya, live Kahoot battles, lunch, and official AWS swags.');
+        setCanonical(`${BASE}/`);
+        setMeta('property', 'og:url', `${BASE}/`);
+        setMeta('property', 'og:title', 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group');
+        setMeta('name', 'twitter:title', 'AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group');
+        setMeta('name', 'robots', INDEX_ROBOTS);
         break;
       case 'register':
         document.title = 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026';
+        setMeta('name', 'description', 'Register for a free verified community pass for AWS re:Invent Watch & Build Party Dhule 2026. Free entry includes keynote screenings, Kubernetes masterclass, buffet lunch, and official AWS swag at Hotel Anand Regency Riverfront on 04 December 2026.');
+        setCanonical(`${BASE}/register`);
+        setMeta('property', 'og:url', `${BASE}/register`);
+        setMeta('property', 'og:title', 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026');
+        setMeta('name', 'twitter:title', 'Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026');
+        setMeta('name', 'robots', INDEX_ROBOTS);
         break;
       case 'codeofconduct':
         document.title = 'Code of Conduct · AWS re:Invent Dhule 2026';
+        setMeta('name', 'description', 'Official Code of Conduct, Terms & Conditions, and attendee guidelines for AWS re:Invent Watch & Build Party Dhule 2026 hosted by AWS Student Builder Group Dhule.');
+        setCanonical(`${BASE}/codeofconduct`);
+        setMeta('property', 'og:url', `${BASE}/codeofconduct`);
+        setMeta('property', 'og:title', 'Code of Conduct · AWS re:Invent Dhule 2026');
+        setMeta('name', 'twitter:title', 'Code of Conduct · AWS re:Invent Dhule 2026');
+        setMeta('name', 'robots', INDEX_ROBOTS);
         break;
       case 'ticket':
         document.title = routeState.ticketId
           ? `Event Pass #${routeState.ticketId} · AWS re:Invent Dhule 2026`
           : 'Digital Event Pass · AWS re:Invent Dhule 2026';
+        setMeta('name', 'robots', NOINDEX);
         break;
       case 'admin':
         document.title = 'Organizer Admin Portal · AWS re:Invent Dhule 2026';
+        setMeta('name', 'robots', NOINDEX);
         break;
       case 'scanner':
         document.title = 'Reception QR Scanner · AWS re:Invent Dhule 2026';
+        setMeta('name', 'robots', NOINDEX);
         break;
       default:
         document.title = 'AWS re:Invent Watch & Build Party Dhule 2026';
+        setMeta('name', 'robots', INDEX_ROBOTS);
     }
   }, [routeState]);
 

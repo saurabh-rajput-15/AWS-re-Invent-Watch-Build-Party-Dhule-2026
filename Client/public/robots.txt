@@ -26,7 +26,7 @@ Disallow: /scanner
 Disallow: /api/
 
 # Disallow individual dynamic pass IDs to protect attendee privacy
-Disallow: /ticketid=*
+Disallow: /ticket*
 Disallow: /pass/*
 
 # XML Sitemap

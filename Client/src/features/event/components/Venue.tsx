@@ -115,7 +115,9 @@ export const Venue: React.FC = () => {
                 <div className="relative w-full h-full flex-1 flex flex-col">
                   <img
                     src="/Anand-Regency-Riverfront.png"
-                    alt="Hotel Anand Regency Riverfront, Dhule"
+                    alt="Hotel Anand Regency Riverfront — AWS re:Invent Dhule 2026 Official Event Venue, Dhule Maharashtra"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full flex-1 object-cover object-center"
                   />
 
@@ -176,7 +178,9 @@ export const Venue: React.FC = () => {
                   >
                     <img
                       src="/Anand-Regency-Riverfront.png"
-                      alt="Venue Façade thumbnail"
+                      alt="Hotel Anand Regency Riverfront exterior — AWS re:Invent Dhule 2026 Event Venue, Panzara Riverfront"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                     />
                     {/* PiP Badge */}

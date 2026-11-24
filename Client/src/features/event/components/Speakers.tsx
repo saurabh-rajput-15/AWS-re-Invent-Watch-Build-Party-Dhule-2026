@@ -52,7 +52,9 @@ export const Speakers: React.FC = () => {
                       <>
                         <img
                           src={speaker.image}
-                          alt={speaker.name}
+                          alt={`${speaker.name}${speaker.role ? ` — ${speaker.role}` : ''}${speaker.organization ? `, ${speaker.organization}` : ''} — AWS re:Invent Dhule 2026`}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover object-[center_18%] transition-transform duration-700 ease-out group-hover:scale-105"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';

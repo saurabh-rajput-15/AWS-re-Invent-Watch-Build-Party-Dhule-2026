@@ -10,6 +10,7 @@ import { Speakers } from './features/event/components/Speakers';
 import { RegistrationPage } from './features/registration/components/RegistrationPage';
 import { TicketPassPage } from './features/registration/components/TicketPassPage';
 import { Venue } from './features/event/components/Venue';
+import { Team } from './features/event/components/Team';
 import { FAQ } from './features/event/components/FAQ';
 import { Footer } from './components/Footer';
 import { CodeOfConductPage } from './features/event/components/CodeOfConductPage';
@@ -424,6 +425,8 @@ export default function App() {
         <Speakers />
 
         <Venue />
+
+        <Team />
 
         <FAQ />
       </main>

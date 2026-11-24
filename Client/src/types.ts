@@ -68,3 +68,12 @@ export interface EventBenefit {
   accent: string;
   tag: string;
 }
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  description: string;
+  image: string;
+  linkedin?: string;
+  github?: string;
+}

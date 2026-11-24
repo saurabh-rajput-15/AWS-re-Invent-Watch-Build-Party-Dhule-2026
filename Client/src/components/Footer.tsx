@@ -101,6 +101,7 @@ export const Footer: React.FC = () => {
             <a href="#agenda" className="hover:bg-aws-blue/10 hover:text-aws-blue">Schedule</a>
             <a href="#speakers" className="hover:bg-aws-blue/10 hover:text-aws-blue">Mentors</a>
             <a href="#venue" className="hover:bg-aws-blue/10 hover:text-aws-blue">Venue</a>
+            <a href="#team" className="hover:bg-aws-blue/10 hover:text-aws-blue">Team</a>
             <a href="/register" className="bg-aws-purple/10 font-semibold text-aws-purple hover:bg-aws-purple/20 hover:text-white">Register</a>
             <a href="/codeofconduct" className="hover:bg-aws-blue/10 hover:text-aws-blue">Code of Conduct</a>
           </nav>

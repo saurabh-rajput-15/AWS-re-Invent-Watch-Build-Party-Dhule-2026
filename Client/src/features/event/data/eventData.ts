@@ -1,4 +1,4 @@
-import { AgendaSession, Speaker, FAQItem, EventBenefit } from '../../../types';
+import { AgendaSession, Speaker, FAQItem, EventBenefit, TeamMember } from '../../../types';
 
 export const EVENT_DETAILS = {
   name: 'AWS re:Invent Watch & Build Party Dhule',
@@ -10,13 +10,15 @@ export const EVENT_DETAILS = {
       name: 'Soham Chaudhari',
       role: 'Organizer (SBG Lead)',
       phone: '9834382337',
-      phoneFormatted: '+91 98343 82337'
+      phoneFormatted: '+91 98343 82337',
+      image: '/team/team-01.png'
     },
     {
       name: 'Saurabh Rajput',
       role: 'Organizer',
       phone: '9890991510',
-      phoneFormatted: '+91 98909 91510'
+      phoneFormatted: '+91 98909 91510',
+      image: '/team/team-03.png'
     }
   ],
   dateString: 'Friday, 04 December 2026',
@@ -293,3 +295,57 @@ export const EVENT_BENEFITS: EventBenefit[] = [
     tag: 'Live Stage Contests'
   }
 ];
+
+export const CREW: TeamMember[] = [
+  {
+    name: "Soham Chaudhari",
+    role: "AWS Cloud Club Captain",
+    description: "AWS Cloud Club Captain leading the community and driving cloud innovation at SVKM IOT Dhule.",
+    image: "/team/team-01.png",
+    linkedin: "https://www.linkedin.com/in/soham-chaudhari-174b4b287/",
+    github: "https://github.com/Soham156"
+  },
+  {
+    name: "Vaibhav Chaudhari",
+    role: "Admin & Operations Lead",
+    description: "Overseeing administration and operations, ensuring smooth execution of all community events and activities.",
+    image: "/team/team-02.png",
+    linkedin: "https://www.linkedin.com/in/vaibhav-chaudhari-1355a3281/",
+    github: "https://github.com/VaibhavChaudhari07"
+  },
+  {
+    name: "Saurabh Girase",
+    role: "IT Support & Management",
+    description: "Managing IT infrastructure and technical support for all AWS community events and digital initiatives.",
+    image: "/team/team-03.png",
+    linkedin: "https://www.linkedin.com/in/saurabhrajput15/",
+    github: "https://github.com/saurabh-rajput-15"
+  },
+  {
+    name: "Abdullah Bandukwala",
+    role: "Technical Lead",
+    description: "Leading the technical direction of the club, mentoring members on AWS services, DevOps, and cloud architecture.",
+    image: "/team/team-04.png",
+    linkedin: "https://www.linkedin.com/in/abdullah-bandukwala-74848b231/",
+    github: "https://github.com/abdullahb07"
+  },
+  {
+    name: "Aashish Ingale",
+    role: "Social Media Head",
+    description: "Crafting the digital presence and social media strategy for the AWS Student Community.",
+    image: "/team/team-05.png",
+    linkedin: "https://www.linkedin.com/in/aashish-ingale-276bb2298/",
+    github: "https://github.com/aashishingale27"
+  },
+  {
+    name: "Bhavesh Dev",
+    role: "Event Management Lead",
+    description: "Planning and executing community events, workshops, and meetups for the AWS Student Community.",
+    image: "/team/team-06.png",
+    linkedin: "https://www.linkedin.com/in/bhavesh-dev-118b472a9/",
+    github: "https://github.com/bhavesh-k-dev"
+  },
+];
+
+export const crew = CREW;
+export const CORE_TEAM = CREW;

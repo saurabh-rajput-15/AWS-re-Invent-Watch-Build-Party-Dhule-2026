@@ -223,6 +223,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
             <a href="#team" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
               Team
             </a>
+            <a href="#partners" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
+              Partners
+            </a>
             <a href="#faq" className="whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-all">
               FAQ
             </a>
@@ -336,6 +339,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
                 className="mobile-nav-item group flex items-center justify-between rounded-xl px-4 py-2.5 text-slate-200 transition-all hover:bg-white/[0.06] hover:text-white active:bg-white/[0.1]"
               >
                 <span>Organizers &amp; Team</span>
+                <ChevronRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-aws-blue" />
+              </a>
+              <a
+                href="#partners"
+                onClick={() => closeMobileMenu()}
+                className="mobile-nav-item group flex items-center justify-between rounded-xl px-4 py-2.5 text-slate-200 transition-all hover:bg-white/[0.06] hover:text-white active:bg-white/[0.1]"
+              >
+                <span>Partners &amp; Supporters</span>
                 <ChevronRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-aws-blue" />
               </a>
               <a

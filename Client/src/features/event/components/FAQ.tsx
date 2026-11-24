@@ -17,7 +17,7 @@ export const FAQ: React.FC = () => {
           <div className="lg:col-span-5 lg:sticky lg:top-28 xl:top-32 self-start space-y-4">
             <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-magenta">
               <HelpCircle className="h-3.5 w-3.5" />
-              <span>07 · FAQ</span>
+              <span>08 · FAQ</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.08]">
               Frequently Asked<br />

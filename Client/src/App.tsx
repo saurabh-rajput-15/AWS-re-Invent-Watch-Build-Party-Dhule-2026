@@ -11,6 +11,7 @@ import { RegistrationPage } from './features/registration/components/Registratio
 import { TicketPassPage } from './features/registration/components/TicketPassPage';
 import { Venue } from './features/event/components/Venue';
 import { Team } from './features/event/components/Team';
+import { Partners } from './features/event/components/Partners';
 import { FAQ } from './features/event/components/FAQ';
 import { Footer } from './components/Footer';
 import { CodeOfConductPage } from './features/event/components/CodeOfConductPage';
@@ -427,6 +428,8 @@ export default function App() {
         <Venue />
 
         <Team />
+
+        <Partners />
 
         <FAQ />
       </main>

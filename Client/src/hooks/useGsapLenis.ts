@@ -69,14 +69,14 @@ export function useGsapLenis() {
     }
 
     if (!prefersReducedMotion) {
-      // 4. Hero Entrance Timeline
-      const heroTl = gsap.timeline({ delay: 0.2, defaults: { ease: 'power4.out' } });
+      // 4. Hero Entrance Timeline (keep text visible at opacity: 1 for instant LCP and search crawler visibility)
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       heroTl
-        .from('#home h1', { y: 40, opacity: 0, duration: 1 })
-        .from('#home p', { y: 20, opacity: 0, duration: 0.8 }, '-=0.6')
-        .from('#home .lg\\:col-span-5', { x: 50, opacity: 0, duration: 1 }, '-=0.8');
+        .from('#home h1', { y: 18, duration: 0.65, clearProps: 'transform' })
+        .from('#home p', { y: 12, duration: 0.55, clearProps: 'transform' }, '-=0.45')
+        .from('#home .lg\\:col-span-5', { y: 20, duration: 0.7, clearProps: 'transform' }, '-=0.5');
 
-      // 5. ScrollTrigger Batch reveals for cards, timeline items, and speakers
+      // 5. ScrollTrigger Batch reveals (translate only so sections remain visible for crawlers before scroll)
       const revealSelectors = [
         '#about .relative.overflow-hidden',
         '#agenda .group.relative',
@@ -88,20 +88,19 @@ export function useGsapLenis() {
       revealSelectors.forEach((sel) => {
         const elements = document.querySelectorAll(sel);
         if (elements.length > 0) {
-          gsap.set(elements, { opacity: 0, y: 35 });
+          gsap.set(elements, { y: 24 });
           ScrollTrigger.batch(elements, {
-            start: 'top 88%',
+            start: 'top 90%',
             once: true,
             onEnter: (batch) => {
               gsap.to(batch, {
-                opacity: 1,
                 y: 0,
-                duration: 0.8,
-                stagger: 0.1,
+                duration: 0.7,
+                stagger: 0.08,
                 ease: 'power3.out',
                 overwrite: true,
                 onComplete: () => {
-                  gsap.set(batch, { clearProps: 'transform,opacity' });
+                  gsap.set(batch, { clearProps: 'transform' });
                 },
               });
             },

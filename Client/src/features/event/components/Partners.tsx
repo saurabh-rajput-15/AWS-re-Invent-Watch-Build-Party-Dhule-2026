@@ -17,7 +17,7 @@ interface Partner {
 const PARTNERS: Partner[] = [
   {
     id: 'arif',
-    name: 'ARIF ( AI Research and Innovation Forum)',
+    name: 'ARIF (AI Research and Innovation Forum)',
     category: 'Community Partner',
     categoryBadgeColor: 'text-aws-green border-aws-green/30 bg-aws-green/10',
     logo: '/ARIF-white.png',
@@ -31,11 +31,10 @@ const PARTNERS: Partner[] = [
     category: 'Organizing Host',
     categoryBadgeColor: 'text-aws-blue border-aws-blue/30 bg-aws-blue/10',
     logo: '/AWS_Builder.png',
-    logoAlt: 'AWS Student Builder Group Dhule — Official Organizing Group ',
+    logoAlt: 'AWS Student Builder Group Dhule — Official Organizing Group',
     description: 'Official collegiate developer community driving hands-on cloud skills, certifications, and architectural workshops.',
     accent: '#3FB1FF',
   },
-
 ];
 
 export const Partners: React.FC = () => {
@@ -69,7 +68,7 @@ export const Partners: React.FC = () => {
         </div>
 
         {/* Featured Partners Grid */}
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8 items-stretch">
           {PARTNERS.map((partner) => {
             return (
               <div

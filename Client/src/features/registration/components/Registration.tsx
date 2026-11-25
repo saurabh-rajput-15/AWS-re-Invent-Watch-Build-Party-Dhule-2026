@@ -475,9 +475,9 @@ export const Registration: React.FC<RegistrationProps> = ({
               <span>Pass Application · Official Registration</span>
             </div>
 
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
               Request Your <span className="text-aws-purple">Seat.</span>
-            </h2>
+            </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
               300+ builders, one auditorium at Hotel Anand Regency Riverfront. To ensure verified student builders and prevent bot spam, all attendance requests are manually reviewed by our organizers before entry passes are issued.
@@ -514,9 +514,9 @@ export const Registration: React.FC<RegistrationProps> = ({
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">3. Confirmation Starts on 25 November</h4>
+                  <h4 className="text-sm font-bold text-white">3. Confirmation Within 12 Hours</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Seat confirmations and official QR entry passes will begin rolling out on 25 November 2026. Keep an eye on your email!
+                    After submission, you&apos;ll get your seat confirmation and official QR entry pass within 12 hours once reviewed. Keep an eye on your email!
                   </p>
                 </div>
               </div>
@@ -710,7 +710,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                         Your request is submitted successfully!
                       </h4>
                       <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
-                        Your registration is currently under review. The attendee confirmation process and official pass issuance will start on <strong className="text-aws-orange">25 November 2026</strong>.
+                        Your registration is currently under review. You&apos;ll get your confirmation and official pass within <strong className="text-aws-orange">12 hours after submission</strong> once reviewed by our team.
                       </p>
                       <div className="pt-2 text-xs text-amber-200/90 flex items-center gap-1.5 font-medium">
                         <span>📧</span>
@@ -830,7 +830,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           Official AWS Registration Required First
                         </h4>
                         <p className="text-xs text-slate-300 leading-relaxed">
-                          To attend the AWS re:Invent Watch &amp; Build Party in Dhule, all participants must first register for the event on the official **Amazon Web Services Builder Center** platform.
+                          To attend the AWS re:Invent Watch &amp; Build Party in Dhule, all participants must first register for the event on the official <strong className="text-white">Amazon Web Services Builder Center</strong> platform.
                         </p>
                       </div>
                     </div>
@@ -1299,11 +1299,11 @@ export const Registration: React.FC<RegistrationProps> = ({
                   )}
                 </div>
 
-                {/* 25 November Confirmation Notice Banner */}
+                {/* 12-Hour Review Confirmation Notice Banner */}
                 <div className="mt-5 rounded-xl border border-aws-orange/30 bg-aws-orange/10 p-3.5 text-xs text-amber-200 flex items-start gap-2.5">
                   <AlertTriangle className="h-4 w-4 text-aws-orange shrink-0 mt-0.5" />
                   <div className="leading-relaxed">
-                    <span className="font-bold text-white">📢 Important Notice:</span> The attendee confirmation and official pass approval process will begin on <strong className="text-white underline">25 November 2026</strong>. Please keep an eye on your email inbox &amp; spam folder!
+                    <span className="font-bold text-white">📢 Important Notice:</span> You&apos;ll get confirmation after reviewing within <strong className="text-white underline">12 hours after submission</strong>. Please keep an eye on your email inbox &amp; spam folder!
                   </div>
                 </div>
 
@@ -1440,11 +1440,11 @@ export const Registration: React.FC<RegistrationProps> = ({
                   })()}
                 </div>
 
-                {/* Post-Submit Email Instruction Note */}
+                {/* Post-Submit Review Note */}
                 <div className="mt-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
                   <Mail className="h-4 w-4 text-aws-blue shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
-                    <strong className="text-white">What happens next:</strong> After submitting your request, you will receive an email with quick next steps to complete to <strong className="text-aws-blue">significantly increase your chances of ticket confirmation</strong>.
+                    <strong className="text-white">What happens next:</strong> After submitting your request, our team will review your application and you&apos;ll get your confirmation email with your QR pass within <strong className="text-aws-blue">12 hours after submission</strong>.
                   </p>
                 </div>
 

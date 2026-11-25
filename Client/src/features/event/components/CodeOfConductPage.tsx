@@ -25,10 +25,6 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
 }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = 'Code of Conduct & Terms · AWS re:Invent Dhule 2026';
-    return () => {
-      document.title = 'AWS re:Invent Watch & Build Party Dhule';
-    };
   }, []);
 
   return (

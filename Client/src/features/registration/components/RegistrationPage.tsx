@@ -17,10 +17,6 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({
 }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = 'Register · AWS re:Invent Watch & Build Party Dhule 2026';
-    return () => {
-      document.title = 'AWS re:Invent Watch & Build Party Dhule';
-    };
   }, []);
 
   return (

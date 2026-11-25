@@ -198,7 +198,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-6',
     question: 'How will I know if my registration is confirmed?',
-    answer: 'Once you submit your registration, our organizing team takes it from there. After reviewing your application, approved attendees receive an official confirmation email containing their verified Digital Ticket Pass (riv-26-XXXX) and personal QR code. Keep your ticket safe because it is your entry pass to the experience. Stay connected and keep checking your inbox!'
+    answer: 'Once you submit your registration, our organizing team reviews your application within 12 hours after submission. Approved attendees receive an official confirmation email containing their verified Digital Ticket Pass (riv-26-XXXX) and personal QR code. Keep your ticket safe because it is your entry pass to the experience. Stay connected and keep checking your inbox!'
   },
   {
     id: 'faq-7',

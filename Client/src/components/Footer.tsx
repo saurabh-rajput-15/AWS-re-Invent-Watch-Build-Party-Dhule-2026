@@ -111,6 +111,10 @@ export const Footer: React.FC = () => {
                   +91 98909 91510
                 </a>
               </div>
+
+              <div className="sm:col-span-2 lg:col-span-1 rounded-xl border border-aws-orange/25 bg-aws-orange/10 px-3.5 py-2.5 text-[11px] leading-relaxed text-amber-200/95">
+                <strong className="text-white">High Volume &amp; Limited Seats:</strong> Receiving 100+ emails &amp; calls — our team is reviewing every request &amp; confirming by call. Please be patient &amp; thank you for your support!
+              </div>
             </div>
           </div>
 

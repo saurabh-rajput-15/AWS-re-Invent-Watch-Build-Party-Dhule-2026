@@ -198,7 +198,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-6',
     question: 'How will I know if my registration is confirmed?',
-    answer: 'Once you submit your registration, our organizing team reviews your application within 12 hours after submission. Approved attendees receive an official confirmation email containing their verified Digital Ticket Pass (riv-26-XXXX) and personal QR code. Keep your ticket safe because it is your entry pass to the experience. Stay connected and keep checking your inbox!'
+    answer: 'Because seats are strictly limited (300 capacity) and we are receiving a very high number of responses along with 100+ emails and calls, our team personally reviews every application and confirms selected attendees by phone call along with sending an official confirmation email containing your verified Digital Ticket Pass (riv-26-XXXX) and personal QR code. Please be patient, keep your phone reachable, and thank you for your support!'
   },
   {
     id: 'faq-7',
@@ -233,7 +233,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-13',
     question: 'How can I contact the organizing team if I need help?',
-    answer: 'Have questions or need assistance? Our organizing team is always happy to help! Reach out to us at info@reinvent.awssbgdhule.in or directly connect with our student builder leads. Soham Chaudhari: +91 98343 82337. Saurabh Rajput: +91 98909 91510. We are just a message or call away. Let’s make your event experience smooth and memorable!'
+    answer: 'Due to limited seats and an overwhelming response, we are receiving 100+ emails and calls every day. Please be patient and avoid repeat calls or emails just for confirmation status — our team is reviewing every request and confirming attendees directly by phone call! Thank you for your support. For urgent queries, reach out at info@reinvent.awssbgdhule.in or connect with our leads: Soham Chaudhari (+91 98343 82337) or Saurabh Rajput (+91 98909 91510).'
   }
 ];
 

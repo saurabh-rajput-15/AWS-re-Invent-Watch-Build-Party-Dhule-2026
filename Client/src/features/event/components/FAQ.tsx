@@ -35,7 +35,7 @@ export const FAQ: React.FC = () => {
                   <span>Still have questions?</span>
                 </div>
                 <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                  Email the organizing team for assistance.
+                  Due to limited seats &amp; high response volume (100+ emails &amp; calls), our team is reviewing every request and confirming by call — thank you for your patience &amp; support!
                 </p>
                 <a
                   href={`mailto:${EVENT_DETAILS.contactEmail}`}

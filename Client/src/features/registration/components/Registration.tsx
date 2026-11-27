@@ -514,9 +514,9 @@ export const Registration: React.FC<RegistrationProps> = ({
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">3. Confirmation Within 12 Hours</h4>
+                  <h4 className="text-sm font-bold text-white">3. Manual Review &amp; Confirmation Call</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    After submission, you&apos;ll get your seat confirmation and official QR entry pass within 12 hours once reviewed. Keep an eye on your email!
+                    Seats are limited and we are receiving a very high number of responses along with 100+ emails &amp; calls. Our team is reviewing every request and confirming by phone call &amp; email. Please be patient — thank you for your support!
                   </p>
                 </div>
               </div>
@@ -543,6 +543,9 @@ export const Registration: React.FC<RegistrationProps> = ({
               >
                 {EVENT_DETAILS.contactEmail}
               </a>
+              <p className="pt-1 text-[11px] text-amber-200/90 leading-relaxed">
+                Receiving 100+ emails &amp; calls daily due to huge response &amp; limited seats. Our team is reviewing every request and confirming by call — please be patient &amp; thank you for your support!
+              </p>
             </div>
 
             {/* Terms Quick Launch Button */}
@@ -705,16 +708,16 @@ export const Registration: React.FC<RegistrationProps> = ({
                     <div className="rounded-lg bg-aws-green/20 p-2 text-aws-green shrink-0 mt-0.5">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       <h4 className="font-bold text-white text-sm">
                         Your request is submitted successfully!
                       </h4>
                       <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
-                        Your registration is currently under review. You&apos;ll get your confirmation and official pass within <strong className="text-aws-orange">12 hours after submission</strong> once reviewed by our team.
+                        Thank you for your incredible support! Because seats are strictly limited and we are receiving a very high number of responses along with <strong className="text-aws-orange">100+ emails &amp; calls</strong>, our team is carefully reviewing every request one by one and <strong className="text-white">confirming attendees by phone call</strong> before issuing your official QR pass. Please be patient!
                       </p>
-                      <div className="pt-2 text-xs text-amber-200/90 flex items-center gap-1.5 font-medium">
-                        <span>📧</span>
-                        <span>Please keep an eye on your registered email (<span className="text-white font-mono">{attendee.email}</span>) and spam folder!</span>
+                      <div className="pt-1 text-xs text-amber-200/90 flex items-start gap-1.5 font-medium leading-relaxed">
+                        <span>📞</span>
+                        <span>Keep your phone reachable (<span className="text-white font-mono">{attendee.phone}</span>) for your confirmation call, and check your email (<span className="text-white font-mono">{attendee.email}</span>) &amp; spam folder!</span>
                       </div>
                     </div>
                   </div>
@@ -1299,11 +1302,11 @@ export const Registration: React.FC<RegistrationProps> = ({
                   )}
                 </div>
 
-                {/* 12-Hour Review Confirmation Notice Banner */}
+                {/* Limited Seats & High-Volume Confirmation Notice Banner */}
                 <div className="mt-5 rounded-xl border border-aws-orange/30 bg-aws-orange/10 p-3.5 text-xs text-amber-200 flex items-start gap-2.5">
                   <AlertTriangle className="h-4 w-4 text-aws-orange shrink-0 mt-0.5" />
                   <div className="leading-relaxed">
-                    <span className="font-bold text-white">📢 Important Notice:</span> You&apos;ll get confirmation after reviewing within <strong className="text-white underline">12 hours after submission</strong>. Please keep an eye on your email inbox &amp; spam folder!
+                    <span className="font-bold text-white">📢 Important Notice:</span> Due to <strong className="text-white">limited seats</strong> and a <strong className="text-white">very high volume of responses (100+ emails &amp; calls)</strong>, please be patient. Our team is personally reviewing every request and <strong className="text-white underline">confirming passes by phone call &amp; email</strong>. Thank you for your support!
                   </div>
                 </div>
 
@@ -1444,7 +1447,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                 <div className="mt-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
                   <Mail className="h-4 w-4 text-aws-blue shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
-                    <strong className="text-white">What happens next:</strong> After submitting your request, our team will review your application and you&apos;ll get your confirmation email with your QR pass within <strong className="text-aws-blue">12 hours after submission</strong>.
+                    <strong className="text-white">What happens next:</strong> Because seats are limited and we are receiving a very high number of responses (100+ emails &amp; calls), please be patient — our team is reviewing every request and <strong className="text-aws-blue">confirming selected attendees by phone call &amp; email</strong>. Thank you for your support!
                   </p>
                 </div>
 

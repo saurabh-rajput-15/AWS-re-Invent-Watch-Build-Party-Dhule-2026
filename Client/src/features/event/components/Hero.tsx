@@ -117,6 +117,28 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                 Add to calendar
               </a>
             </div>
+
+            {/* Powered By Sponsor Lockup */}
+            <div className="pt-2.5 sm:pt-3 flex flex-wrap items-center gap-3">
+              <span className="text-xs font-mono font-semibold uppercase tracking-[0.14em] text-slate-300">
+                Powered By
+              </span>
+              <a
+                href="https://hackmamba.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-xl border border-white/15 bg-black/50 hover:bg-black/75 hover:border-aws-orange/50 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 transition-all"
+                aria-label="Powered by Hackmamba"
+              >
+                <img
+                  src="/Hackmamba-white.png"
+                  alt="Hackmamba"
+                  width={678}
+                  height={157}
+                  className="h-7 sm:h-9 md:h-10 w-auto object-contain"
+                />
+              </a>
+            </div>
           </div>
 
           {/* Right Column: Event Info Card Panel */}

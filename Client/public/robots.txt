@@ -19,6 +19,8 @@ Allow: /preview.png
 Allow: /AWS_Builder.png
 Allow: /AWS_reinvent-dark.png
 Allow: /AWS_reinvent-light.png
+Allow: /Hackmamba-white.png
+Allow: /ARIF-white.png
 
 # Disallow private administrative and reception portal routes from search engine indexing
 Disallow: /admin

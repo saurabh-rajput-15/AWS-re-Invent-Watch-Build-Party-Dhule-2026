@@ -55,20 +55,84 @@ export const Partners: React.FC = () => {
         <div className="max-w-3xl">
           <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-aws-green">
             <Handshake className="h-3.5 w-3.5 text-aws-green" />
-            <span>07 · Partners &amp; Supporters</span>
+            <span>07 · Sponsors &amp; Partners</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span>Ecosystem Collaborators</span>
           </div>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Backed by Visionary <span className="text-aws-green">Community Partners.</span>
+            Backed by Visionary <span className="text-aws-green">Sponsors &amp; Partners.</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
-            We are proud to collaborate with leading incubation centers, collegiate institutions, and hospitality partners who believe in empowering student builders and fostering technological growth across Khandesh.
+            We are proud to partner with leading developer marketing agencies, incubation centers, and tech communities who empower student builders across Khandesh.
           </p>
         </div>
 
-        {/* Featured Partners Grid */}
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8 items-stretch">
+        {/* Powered By / Featured Title Sponsor Spotlight */}
+        <div className="mt-12 max-w-4xl mx-auto">
+          <div className="group relative overflow-hidden rounded-2xl border border-aws-orange/30 bg-linear-to-br from-[#0E1526]/95 via-[#131C33] to-[#0E1526]/95 p-6 sm:p-8 shadow-2xl transition-all duration-300 hover:border-aws-orange/60 hover:-translate-y-1">
+            {/* Top gradient accent stripe */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-aws-orange via-aws-magenta to-aws-purple" />
+
+            <div className="flex flex-col md:flex-row md:items-center gap-6 sm:gap-8">
+              {/* Left: Powered By + Hackmamba Logo Card */}
+              <div className="md:w-72 shrink-0 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-mono font-bold uppercase tracking-wider border text-aws-orange border-aws-orange/40 bg-aws-orange/15">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Powered By · Title Sponsor</span>
+                  </span>
+                </div>
+
+                <a
+                  href="https://hackmamba.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-28 sm:h-32 w-full items-center justify-center rounded-xl border border-white/10 bg-slate-950/80 p-5 group-hover:border-aws-orange/40 transition-colors"
+                  aria-label="Visit Hackmamba website"
+                >
+                  <img
+                    src="/Hackmamba-white.png"
+                    alt="Hackmamba — Official Title Sponsor (Powered By Hackmamba)"
+                    loading="lazy"
+                    decoding="async"
+                    className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                  />
+                </a>
+              </div>
+
+              {/* Right: Official Hackmamba Description & CTA */}
+              <div className="flex-1 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-2xl font-extrabold text-white group-hover:text-aws-orange transition-colors">
+                    Hackmamba
+                  </h3>
+                  <span className="text-[11px] font-mono font-semibold text-slate-400">
+                    Official Event Sponsor
+                  </span>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Hackmamba is a developer marketing and technical content agency that helps developer tools and tech products scale adoption among engineers and AI agents. Backed by a global network of over 2,000 engineering-first creators, Hackmamba delivers deep technical content, documentation, and Developer Relations (DevRel) programs for leading platforms like Cloudinary, Auth0, Replit, and Appwrite.
+                </p>
+
+                <div className="pt-1">
+                  <a
+                    href="https://hackmamba.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-aws-orange/35 bg-aws-orange/10 hover:bg-aws-orange/20 px-3.5 py-2 text-xs font-mono font-bold text-aws-orange hover:text-white transition-all"
+                  >
+                    <span>Learn more at hackmamba.io</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Community Partners Grid */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8 items-stretch">
           {PARTNERS.map((partner) => {
             return (
               <div

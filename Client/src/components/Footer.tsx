@@ -52,6 +52,30 @@ export const Footer: React.FC = () => {
                 Organized with dedication by the AWS Student Builder Group Dhule
                 for the student and developer community.
               </p>
+
+              {/* Powered By Sponsor Lockup */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <span className="text-[11px] font-mono uppercase tracking-[0.14em] text-slate-500">
+                  Powered By
+                </span>
+                <a
+                  href="https://hackmamba.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-xl border border-white/10 bg-slate-950/60 hover:border-aws-orange/40 px-3 py-1.5 transition-colors"
+                  aria-label="Powered by Hackmamba"
+                >
+                  <img
+                    src="/Hackmamba-white.png"
+                    alt="Hackmamba — Official Event Sponsor"
+                    width={678}
+                    height={157}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-8 sm:h-10 w-auto object-contain"
+                  />
+                </a>
+              </div>
             </div>
 
             {/* Organizer contacts */}
@@ -159,7 +183,7 @@ export const Footer: React.FC = () => {
               href="#partners"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
-              Partners
+              Sponsors
             </a>
             <a
               href="/register"

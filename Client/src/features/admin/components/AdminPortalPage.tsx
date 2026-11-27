@@ -18,10 +18,12 @@ import {
   Mail,
   Camera,
   QrCode,
+  PhoneCall,
 } from 'lucide-react';
 import { Attendee, RegistrationStatus } from '../../../types';
 import { verifyAwsBuilderAlias, BuilderVerificationResult } from '../../registration/services/builderVerifier';
 import { cleanBuilderAlias } from '../../registration/components/Registration';
+import { formatSubmittedDateTime, getTelHref } from '../../../utils/formatters';
 import { AdminService } from '../services/adminService';
 
 interface AdminPortalPageProps {
@@ -603,12 +605,32 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
                               <span>Checked In</span>
                             </span>
                           )}
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300"
+                            title="Submitted Date & Time"
+                          >
+                            <Clock className="h-3 w-3 text-aws-purple" />
+                            <span>{formatSubmittedDateTime(item.registeredAt)}</span>
+                          </span>
                         </div>
 
-                        <div className="text-xs text-slate-400 flex flex-wrap gap-x-3 gap-y-1">
-                          <span>{item.email}</span>
+                        <div className="text-xs text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                          <a
+                            href={`mailto:${item.email}`}
+                            className="inline-flex items-center gap-1 hover:text-white transition-colors"
+                          >
+                            <Mail className="h-3 w-3 text-slate-500" />
+                            <span>{item.email}</span>
+                          </a>
                           <span className="text-slate-600">·</span>
-                          <span>{item.phone}</span>
+                          <a
+                            href={getTelHref(item.phone)}
+                            title={`Call ${item.fullName}`}
+                            className="inline-flex items-center gap-1.5 rounded-md bg-aws-green/15 hover:bg-aws-green/25 border border-aws-green/35 px-2.5 py-0.5 text-aws-green hover:text-white font-mono font-semibold transition-colors"
+                          >
+                            <PhoneCall className="h-3 w-3 shrink-0" />
+                            <span>{item.phone}</span>
+                          </a>
                           <span className="text-slate-600">·</span>
                           <span>{item.college} ({item.year || 'Student'})</span>
                         </div>

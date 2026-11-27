@@ -27,6 +27,7 @@ import { verifyAwsBuilderAlias, BuilderVerificationResult } from '../services/bu
 import { TermsModal } from './TermsModal';
 import { ReactQRCode } from '@lglab/react-qr-code';
 import { apiUrl, assetUrl } from '../../../utils/api';
+import { formatSubmittedDateTime, getTelHref } from '../../../utils/formatters';
 
 interface RegistrationProps {
   attendee: Attendee | null;
@@ -1613,7 +1614,7 @@ export const Registration: React.FC<RegistrationProps> = ({
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             {/* Attendee Info */}
                             <div className="space-y-1">
-                              <div className="flex items-center gap-2">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <h5 className="text-sm font-bold text-white">{item.fullName}</h5>
                                 <span className="font-mono text-[10px] text-slate-500">{item.id}</span>
                                 <span
@@ -1627,6 +1628,10 @@ export const Registration: React.FC<RegistrationProps> = ({
                                 >
                                   {item.status}
                                 </span>
+                                <span className="inline-flex items-center gap-1 rounded bg-slate-900 border border-slate-800 px-2 py-0.5 font-mono text-[10px] text-slate-300">
+                                  <Clock className="h-2.5 w-2.5 text-aws-purple" />
+                                  <span>{formatSubmittedDateTime(item.registeredAt)}</span>
+                                </span>
                               </div>
 
                               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
@@ -1638,8 +1643,9 @@ export const Registration: React.FC<RegistrationProps> = ({
                                   <span>{item.email}</span>
                                 </a>
                                 <a
-                                  href={`tel:${item.phone}`}
-                                  className="inline-flex items-center gap-1 text-aws-green hover:underline font-mono"
+                                  href={getTelHref(item.phone)}
+                                  title={`Call ${item.fullName}`}
+                                  className="inline-flex items-center gap-1.5 rounded-md bg-aws-green/15 hover:bg-aws-green/25 border border-aws-green/35 px-2 py-0.5 text-aws-green hover:text-white font-mono font-semibold transition-colors"
                                 >
                                   <Phone className="h-3 w-3" />
                                   <span>{item.phone}</span>

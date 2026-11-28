@@ -54,6 +54,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
           loop
           muted
           playsInline
+          preload="metadata"
           className="h-full w-full object-cover scale-[1.01] brightness-100 contrast-100 opacity-95"
         >
           <source
@@ -101,12 +102,18 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
-              <button
-                onClick={onScrollToRegister}
+              <a
+                href="/register"
+                onClick={(e) => {
+                  if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                    e.preventDefault();
+                    onScrollToRegister();
+                  }
+                }}
                 className="inline-flex items-center justify-center rounded-full bg-aws-purple hover:bg-[#b873ff] px-7 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#0E131A] shadow-lg shadow-aws-purple/25 transition-all active:scale-95 cursor-pointer"
               >
                 Register
-              </button>
+              </a>
 
               <a
                 href={EVENT_DETAILS.calendarGoogleUrl}
@@ -152,6 +159,8 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToRegister }) => {
                 <img
                   src="/AWS_reinvent-dark.png"
                   alt="AWS re:Invent 2026"
+                  width={783}
+                  height={281}
                   className="h-8 sm:h-9 lg:h-18 w-auto object-contain opacity-95"
                 />
               </div>

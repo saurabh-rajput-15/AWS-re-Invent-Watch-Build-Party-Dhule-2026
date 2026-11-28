@@ -144,43 +144,43 @@ export const Footer: React.FC = () => {
 
           <nav className="mt-8 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-5 text-xs font-medium text-slate-300 sm:gap-3 sm:text-sm lg:mt-10 [&_a]:rounded-full [&_a]:px-3 [&_a]:py-2 [&_a]:transition-colors [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-aws-blue">
             <a
-              href="#about"
+              href="/#about"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               About
             </a>
             <a
-              href="#benefits"
+              href="/#benefits"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Benefits
             </a>
             <a
-              href="#agenda"
+              href="/#agenda"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Schedule
             </a>
             <a
-              href="#speakers"
+              href="/#speakers"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Mentors
             </a>
             <a
-              href="#venue"
+              href="/#venue"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Venue
             </a>
             <a
-              href="#team"
+              href="/#team"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Team
             </a>
             <a
-              href="#partners"
+              href="/#partners"
               className="hover:bg-aws-blue/10 hover:text-aws-blue"
             >
               Sponsors

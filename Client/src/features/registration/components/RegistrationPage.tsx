@@ -28,38 +28,48 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({
       <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-linear-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-lg shadow-black/20">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <button
-              onClick={onNavigateHome}
+            <a
+              href="/"
+              onClick={(e) => {
+                if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  onNavigateHome();
+                }
+              }}
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer group"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-aws-blue" />
               <span>Back to Event</span>
-            </button>
+            </a>
            
           </div>
 
           <a
             href="/"
             onClick={(e) => {
-              e.preventDefault();
-              onNavigateHome();
+              if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                onNavigateHome();
+              }
             }}
             className="flex items-center shrink-0 cursor-pointer"
           >
             <img
               src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
+              width={783}
+              height={281}
               className="h-8 sm:h-9 md:h-12 w-auto object-contain"
             />
           </a>
 
           <div>
-            <button
-              onClick={onNavigateHome}
-              className="rounded-full border border-slate-700 bg-slate-800/80 hover:bg-slate-700 px-4 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+            <a
+              href="/#agenda"
+              className="inline-flex rounded-full border border-slate-700 bg-slate-800/80 hover:bg-slate-700 px-4 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
             >
               Event Agenda
-            </button>
+            </a>
           </div>
         </div>
       </header>

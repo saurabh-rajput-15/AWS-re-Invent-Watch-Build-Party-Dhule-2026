@@ -35,14 +35,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
     if (isLandscape && !prefersReducedMotion && navPillRef.current) {
       const anim = gsap.fromTo(
         navPillRef.current,
-        { y: -45, opacity: 0 },
+        { y: -24 },
         {
           y: 0,
-          opacity: 1,
-          duration: 0.8,
+          duration: 0.7,
           ease: "power3.out",
-          delay: 0.1,
-          clearProps: "transform,opacity",
+          delay: 0.05,
+          clearProps: "transform",
         },
       );
 
@@ -293,15 +292,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
           {/* Far Right: Primary Action Pill & Mobile Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <button
-              onClick={onScrollToRegister}
+            <a
+              href="/register"
+              onClick={(e) => {
+                if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  onScrollToRegister();
+                }
+              }}
               className="relative p-[1.5px] rounded-full bg-linear-to-r from-aws-blue via-aws-magenta to-aws-orange transition-all hover:scale-105 active:scale-95 shadow-lg shadow-aws-magenta/20 cursor-pointer"
             >
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0C1222]/90 hover:bg-[#0C1222]/70 px-4 py-1.5 sm:px-5 sm:py-2 text-xs font-bold text-white transition-all whitespace-nowrap">
                 <span>Register</span>
                 <span aria-hidden="true">→</span>
               </span>
-            </button>
+            </a>
 
             {/* Mobile menu button */}
             <button
@@ -443,15 +448,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onScrollToRegister }) => {
 
               {/* Action Button */}
               <div className="mobile-nav-item pt-2.5">
-                <button
-                  onClick={() => {
-                    closeMobileMenu(() => onScrollToRegister());
+                <a
+                  href="/register"
+                  onClick={(e) => {
+                    if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                      e.preventDefault();
+                      closeMobileMenu(() => onScrollToRegister());
+                    }
                   }}
                   className="w-full flex items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-aws-purple via-aws-magenta to-aws-blue py-3.5 text-center text-sm font-bold text-black shadow-lg shadow-aws-purple/20 transition-all hover:opacity-95 active:scale-[0.98] cursor-pointer"
                 >
                   <span>Register for Free Pass</span>
                   <span aria-hidden="true">→</span>
-                </button>
+                </a>
               </div>
             </nav>
           </div>

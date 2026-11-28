@@ -25,6 +25,18 @@
       "destination": "https://api.reinvent.awssbgdhule.in/api/:match*"
     },
     {
+      "source": "/register",
+      "destination": "/register/index.html"
+    },
+    {
+      "source": "/codeofconduct",
+      "destination": "/codeofconduct/index.html"
+    },
+    {
+      "source": "/code-of-conduct",
+      "destination": "/codeofconduct/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

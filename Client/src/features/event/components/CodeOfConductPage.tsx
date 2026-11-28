@@ -35,33 +35,51 @@ export const CodeOfConductPage: React.FC<CodeOfConductPageProps> = ({
       {/* Top Simple Sticky Bar */}
       <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-linear-to-r from-[#090D16]/90 via-[#0C1222]/85 to-[#090D16]/90 backdrop-blur-xl shadow-lg shadow-black/20">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <button
-            onClick={onNavigateHome}
+          <a
+            href="/"
+            onClick={(e) => {
+              if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                onNavigateHome();
+              }
+            }}
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-aws-blue" />
             <span>Back to Event</span>
-          </button>
+          </a>
 
-          <a href="#home" onClick={onNavigateHome} className="flex items-center shrink-0">
+          <a
+            href="/"
+            onClick={(e) => {
+              if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                onNavigateHome();
+              }
+            }}
+            className="flex items-center shrink-0"
+          >
             <img
               src="/AWS_reinvent-dark.png"
               alt="AWS re:Invent Dhule 2026"
+              width={783}
+              height={281}
               className="h-8 sm:h-9 md:h-10 w-auto object-contain"
             />
           </a>
 
-          <button
-            onClick={() => {
-              onNavigateHome();
-              setTimeout(() => {
+          <a
+            href="/register"
+            onClick={(e) => {
+              if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
                 onScrollToRegister();
-              }, 100);
+              }
             }}
             className="rounded-full bg-linear-to-r from-aws-purple to-aws-blue px-4 sm:px-5 py-2 text-xs font-bold text-[#0E131A] shadow-md shadow-aws-purple/20 hover:opacity-95 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
           >
             <span>Register →</span>
-          </button>
+          </a>
         </div>
       </header>
 

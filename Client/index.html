@@ -20,6 +20,7 @@
     
     <!-- Preload Critical Above-The-Fold Assets for Instant Core Web Vitals (LCP < 1.0s) -->
     <link rel="preload" as="image" href="/AWS_reinvent-dark.png" fetchpriority="high" />
+    <link rel="dns-prefetch" href="https://d1.awsstatic.com" />
     
     <!-- Geo Location Meta (Dhule, Maharashtra, India) -->
     <meta name="geo.region" content="IN-MH" />
@@ -84,6 +85,7 @@
           "url": "https://reinvent.awssbgdhule.in/",
           "name": "AWS re:Invent Dhule 2026",
           "description": "Official event portal for AWS re:Invent Watch & Build Party Dhule 2026 hosted by AWS Student Builder Group Dhule.",
+          "inLanguage": "en-IN",
           "alternateName": ["reinvent dhule", "aws reinvent dhule", "re:Invent Dhule", "AWSSBG Dhule"],
           "publisher": {
             "@id": "https://reinvent.awssbgdhule.in/#organization"
@@ -91,9 +93,34 @@
           "image": "https://reinvent.awssbgdhule.in/logo-512x512.png"
         },
         {
+          "@type": "WebPage",
+          "@id": "https://reinvent.awssbgdhule.in/#webpage",
+          "url": "https://reinvent.awssbgdhule.in/",
+          "name": "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
+          "description": "AWS re:Invent Dhule 2026: Official Watch & Build Party in Dhule, Maharashtra on Friday, 04 December 2026 at Hotel Anand Regency Riverfront.",
+          "inLanguage": "en-IN",
+          "isPartOf": {
+            "@id": "https://reinvent.awssbgdhule.in/#website"
+          },
+          "about": {
+            "@id": "https://reinvent.awssbgdhule.in/#event"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://reinvent.awssbgdhule.in/preview.png"
+          },
+          "breadcrumb": {
+            "@id": "https://reinvent.awssbgdhule.in/#breadcrumb"
+          }
+        },
+        {
           "@type": "Event",
           "@id": "https://reinvent.awssbgdhule.in/#event",
           "name": "AWS re:Invent Watch & Build Party Dhule 2026",
+          "url": "https://reinvent.awssbgdhule.in/",
+          "inLanguage": "en-IN",
+          "isAccessibleForFree": true,
+          "maximumAttendeeCapacity": 300,
           "alternateName": [
             "AWS re:Invent Dhule",
             "reinvent dhule",
@@ -126,7 +153,8 @@
           },
           "image": [
             "https://reinvent.awssbgdhule.in/logo-512x512.png",
-            "https://reinvent.awssbgdhule.in/preview.png"
+            "https://reinvent.awssbgdhule.in/preview.png",
+            "https://reinvent.awssbgdhule.in/Anand-Regency-Riverfront.png"
           ],
           "organizer": {
             "@id": "https://reinvent.awssbgdhule.in/#organization"
@@ -156,7 +184,8 @@
             "price": "0",
             "priceCurrency": "INR",
             "availability": "https://schema.org/InStock",
-            "validFrom": "2026-11-01T00:00:00+05:30"
+            "validFrom": "2026-11-01T00:00:00+05:30",
+            "validThrough": "2026-12-04T09:00:00+05:30"
           }
         },
         {
@@ -238,18 +267,6 @@
               "position": 1,
               "name": "Home",
               "item": "https://reinvent.awssbgdhule.in/"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Register for Free Pass",
-              "item": "https://reinvent.awssbgdhule.in/register"
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "Code of Conduct",
-              "item": "https://reinvent.awssbgdhule.in/codeofconduct"
             }
           ]
         },

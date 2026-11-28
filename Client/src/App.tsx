@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { ArrowUp } from "lucide-react";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./features/event/components/Hero";
@@ -7,19 +7,51 @@ import { About } from "./features/event/components/About";
 import { Benefits } from "./features/event/components/Benefits";
 import { Agenda } from "./features/event/components/Agenda";
 import { Speakers } from "./features/event/components/Speakers";
-import { RegistrationPage } from "./features/registration/components/RegistrationPage";
-import { TicketPassPage } from "./features/registration/components/TicketPassPage";
 import { Venue } from "./features/event/components/Venue";
 import { Team } from "./features/event/components/Team";
 import { Partners } from "./features/event/components/Partners";
 import { FAQ } from "./features/event/components/FAQ";
 import { Footer } from "./components/Footer";
-import { CodeOfConductPage } from "./features/event/components/CodeOfConductPage";
-import { AdminPortalPage } from "./features/admin/components/AdminPortalPage";
-import { AdminScannerPage } from "./features/admin/components/AdminScannerPage";
-import { AdminProtectedRoute } from "./features/admin/components/AdminProtectedRoute";
 import { Attendee } from "./types";
 import { useGsapLenis } from "./hooks/useGsapLenis";
+
+// Route-level code splitting so the landing page never downloads Three.js, jsQR, or Admin/Registration code upfront
+const RegistrationPage = lazy(() =>
+  import("./features/registration/components/RegistrationPage").then((m) => ({
+    default: m.RegistrationPage,
+  })),
+);
+const TicketPassPage = lazy(() =>
+  import("./features/registration/components/TicketPassPage").then((m) => ({
+    default: m.TicketPassPage,
+  })),
+);
+const CodeOfConductPage = lazy(() =>
+  import("./features/event/components/CodeOfConductPage").then((m) => ({
+    default: m.CodeOfConductPage,
+  })),
+);
+const AdminPortalPage = lazy(() =>
+  import("./features/admin/components/AdminPortalPage").then((m) => ({
+    default: m.AdminPortalPage,
+  })),
+);
+const AdminScannerPage = lazy(() =>
+  import("./features/admin/components/AdminScannerPage").then((m) => ({
+    default: m.AdminScannerPage,
+  })),
+);
+const AdminProtectedRoute = lazy(() =>
+  import("./features/admin/components/AdminProtectedRoute").then((m) => ({
+    default: m.AdminProtectedRoute,
+  })),
+);
+
+const RouteLoadingFallback: React.FC = () => (
+  <div className="min-h-screen bg-[#090D16] flex items-center justify-center">
+    <div className="h-9 w-9 animate-spin rounded-full border-2 border-aws-purple border-t-transparent" />
+  </div>
+);
 
 type AppRoute =
   | "home"
@@ -161,7 +193,7 @@ export default function App() {
     };
   }, []);
 
-  // Synchronize dynamic Page Title, Meta Description, Canonical URL & Robots for Search Engines
+  // Synchronize dynamic Page Title, Meta Description, Canonical, Hreflang & Robots for Search Engines
   useEffect(() => {
     const setMeta = (
       attr: "name" | "property",
@@ -179,16 +211,15 @@ export default function App() {
       el.setAttribute("content", content);
     };
 
-    const setCanonical = (href: string) => {
-      let el = document.querySelector(
-        'link[rel="canonical"]',
-      ) as HTMLLinkElement | null;
+    const setLinkHref = (selector: string, attrs: Record<string, string>) => {
+      let el = document.querySelector(selector) as HTMLLinkElement | null;
       if (!el) {
         el = document.createElement("link");
-        el.setAttribute("rel", "canonical");
         document.head.appendChild(el);
       }
-      el.setAttribute("href", href);
+      for (const [k, v] of Object.entries(attrs)) {
+        el.setAttribute(k, v);
+      }
     };
 
     const BASE = "https://reinvent.awssbgdhule.in";
@@ -196,71 +227,51 @@ export default function App() {
       "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
     const NOINDEX = "noindex, nofollow";
 
+    const applyIndexableSeo = (
+      url: string,
+      title: string,
+      description: string,
+    ) => {
+      document.title = title;
+      setMeta("name", "description", description);
+      setMeta("name", "robots", INDEX_ROBOTS);
+      setMeta("property", "og:url", url);
+      setMeta("property", "og:title", title);
+      setMeta("property", "og:description", description);
+      setMeta("name", "twitter:url", url);
+      setMeta("name", "twitter:title", title);
+      setMeta("name", "twitter:description", description);
+      setLinkHref('link[rel="canonical"]', { rel: "canonical", href: url });
+      for (const lang of ["en-in", "en", "x-default"]) {
+        setLinkHref(`link[rel="alternate"][hreflang="${lang}"]`, {
+          rel: "alternate",
+          hreflang: lang,
+          href: url,
+        });
+      }
+    };
+
     switch (routeState.route) {
       case "home":
-        document.title =
-          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group";
-        setMeta(
-          "name",
-          "description",
+        applyIndexableSeo(
+          `${BASE}/`,
+          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
           "AWS re:Invent Dhule 2026: Official Watch & Build Party in Dhule, Maharashtra on Friday, 04 December 2026 at Hotel Anand Regency Riverfront. Free registration, keynote screenings, enterprise Kubernetes masterclass by Abhishek Maurya, live Kahoot battles, lunch, and official AWS swags.",
         );
-        setCanonical(`${BASE}/`);
-        setMeta("property", "og:url", `${BASE}/`);
-        setMeta(
-          "property",
-          "og:title",
-          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
-        );
-        setMeta(
-          "name",
-          "twitter:title",
-          "AWS re:Invent Dhule 2026 | Watch & Build Party · AWS Student Builder Group",
-        );
-        setMeta("name", "robots", INDEX_ROBOTS);
         break;
       case "register":
-        document.title =
-          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026";
-        setMeta(
-          "name",
-          "description",
+        applyIndexableSeo(
+          `${BASE}/register`,
+          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026",
           "Register for a free verified community pass for AWS re:Invent Watch & Build Party Dhule 2026. Free entry includes keynote screenings, Kubernetes masterclass, buffet lunch, and official AWS swag at Hotel Anand Regency Riverfront on 04 December 2026.",
         );
-        setCanonical(`${BASE}/register`);
-        setMeta("property", "og:url", `${BASE}/register`);
-        setMeta(
-          "property",
-          "og:title",
-          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026",
-        );
-        setMeta(
-          "name",
-          "twitter:title",
-          "Register for Pass · AWS re:Invent Watch & Build Party Dhule 2026",
-        );
-        setMeta("name", "robots", INDEX_ROBOTS);
         break;
       case "codeofconduct":
-        document.title = "Code of Conduct · AWS re:Invent Dhule 2026";
-        setMeta(
-          "name",
-          "description",
+        applyIndexableSeo(
+          `${BASE}/codeofconduct`,
+          "Code of Conduct · AWS re:Invent Dhule 2026",
           "Official Code of Conduct, Terms & Conditions, and attendee guidelines for AWS re:Invent Watch & Build Party Dhule 2026 hosted by AWS Student Builder Group Dhule.",
         );
-        setCanonical(`${BASE}/codeofconduct`);
-        setMeta("property", "og:url", `${BASE}/codeofconduct`);
-        setMeta(
-          "property",
-          "og:title",
-          "Code of Conduct · AWS re:Invent Dhule 2026",
-        );
-        setMeta(
-          "name",
-          "twitter:title",
-          "Code of Conduct · AWS re:Invent Dhule 2026",
-        );
-        setMeta("name", "robots", INDEX_ROBOTS);
         break;
       case "ticket":
         document.title = routeState.ticketId
@@ -338,6 +349,7 @@ export default function App() {
   // Intercept any clicks on /admin, /scanner, /ticket, /ticketid=..., /codeofconduct, /register or back to home
   useEffect(() => {
     const handleGlobalLinkClicks = (e: MouseEvent) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       const anchor = (e.target as HTMLElement).closest("a");
       if (!anchor) return;
       const href = anchor.getAttribute("href");
@@ -373,6 +385,16 @@ export default function App() {
       ) {
         e.preventDefault();
         navigateToRegister();
+      } else if (href.startsWith("/#") && currentRoute !== "home") {
+        e.preventDefault();
+        const hashTarget = href.slice(1);
+        window.history.pushState({}, "", href);
+        setRouteState({ route: "home" });
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            document.querySelector(hashTarget)?.scrollIntoView({ behavior: "smooth" });
+          }, 80);
+        });
       } else if (href === "/" && currentRoute !== "home") {
         e.preventDefault();
         navigateToHome();
@@ -433,56 +455,66 @@ export default function App() {
   // Dedicated /scanner Route (Admin QR Camera Scanner)
   if (currentRoute === "scanner") {
     return (
-      <AdminScannerPage
-        onNavigateHome={navigateToHome}
-        onNavigateAdminPortal={navigateToAdmin}
-      />
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <AdminScannerPage
+          onNavigateHome={navigateToHome}
+          onNavigateAdminPortal={navigateToAdmin}
+        />
+      </Suspense>
     );
   }
 
   // Dedicated /ticket or /ticketid=[id] Route (Digital Pass & 3D Lanyard View)
   if (currentRoute === "ticket") {
     return (
-      <TicketPassPage
-        ticketId={activeTicketId || ""}
-        onNavigateHome={navigateToHome}
-      />
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <TicketPassPage
+          ticketId={activeTicketId || ""}
+          onNavigateHome={navigateToHome}
+        />
+      </Suspense>
     );
   }
 
   // Dedicated /register Route
   if (currentRoute === "register") {
     return (
-      <RegistrationPage
-        attendee={attendee}
-        onRegisterSuccess={handleRegisterSuccess}
-        onNavigateHome={navigateToHome}
-      />
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <RegistrationPage
+          attendee={attendee}
+          onRegisterSuccess={handleRegisterSuccess}
+          onNavigateHome={navigateToHome}
+        />
+      </Suspense>
     );
   }
 
   // Protected Admin Portal Route
   if (currentRoute === "admin") {
     return (
-      <AdminProtectedRoute onNavigateHome={navigateToHome}>
-        {({ token, onLogout }) => (
-          <AdminPortalPage
-            onNavigateHome={navigateToHome}
-            onNavigateScanner={navigateToScanner}
-            token={token}
-            onLogout={onLogout}
-          />
-        )}
-      </AdminProtectedRoute>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <AdminProtectedRoute onNavigateHome={navigateToHome}>
+          {({ token, onLogout }) => (
+            <AdminPortalPage
+              onNavigateHome={navigateToHome}
+              onNavigateScanner={navigateToScanner}
+              token={token}
+              onLogout={onLogout}
+            />
+          )}
+        </AdminProtectedRoute>
+      </Suspense>
     );
   }
 
   if (currentRoute === "codeofconduct") {
     return (
-      <CodeOfConductPage
-        onNavigateHome={navigateToHome}
-        onScrollToRegister={navigateToRegister}
-      />
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <CodeOfConductPage
+          onNavigateHome={navigateToHome}
+          onScrollToRegister={navigateToRegister}
+        />
+      </Suspense>
     );
   }
 

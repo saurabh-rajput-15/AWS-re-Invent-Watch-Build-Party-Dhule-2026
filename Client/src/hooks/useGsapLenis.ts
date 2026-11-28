@@ -36,11 +36,15 @@ export function useGsapLenis() {
 
     // 2. Intercept Anchor Link Clicks for Lenis Smooth Scroll
     const handleAnchorClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest('a[href^="#"]');
+      const target = (e.target as HTMLElement).closest('a[href^="#"], a[href^="/#"]');
       if (!target) return;
 
-      const href = target.getAttribute('href');
-      if (!href || href === '#') return;
+      const rawHref = target.getAttribute('href');
+      if (!rawHref) return;
+      if (rawHref.startsWith('/#') && window.location.pathname !== '/') return;
+
+      const href = rawHref.startsWith('/#') ? rawHref.slice(1) : rawHref;
+      if (href === '#') return;
 
       const element = document.querySelector(href);
       if (element) {

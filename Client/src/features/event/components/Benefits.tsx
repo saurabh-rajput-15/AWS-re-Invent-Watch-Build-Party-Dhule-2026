@@ -171,23 +171,19 @@ export const Benefits: React.FC<BenefitsProps> = ({ onScrollToRegister }) => {
             </div>
 
             <div className="shrink-0">
-              {onScrollToRegister ? (
-                <button
-                  onClick={onScrollToRegister}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-aws-orange hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-aws-orange/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
-                >
-                  <span>Claim Your Pass</span>
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <a
-                  href="/register"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-aws-orange hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-aws-orange/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
-                >
-                  <span>Claim Your Pass</span>
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              )}
+              <a
+                href="/register"
+                onClick={(e) => {
+                  if (onScrollToRegister && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                    e.preventDefault();
+                    onScrollToRegister();
+                  }
+                }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-aws-orange hover:bg-[#ffaa33] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-aws-orange/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
+              >
+                <span>Claim Your Pass</span>
+                <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
           </div>
         </div>
